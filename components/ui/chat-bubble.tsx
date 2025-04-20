@@ -28,6 +28,7 @@ interface ExtendedUIMessage {
 interface ChatBubbleProps {
   message: ExtendedUIMessage;
   isStreaming?: boolean;
+  showToolCalls?: boolean;
 }
 
 // Define more specific types for message parts
@@ -233,6 +234,7 @@ function isSourcePart(part: MessagePart): part is SourcePart {
 export function ChatBubble({
   message,
   isStreaming,
+  showToolCalls = true,
 }: ChatBubbleProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
@@ -265,6 +267,9 @@ export function ChatBubble({
       }
       
       if (isToolInvocationPart(part)) {
+        // Skip tool invocation parts if showToolCalls is false
+        if (!showToolCalls) return null;
+        
         return {
           type: 'tool-invocation' as const,
           toolInvocation: part.toolInvocation
@@ -287,7 +292,7 @@ export function ChatBubble({
       
       return null;
     }).filter((part): part is ProcessedPart => part !== null);
-  }, [message]);
+  }, [message, showToolCalls]);
 
   // Container class
   const containerClass = `flex flex-col ${isMe ? "items-end" : "items-start"} relative w-full space-y-1`;
