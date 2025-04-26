@@ -89,6 +89,7 @@ export function PageChat({ className, title = "Chat with Korin" }: PageChatProps
     createdAt?: number | Date | string;
   }): ExtendedUIMessage => {
     return {
+      ...message,
       id: message.id,
       role: message.role === 'data' ? 'system' : message.role as 'user' | 'assistant' | 'system',
       content: message.content,
