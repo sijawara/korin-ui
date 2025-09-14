@@ -14,32 +14,13 @@ import { PageChat } from "@monorepo/ui/page-chat";
 import { TypingLoader } from "@monorepo/ui/typing-loader";
 import { UploadButton } from "@monorepo/ui/upload-button";
 import { Response } from "@monorepo/ui/response";
-import {
-  Reasoning,
-  ReasoningContent,
-  ReasoningTrigger,
-} from "@monorepo/ui/reasoning";
+import { Reasoning, ReasoningContent, ReasoningTrigger } from "@monorepo/ui/reasoning";
 import { ScrollArea } from "@monorepo/ui/scroll-area-extended";
-import {
-  WebSearchResults,
-  KnowledgeResults,
-  ImageGenerationResults,
-} from "@monorepo/ui/tool-results";
+import { WebSearchResults, KnowledgeResults, ImageGenerationResults } from "@monorepo/ui/tool-results";
 import { UserConfirmation } from "@monorepo/ui/user-confirmation";
-import {
-  CodeBlock as CodeBlockContainer,
-  CodeBlockCode,
-} from "@monorepo/ui/code-block";
-import {
-  CodeBlock as CodeBlockWithCopy,
-  CodeBlockCopyButton,
-} from "@monorepo/ui/code-block-with-copy";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@monorepo/shadcn-ui/card";
+import { CodeBlock as CodeBlockContainer, CodeBlockCode } from "@monorepo/ui/code-block";
+import { CodeBlock as CodeBlockWithCopy, CodeBlockCopyButton } from "@monorepo/ui/code-block-with-copy";
+import { Card, CardContent, CardHeader, CardTitle } from "@monorepo/shadcn-ui/card";
 import { Button } from "@monorepo/shadcn-ui/button";
 import type { KorinAIConfig } from "@korinai/libs/contexts/korinai-context";
 
@@ -75,7 +56,7 @@ export default function Home() {
         },
       ],
     }),
-    []
+    [],
   );
 
   // ChatBubble demo messages covering all paths and user confirmation
@@ -270,27 +251,21 @@ export default function Home() {
 
   // Minimal Korin config and token getter for demos
   const korinConfig: KorinAIConfig = {
-    baseUrl: "https://3000.refind.id",
-    chatApi: "https://3000.refind.id/api/chat",
+    baseUrl: "https://api.korinai.com",
+    chatApi: "https://api.korinai.com/api/chat",
   };
   const getAuthToken = async () => apiKey;
 
   return (
     <main className="min-h-screen p-8 container mx-auto">
       <header className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-2">
-          Korin UI Components Showcase
-        </h1>
+        <h1 className="text-3xl font-bold mb-2">Korin UI Components Showcase</h1>
         <p className="text-muted-foreground">
           Live previews of components from <code>@monorepo/ui</code>.
         </p>
       </header>
 
-      <KorinProvider
-        config={korinConfig}
-        getAuthToken={getAuthToken}
-        language="en"
-      >
+      <KorinProvider config={korinConfig} getAuthToken={getAuthToken} language="en">
         {/* Flex wrap layout with consistent card sizing */}
         <div className="flex flex-wrap gap-6">
           {/* AvatarKorin */}
@@ -299,11 +274,7 @@ export default function Home() {
               <CardTitle>AvatarKorin</CardTitle>
             </CardHeader>
             <CardContent className="flex-1 overflow-y-auto flex items-center gap-4">
-              <AvatarKorin
-                src="https://placehold.co/80x80"
-                alt="Korin"
-                className="h-12 w-12"
-              />
+              <AvatarKorin src="https://placehold.co/80x80" alt="Korin" className="h-12 w-12" />
               <AvatarKorin fallback="K" alt="Korin" className="h-12 w-12" />
             </CardContent>
           </Card>
@@ -333,9 +304,7 @@ export default function Home() {
               <CardTitle>MemoizedMarkdown</CardTitle>
             </CardHeader>
             <CardContent className="flex-1 overflow-y-auto">
-              <MemoizedMarkdown
-                content={"# Heading\nSome text with a list:\n- One\n- Two"}
-              />
+              <MemoizedMarkdown content={"# Heading\nSome text with a list:\n- One\n- Two"} />
             </CardContent>
           </Card>
 
@@ -435,9 +404,7 @@ export default function Home() {
               <CardTitle>FloatingChat</CardTitle>
             </CardHeader>
             <CardContent className="flex-1 overflow-y-auto">
-              <p className="text-sm text-muted-foreground mb-2">
-                Click the chat button at the bottom-right corner.
-              </p>
+              <p className="text-sm text-muted-foreground mb-2">Click the chat button at the bottom-right corner.</p>
               <FloatingChat className="" />
             </CardContent>
           </Card>
@@ -458,9 +425,7 @@ export default function Home() {
               <CardTitle>Response (Markdown)</CardTitle>
             </CardHeader>
             <CardContent className="flex-1 overflow-y-auto">
-              <Response>
-                {`# Title\nSome math: $a^2 + b^2 = c^2$.\n\nA link to https://korinai.com`}
-              </Response>
+              <Response>{`# Title\nSome math: $a^2 + b^2 = c^2$.\n\nA link to https://korinai.com`}</Response>
             </CardContent>
           </Card>
 
@@ -472,9 +437,7 @@ export default function Home() {
             <CardContent className="flex-1 overflow-y-auto">
               <Reasoning isStreaming defaultOpen>
                 <ReasoningTrigger />
-                <ReasoningContent>
-                  {"Thinking steps...\n1. Fetch data\n2. Analyze\n3. Summarize"}
-                </ReasoningContent>
+                <ReasoningContent>{"Thinking steps...\n1. Fetch data\n2. Analyze\n3. Summarize"}</ReasoningContent>
               </Reasoning>
             </CardContent>
           </Card>
@@ -573,10 +536,7 @@ export default function Home() {
             </CardHeader>
             <CardContent className="flex-1 overflow-y-auto">
               <CodeBlockContainer>
-                <CodeBlockCode
-                  code={`function add(a:number,b:number){\n  return a+b;\n}`}
-                  language="ts"
-                />
+                <CodeBlockCode code={`function add(a:number,b:number){\n  return a+b;\n}`} language="ts" />
               </CodeBlockContainer>
             </CardContent>
           </Card>
@@ -587,10 +547,7 @@ export default function Home() {
               <CardTitle>CodeBlock with Copy</CardTitle>
             </CardHeader>
             <CardContent className="flex-1 overflow-y-auto">
-              <CodeBlockWithCopy
-                code={`pnpm install\npnpm dev`}
-                language="bash"
-              >
+              <CodeBlockWithCopy code={`pnpm install\npnpm dev`} language="bash">
                 <CodeBlockCopyButton />
               </CodeBlockWithCopy>
             </CardContent>
