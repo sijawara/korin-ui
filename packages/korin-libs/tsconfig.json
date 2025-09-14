@@ -1,0 +1,5 @@
+{
+  "extends": "@monorepo/tsconfig/ui.json",
+  "include": ["**/*.ts", "**/*.tsx", "eslint.config.mjs"],
+  "exclude": ["node_modules"]
+}
