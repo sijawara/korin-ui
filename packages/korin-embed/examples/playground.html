@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Korin Embed – Playground</title>
-    <link rel="stylesheet" href="../dist/embed.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.css" />
     <style>
       :root {
         /* Light theme (aligned with ai-web globals.css) */
@@ -1017,7 +1017,7 @@
     </aside>
 
     <!-- IIFE bundle -->
-    <script src="../dist/embed.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.js"></script>
     <script>
       (function () {
         // Mode toggle button replaces the old <select>
@@ -1204,7 +1204,9 @@
 
         function ensureAPI() {
           if (!window.KorinAI || typeof window.KorinAI.init !== "function") {
-            console.error("[KorinAI] global object not found. Did you build and include ../dist/embed.js?");
+            console.error(
+              "[KorinAI] global object not found. Did you build and include https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.js?",
+            );
             return false;
           }
           return true;
@@ -1297,7 +1299,7 @@
           const payload = buildEmbedPayload();
           const payloadStr = JSON.stringify(payload, null, 2);
           // Use <\/script> to avoid closing the current script tag in HTML parsing
-          const code = `<!-- Include Korin Embed assets -->\n<link rel=\"stylesheet\" href=\"../dist/embed.css\" />\n<div id=\"my-chat\"></div>\n<script src=\"../dist/embed.js\"><\/script>\n<script>\n  window.KorinAI.init(${payloadStr});\n<\/script>`;
+          const code = `<!-- Include Korin Embed assets -->\n<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.css\" />\n<div id=\"my-chat\"></div>\n<script src=\"https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.js\"><\/script>\n<script>\n  window.KorinAI.init(${payloadStr});\n<\/script>`;
           return code;
         }
 

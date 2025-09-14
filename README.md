@@ -39,6 +39,12 @@ The monorepo is organized as follows:
 
 ## Getting Started
 
+### Prerequisites
+
+- Node.js 18+ (LTS recommended)
+- pnpm installed globally (`npm i -g pnpm`)
+- Git
+
 1. **Clone the repository**
 
    ```bash
@@ -207,8 +213,11 @@ import { useSomething } from "@korinai/libs/hooks/use-something";
 Usage (in a host site):
 
 ```html
-<script type="module" src="/path/to/node_modules/@korinai/embed/dist/embed.js"></script>
+<!-- Use the published CDN build (no local bundling required) -->
+<script src="https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.js"></script>
 ```
+
+Tip: See `packages/korin-embed/README.md` for full options, including translations and runtime controls.
 
 ## Root Scripts
 

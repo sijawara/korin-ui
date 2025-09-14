@@ -1,35 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## KorinAI Web (Next.js)
 
-## Getting Started
+Beginner-friendly guide to develop and run the KorinAI web app.
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ (LTS recommended)
+- pnpm installed globally (`npm i -g pnpm`)
+
+### Scripts (package.json)
+
+- `pnpm dev` – start Next.js in development
+- `pnpm build` – build for production
+- `pnpm start` – run the production build
+- `pnpm lint` – lint the project
+
+### Run locally
+
+From the monorepo root (recommended):
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# install deps once at the repo root
+pnpm install
+
+# run only the web app
+pnpm dev -F web
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### How this app uses workspace packages
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `@korinai/libs` – shared hooks and contexts (API access, chat state)
+- `@monorepo/ui` – shared UI components and Tailwind config
+- `@monorepo/shadcn-ui` – UI primitives
 
-## Learn More
+See `packages/korin-libs/README.md` for provider setup and available hooks.
 
-To learn more about Next.js, take a look at the following resources:
+Example Provider usage:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```tsx
+// apps/web/src/app/providers.tsx (example)
+import { KorinAIProvider } from "@korinai/libs/contexts/korinai-context";
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <KorinAIProvider
+      config={{ baseUrl: "https://api.example.com", chatApi: "https://api.example.com/chat" }}
+      authToken={undefined}
+      language="en"
+    >
+      {children}
+    </KorinAIProvider>
+  );
+}
+```
 
-## Deploy on Vercel
+### Useful links
+
+- Next.js docs: https://nextjs.org/docs
+- UI components and styles: `packages/korin-ui` (`@monorepo/ui`)
+- Shared hooks/contexts: `packages/korin-libs` (`@korinai/libs`)
+- Embed script (CDN): `packages/korin-embed` (`@korinai/embed`)
+
+### Deploy
+
+The app can be deployed to Vercel or any platform that supports Next.js 15.
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 

@@ -10,6 +10,7 @@ import type { Root } from "react-dom/client";
 import { FloatingChat } from "@monorepo/ui/floating-chat";
 import { PageChat } from "@monorepo/ui/page-chat";
 import { KorinProvider } from "@monorepo/ui/korin-provider";
+import type { ChatTranslations } from "@korinai/libs";
 
 // Minimal shims for plain browser environments (no bundler globals)
 declare global {
@@ -69,6 +70,7 @@ export type InitOptions = {
   language?: string; // provider prop
   getAuthToken?: () => Promise<string>;
   variant?: "floating" | "page"; // which UI to render
+  translations?: ChatTranslations;
 };
 
 class ErrorBoundary extends React.Component<
@@ -167,6 +169,7 @@ function DebugRoot(props: Record<string, unknown>) {
       authToken={flat?.authToken}
       language={flat?.language}
       getAuthToken={flat?.getAuthToken}
+      translations={flat?.translations}
     >
       {flat?.variant === "page"
         ? // Render PageChat full widget

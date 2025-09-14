@@ -2,19 +2,17 @@
 
 Embeddable script to render Korin chat widgets (`FloatingChat` or `PageChat`) on any plain HTML page.
 
-## Build
+Prefer using a public CDN that serves the published `@korinai/embed` package. No local build or `dist/` path needed.
 
-- Dev: `pnpm --filter @korinai/embed dev`
-- Build (IIFE): `pnpm --filter @korinai/embed build:embed`
+## Usage (Plain HTML via CDN)
 
-Outputs: `packages/korin-embed/dist/embed.js`
-
-## Usage (Plain HTML)
-
-1. Include the script
+1. Include the script from a CDN
 
 ```html
-<script src="/path/to/dist/embed.js"></script>
+<!-- jsDelivr (recommended) -->
+<script src="https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.js"></script>
+<!-- or unpkg -->
+<!-- <script src="https://unpkg.com/@korinai/embed@latest/dist/embed.js"></script> -->
 ```
 
 2. Create a container element
@@ -27,7 +25,7 @@ Outputs: `packages/korin-embed/dist/embed.js`
 
 ```html
 <script>
-  // window.KorinAI is exposed by the IIFE build
+  // window.KorinAI is exposed by the IIFE build from the CDN
   window.KorinAI.init({
     target: "#korin-floating-chat",
     variant: "floating", // 'floating' | 'page' (default 'floating')
@@ -52,9 +50,6 @@ Outputs: `packages/korin-embed/dist/embed.js`
       showFloatingButton: true,
       triggerIconSize: 28,
       branding: { logoSize: { width: 50, height: 50 } },
-      // Optional styling hooks for host page
-      // buttonClassName: 'bg-emerald-600',
-      // chatWindowClassName: 'sm:w-[520px] sm:h-[680px]',
 
       // PageChat props can be forwarded via chatProps
       // chatProps: { variant: 'flat', ui: { showAttach: true } },
@@ -63,60 +58,117 @@ Outputs: `packages/korin-embed/dist/embed.js`
 
   // Later, you can unmount if needed:
   // window.KorinAI.unmount('#korin-floating-chat')
+  // or programmatically toggle floating chat:
+  // window.KorinAI.toggleFloatingChat(true)
 </script>
 ```
 
-## API
+---
 
-• __KorinAI.init(options)__
-  - __target__: CSS selector or `Element`.
-  - __variant__: `'floating' | 'page'` (default `'floating'`).
-  - __Provider options__: `baseUrl`, `chatApi`, `minimumCreditsWarning`, `language`, `authToken`, `getAuthToken`.
-  - __Other__: `ensureStyles?` (default true), `debugOverlay?`, `verbose?`, `stylesheetHref?`.
-  - __props?__: forwarded to the rendered component.
-  - Returns `{ unmount(): void, el: Element }`.
+## Public API
 
-• __KorinAI.unmount(target)__
-  - Unmount from the given target (selector or `Element`).
+- `KorinAI.init(options)` → `{ unmount(): void; el: Element }`
+- `KorinAI.unmount(target)`
+- `KorinAI.toggleFloatingChat(open?: boolean)`
+- Variant-scoped globals: `window.KorinAI.floating`, `window.KorinAI.page` contain `__verbose?`, `__version?`, `__open`, `reload(newOptions?)`.
 
-• __Variant-scoped globals__ (no root access):
-  - `window.KorinAI.floating` and `window.KorinAI.page` each hold variant state:
-    - `__verbose?: boolean`
-    - `__version?: string`
-    - `__open: { get(): boolean; set(open: boolean) }`
-    - `reload?: (newOptions?: InitOptions) => void` — re-init the variant mounted at the same target with merged options.
+### InitOptions (passed to `KorinAI.init`)
 
-• __Helper__: `window.KorinAI.toggleFloatingChat(open: boolean)` — programmatically open/close the floating chat.
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `target` | `Element | string` | — | Element or CSS selector to mount into. |
+| `variant` | `'floating' | 'page'` | `'floating'` | Which UI to render. |
+| `props` | `Record<string, unknown>` | `{}` | Props forwarded to the rendered component. See tables below. |
+| `ensureStyles` | `boolean` | `true` | Add minimal positioning/styling to the mount for visibility. |
+| `debugOverlay` | `boolean` | `false` | Shows a small “mounted” badge for debugging. |
+| `stylesheetHref` | `string | string[]` | — | Load external stylesheet(s) if needed. |
+| `verbose` | `boolean` | `false` | Verbose logs to console. |
+| `baseUrl` | `string` | — | API base URL for the provider. |
+| `chatApi` | `string` | — | Chat API endpoint. |
+| `configLanguage` | `string` | — | Provider config language field (advanced). |
+| `minimumCreditsWarning` | `string` | — | Threshold for low-credits notice. |
+| `authToken` | `string` | — | Static token value. Prefer `getAuthToken`. |
+| `language` | `string` | — | Provider language prop. |
+| `getAuthToken` | `() => Promise<string>` | — | Async token retriever. |
+| `translations` | `ChatTranslations` | — | Optional i18n map to override built-in texts (merged per language). |
 
-## Customization Reference (concise)
+---
 
-Below is a practical reference of props you can pass via `init({ props: ... })`. For full type details, see source:
-- `packages/korin-ui/src/floating-chat.tsx`
-- `packages/korin-ui/src/page-chat.tsx`
+## Component props (forwarded via `init({ props: ... })`)
 
-### FloatingChat (when `variant: 'floating'`)
-• __title?: string__ — Chat title.
-• __triggerIcon?: ReactNode__ — Custom trigger content.
-• __triggerIconSize?: number__ — Trigger icon size in px (default 28).
-• __branding?: { logoLightUrl?, logoDarkUrl?, logoSize?: { width:number; height:number }, headerLogoSize?: { width:number; height:number }, showHeaderLogo? }__ — Branding for the embedded UI.
-• __buttonClassName?: string__ — Extra classes for the floating button wrapper.
-• __chatWindowClassName?: string__ — Extra classes for the floating chat window container.
-• __open?: boolean__ — Controlled open state; pair with `onOpenChange`.
-• __defaultOpen?: boolean__ — Uncontrolled initial open.
-• __onOpenChange?: (open: boolean) => void__ — State change callback.
-• __chatProps?: PageChatProps__ — Props forwarded to inner `PageChat` component.
-• __showFloatingButton?: boolean__ — Whether to show the floating trigger (default true).
+Below are the most commonly used props. For full type details, see `packages/korin-ui/src/floating-chat.tsx` and `packages/korin-ui/src/page-chat.tsx`.
 
-### PageChat (when `variant: 'page'` or via `chatProps`)
-• __title?: string__
-• __showCloseButton?: boolean__, __onClose?: () => void__
-• __hideHistory?: boolean__, __pageSize?: number__
-• __defaultRoomId?: string__, __showRoomName?: boolean__
-• __onRoomChange?: (roomId: string) => void__, __onSend?: ({ text, roomId }) => void__
-• __headerRightSlot?: ReactNode__, __variant?: 'card' | 'flat'__
-• __throttleMs?: number__, __requestHeaders?: Record<string,string>__, __requestBody?: {...}__
-• __ui?: { showStop?, showAttach?, showActions?, showAgentSelector?, defaultAgentUsername? }__
-• __branding?: { logoLightUrl?, logoDarkUrl?, logoSize?: { width:number; height:number }, showHeaderLogo?, headerLogoSize?: { width:number; height:number } }__
+### FloatingChat props (when `variant: 'floating'`)
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `title` | `string` | — | Chat title displayed in header. |
+| `triggerIcon` | `ReactNode` | — | Custom trigger content (replaces default icon). |
+| `triggerIconSize` | `number` | `28` | Size of the trigger icon in px. |
+| `branding` | `{ logoLightUrl?, logoDarkUrl?, logoSize?: {width:number; height:number}, headerLogoSize?: {width:number; height:number}, showHeaderLogo? }` | — | Branding options for the UI. |
+| `buttonClassName` | `string` | — | Extra classes for the floating button wrapper. |
+| `chatWindowClassName` | `string` | — | Extra classes for the floating chat window container. |
+| `open` | `boolean` | — | Controlled open state. Pair with `onOpenChange`. |
+| `defaultOpen` | `boolean` | `false` | Uncontrolled initial open state. |
+| `onOpenChange` | `(open: boolean) => void` | — | Called when open state changes. |
+| `chatProps` | `PageChatProps` | — | Props forwarded to the inner `PageChat` component. |
+| `showFloatingButton` | `boolean` | `true` | Whether to show the floating trigger button. |
+
+### PageChat props (when `variant: 'page'` or via `chatProps`)
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `title` | `string` | — | Header title text. |
+| `showCloseButton` | `boolean` | `false` | Shows a close button. |
+| `onClose` | `() => void` | — | Called when close is clicked. |
+| `hideHistory` | `boolean` | `false` | Hides history list. |
+| `pageSize` | `number` | `10` | History page size. |
+| `defaultRoomId` | `string` | — | Initial room id. |
+| `showRoomName` | `boolean` | `true` | Show current room name. |
+| `onRoomChange` | `(roomId: string) => void` | — | Notifies room change. |
+| `onSend` | `({ text: string, roomId?: string }) => void` | — | Called when sending a message. |
+| `headerRightSlot` | `ReactNode` | — | Custom content on header right. |
+| `variant` | `'card' | 'flat'` | `'card'` | Visual style. |
+| `throttleMs` | `number` | `0` | Throttle user typing/sending. |
+| `requestHeaders` | `Record<string,string>` | `{}` | Extra headers for API calls. |
+| `requestBody` | `Record<string,unknown>` | `{}` | Extra body fields for API calls. |
+| `ui` | `{ showStop?, showAttach?, showActions?, showAgentSelector?, defaultAgentUsername? }` | — | UI feature toggles. |
+| `branding` | `{ logoLightUrl?, logoDarkUrl?, logoSize?: {width:number; height:number}, showHeaderLogo?, headerLogoSize?: {width:number; height:number} }` | — | Branding for the header and content. |
+
+---
+
+## Translations (optional)
+
+You can customize UI texts by passing a `translations` object to `KorinAI.init`. Only provide the keys you want to override; missing keys fall back to the built-in defaults.
+
+Common keys include: `startChat`, `closeChat`, `newChat`, `chatHistory`, `loadingConversation`, `noChatHistory`, `startConversation`, `previous`, `next`, `page`, `of`, `thinking`, `usingTool`, `attachedFile`, `sharedLink`, `failedToLoadHistory`, `tryAgainLater`, `ai`, `helloImYourAIAssistant`, `preparingExperience`.
+
+Example:
+
+```html
+<script>
+  window.KorinAI.init({
+    target: '#korin-floating-chat',
+    baseUrl: 'https://api.korinai.com',
+    variant: 'floating',
+    language: 'en',
+    translations: {
+      en: {
+        startChat: 'Start chat',
+        thinking: 'Thinking…',
+        preparingExperience: 'Setting things up for you…'
+      },
+      id: {
+        startChat: 'Mulai Obrolan',
+        thinking: 'Memproses…'
+      }
+    },
+    props: { title: 'Chat with KorinAI' }
+  });
+</script>
+```
+
+Tip: For the full list of translation keys, see `@korinai/libs` in `contexts/korinai-context.tsx` (type `ChatTranslations`).
 
 ## Runtime controls and examples
 
@@ -141,11 +193,14 @@ window.KorinAI.init({ target: '#korin-floating-chat', variant: 'floating', baseU
 window.KorinAI.init({ target: '#korin-page-chat', variant: 'page', ensureStyles: false, baseUrl, chatApi, language: 'en', props: { variant: 'flat', ui: { showAttach: true } } });
 ```
 
+---
+
 ## Security notes
-• __authToken vs getAuthToken__: prefer `getAuthToken` for short-lived tokens. Avoid hardcoding secrets in client HTML.
-• Host pages should serve `dist/embed.js` from a trusted origin and over HTTPS.
+
+- authToken vs getAuthToken: prefer `getAuthToken` for short-lived tokens. Avoid hardcoding secrets in client HTML.
+- Serve the CDN script over HTTPS and from a trusted CDN origin (e.g., jsDelivr, unpkg).
 
 ## Notes
 
-- The bundle includes all required JS and CSS (Tailwind is bundled and scoped to `.korinai__root`).
-- TypeScript and ESLint extend shared monorepo configs located in `packages/tsconfig/` and `packages/eslint-config/`.
+- The bundle includes all required JS and CSS (Tailwind styles are bundled and scoped to the widget root).
+- This package is framework-agnostic for host pages; it only requires a DOM and the CDN script tag.
