@@ -5,444 +5,518 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Korin Embed – Playground</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
     <style>
       :root {
-        /* Light theme (aligned with ai-web globals.css) */
-        --bg: #ffffff; /* background */
-        --panel: #ffffff; /* card/popover */
-        --text: #0a0a0a; /* foreground 0 0% 3.9% */
-        --muted: #737373; /* muted-foreground 0 0% 45.1% */
-        --accent: #3b82f6; /* ring/sidebar-ring 217 91% 60% */
-        --accent-2: #2563eb; /* deeper blue for gradients */
-        --border: #e5e5e5; /* border 0 0% 89.8% */
-        --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        --radius: 12px; /* close to 0.5rem */
-        --input-bg: #ffffff; /* input/card */
-        --input-border: #e5e5e5; /* input/border */
-        --hover: #f5f5f5; /* secondary 0 0% 96.1% */
+        /* Light theme */
+        --bg: #fafbfc;
+        --bg-secondary: #ffffff;
+        --panel: #ffffff;
+        --text: #1a1d29;
+        --text-secondary: #64748b;
+        --muted: #94a3b8;
+        --accent: #6366f1;
+        --accent-hover: #5855eb;
+        --accent-light: #eef2ff;
+        --border: #e2e8f0;
+        --border-light: #f1f5f9;
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        --radius: 12px;
+        --radius-sm: 8px;
+        --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-accent: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
       }
+
       body.dark {
-        /* Dark theme (aligned with ai-web globals.css .dark) */
-        --bg: #0a0a0a; /* background 0 0% 3.9% */
-        --panel: #0a0a0a; /* card/popover */
-        --text: #fafafa; /* foreground 0 0% 98% */
-        --muted: #a3a3a3; /* muted-foreground 0 0% 63.9% */
-        --accent: #60a5fa; /* chart/ring blue */
-        --accent-2: #3b82f6;
-        --border: #262626; /* border 0 0% 14.9% */
-        --shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-        --input-bg: #111111; /* slightly above background for inputs */
-        --input-border: #262626; /* input/border */
-        --hover: #1f1f1f; /* close to secondary 0 0% 14.9% */
+        /* Dark theme */
+        --bg: #0f172a;
+        --bg-secondary: #1e293b;
+        --panel: #1e293b;
+        --text: #f8fafc;
+        --text-secondary: #cbd5e1;
+        --muted: #64748b;
+        --accent: #818cf8;
+        --accent-hover: #6366f1;
+        --accent-light: #1e1b4b;
+        --border: #334155;
+        --border-light: #475569;
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
+        --gradient-bg: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        --gradient-accent: linear-gradient(135deg, #818cf8 0%, #a855f7 100%);
       }
+
       * {
         box-sizing: border-box;
       }
+
       body {
         margin: 0;
         font-family:
-          ui-sans-serif,
-          system-ui,
+          "Inter",
           -apple-system,
-          Segoe UI,
+          BlinkMacSystemFont,
+          "Segoe UI",
           Roboto,
-          Arial,
-          "Noto Sans",
-          "Apple Color Emoji",
-          "Segoe UI Emoji";
+          sans-serif;
         color: var(--text);
-        background:
-          radial-gradient(1200px 800px at 10% -10%, rgba(34, 211, 238, 0.12), transparent),
-          radial-gradient(900px 600px at 110% 10%, rgba(96, 165, 250, 0.1), transparent), var(--bg);
+        background: var(--bg);
         min-height: 100vh;
-      }
-      a {
-        color: var(--accent);
+        overflow-x: hidden;
+        line-height: 1.6;
       }
 
       /* Layout */
       .shell {
-        display: grid;
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
         min-height: 100vh;
+        max-height: 100vh;
+        overflow: hidden;
       }
 
+      /* Header */
       .topbar {
         position: sticky;
         top: 0;
-        z-index: 30;
+        z-index: 50;
         display: flex;
         align-items: center;
-        flex-wrap: wrap;
         justify-content: space-between;
-        gap: 12px;
-        padding: 16px clamp(16px, 4vw, 28px);
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        background: var(--panel);
         border-bottom: 1px solid var(--border);
-        background: linear-gradient(180deg, rgba(2, 6, 23, 0.75), rgba(2, 6, 23, 0.55));
-        backdrop-filter: blur(8px);
+        backdrop-filter: blur(12px);
+        box-shadow: var(--shadow);
       }
+
       .brand {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 0.75rem;
       }
+
       .logo {
-        width: 28px;
-        height: 28px;
-        border-radius: 8px;
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-sm);
         background: #ffffff;
-        box-shadow:
-          inset 0 0 0 2px rgba(255, 255, 255, 0.25),
-          var(--shadow);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow);
       }
+
       .brand h1 {
-        font-size: 16px;
+        font-size: 1.25rem;
+        font-weight: 700;
         margin: 0;
-        letter-spacing: 0.2px;
+        background: var(--gradient-accent);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
+
       .controls {
         display: flex;
-        flex-wrap: wrap;
         align-items: center;
-        gap: 10px;
+        gap: 0.75rem;
       }
-      .controls .theme-toggle {
+
+      /* Buttons */
+      .button {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 8px 10px;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        background: #0b142910;
-        color: var(--text);
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.625rem 1rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        font-weight: 500;
         cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid transparent;
+        text-decoration: none;
       }
-      .select,
-      .button,
-      .input {
-        border: 1px solid var(--input-border);
-        background: var(--input-bg);
+
+      .button.primary {
+        background: var(--gradient-accent);
+        color: white;
+        box-shadow: var(--shadow);
+      }
+
+      .button.primary:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .button.secondary {
+        background: var(--bg-secondary);
         color: var(--text);
-        padding: 10px 12px;
-        border-radius: 8px;
-        font-size: 14px;
+        border: 1px solid var(--border);
+      }
+
+      .button.secondary:hover {
+        background: var(--accent-light);
+        border-color: var(--accent);
+      }
+
+      .button.ghost {
+        background: transparent;
+        color: var(--text-secondary);
+      }
+
+      .button.ghost:hover {
+        background: var(--accent-light);
+        color: var(--accent);
+      }
+
+      .icon-button {
+        width: 2.5rem;
+        height: 2.5rem;
+        padding: 0;
+        border-radius: 50%;
+      }
+
+      /* Form elements */
+      .input,
+      .select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--bg-secondary);
+        color: var(--text);
+        font-size: 0.875rem;
         transition: all 0.2s ease;
       }
+
       .input:focus,
       .select:focus {
         outline: none;
         border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
-      }
-      .button.primary {
-        background: linear-gradient(135deg, var(--accent), var(--accent-2));
-        color: white;
-        border: none;
-        font-weight: 600;
-        box-shadow: var(--shadow);
-      }
-      .button.primary:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 25px rgba(8, 145, 178, 0.3);
-      }
-      .button.ghost {
-        background: var(--hover);
-        border: 1px solid var(--border);
-      }
-      .button.ghost:hover {
-        background: var(--input-bg);
-      }
-      .button {
-        cursor: pointer;
-        transition: all 0.2s ease;
+        box-shadow: 0 0 0 3px var(--accent-light);
       }
 
+      /* Main content */
       .content {
+        flex: 1;
         display: grid;
         grid-template-columns: 1fr;
-        gap: 16px;
-        padding: 18px clamp(16px, 4vw, 28px) 32px;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        overflow: hidden;
       }
 
-      /* Hero section */
-      .hero {
-        display: grid;
-        gap: 12px;
-        padding: 12px 0 4px;
-      }
-      .hero h1 {
-        font-size: clamp(22px, 4vw, 32px);
-        line-height: 1.2;
-        margin: 0;
-      }
-      .hero p {
-        margin: 0;
-        color: var(--muted);
-        max-width: 65ch;
-      }
-      .cta {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 6px;
-      }
-      .cta .button {
-        padding: 10px 14px;
-      }
-
+      /* Canvas */
       .canvas {
+        background: var(--panel);
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-        padding: 18px;
-        min-height: min(72vh, 760px);
-        position: relative;
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        height: calc(100vh - 8rem);
       }
-      .canvas h2 {
-        margin: 6px 0 12px;
-        font-size: 18px;
-        font-weight: 600;
-        color: #cbd5e1;
+
+      .canvas-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg-secondary);
       }
-      /* Canvas tabs */
+
       .canvas-tabs {
         display: flex;
-        gap: 8px;
-        margin-bottom: 10px;
+        gap: 0.5rem;
       }
-      .canvas-tabs .ctab {
-        border: 1px solid var(--border);
-        padding: 6px 12px;
+
+      .ctab {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
         border-radius: 9999px;
-        font-size: 13px;
+        font-size: 0.875rem;
         font-weight: 500;
-        background: var(--input-bg);
-        color: var(--muted);
+        background: transparent;
+        color: var(--text-secondary);
+        border: 1px solid transparent;
         cursor: pointer;
         transition: all 0.2s ease;
       }
-      .canvas-tabs .ctab:hover {
-        background: var(--hover);
-        color: var(--text);
+
+      .ctab:hover {
+        background: var(--accent-light);
+        color: var(--accent);
       }
-      .canvas-tabs .ctab.active {
+
+      .ctab.active {
         background: var(--accent);
         color: white;
-        border-color: var(--accent);
+        box-shadow: var(--shadow);
       }
-      .canvas-tabs .gear {
-        margin-left: auto;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        padding: 0;
+
+      .canvas-body {
+        flex: 1;
+        padding: 1.5rem;
+        overflow-y: auto;
       }
+
       .canvas-panel.hidden {
         display: none;
       }
+
+      /* Code block with syntax highlighting */
       .codebox {
+        background: var(--bg-secondary) !important;
         border: 1px solid var(--border);
-        background: var(--hover);
-        border-radius: 8px;
-        padding: 12px;
+        border-radius: var(--radius-sm);
         overflow: auto;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-        font-size: 12px;
-        line-height: 1.4;
-        max-height: 420px;
+        max-height: 400px;
+        font-size: 0.875rem;
       }
+
+      .codebox pre {
+        margin: 0;
+        padding: 1rem;
+      }
+
       .code-actions {
         display: flex;
         justify-content: flex-end;
-        gap: 8px;
-        margin-bottom: 8px;
-      }
-      .hint {
-        color: var(--muted);
-        font-size: 13px;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
       }
 
       /* Config panel */
       .config-panel {
         position: fixed;
-        right: 16px;
-        top: 82px;
-        width: min(480px, calc(100vw - 32px));
-        max-height: calc(100vh - 100px);
-        overflow-y: hidden;
-        overflow-x: hidden;
+        right: 1rem;
+        top: 5rem;
+        width: min(480px, calc(100vw - 2rem));
+        max-height: calc(100vh - 6rem);
+        background: var(--panel);
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        background: var(--panel);
+        box-shadow: var(--shadow-xl);
         transform: translateX(0);
-        transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 40;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
       }
+
       .config-panel.hidden {
-        transform: translateX(calc(100% + 16px));
+        transform: translateX(calc(100% + 1rem));
       }
+
       .config-header {
-        position: sticky;
-        top: 0;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 8px;
-        padding: 16px 20px;
+        padding: 1rem 1.5rem;
         border-bottom: 1px solid var(--border);
-        background: var(--panel);
-        backdrop-filter: blur(8px);
-        border-top-left-radius: var(--radius);
-        border-top-right-radius: var(--radius);
+        background: var(--bg-secondary);
       }
+
+      .config-header h3 {
+        margin: 0;
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+
       .config-body {
-        padding: 0;
+        flex: 1;
         overflow-y: auto;
-        overflow-x: hidden;
-        max-height: calc(100vh - 180px);
       }
+
       .tabbar {
         display: flex;
         flex-wrap: wrap;
-        gap: 4px;
-        padding: 16px 20px 12px;
-        position: sticky;
-        top: 0;
-        background: var(--panel);
-        z-index: 1;
+        gap: 0.25rem;
+        padding: 1rem 1.5rem 0.75rem;
         border-bottom: 1px solid var(--border);
+        background: var(--bg-secondary);
       }
-      .tabbar .tab {
-        border: 1px solid var(--border);
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-size: 13px;
+
+      .tab {
+        padding: 0.5rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
         font-weight: 500;
-        background: var(--input-bg);
-        color: var(--muted);
+        background: transparent;
+        color: var(--text-secondary);
+        border: 1px solid var(--border);
         cursor: pointer;
         transition: all 0.2s ease;
       }
-      .tabbar .tab:hover {
-        background: var(--hover);
-        color: var(--text);
+
+      .tab:hover {
+        background: var(--accent-light);
+        color: var(--accent);
+        border-color: var(--accent);
       }
-      .tabbar .tab.active {
+
+      .tab.active {
         background: var(--accent);
         color: white;
         border-color: var(--accent);
       }
+
+      .section {
+        padding: 1.5rem;
+      }
+
       .section.hidden {
         display: none;
       }
-      .section {
-        padding: 20px;
-      }
+
       .fieldset {
-        border: none;
-        background: var(--hover);
-        border-radius: 8px;
-        padding: 16px;
-        margin-bottom: 16px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 1rem;
+        margin-bottom: 1rem;
       }
+
       .legend {
-        font-size: 14px;
+        font-size: 1rem;
         font-weight: 600;
         color: var(--text);
-        margin-bottom: 16px;
-        display: block;
+        margin-bottom: 1rem;
       }
+
       .legend.subtle {
-        font-size: 12px;
+        font-size: 0.75rem;
         font-weight: 500;
         color: var(--muted);
         text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin: 24px 0 12px 0;
+        letter-spacing: 0.05em;
+        margin: 1.5rem 0 0.75rem 0;
       }
+
+      .row {
+        margin-bottom: 1rem;
+      }
+
+      .row label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+      }
+
+      .row .desc {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin-top: 0.25rem;
+      }
+
+      .row.checkbox {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+
+      .row.checkbox input[type="checkbox"] {
+        width: 1.125rem;
+        height: 1.125rem;
+        margin-top: 0.125rem;
+        accent-color: var(--accent);
+      }
+
+      .row.checkbox .checkbox-content {
+        flex: 1;
+      }
+
       .grid-2 {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-      .grid-3 {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 12px;
-      }
-      .row {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 12px;
-        align-items: start;
-        margin-bottom: 12px;
-      }
-      .row label {
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--text);
-        line-height: 1.2;
-        word-break: break-word;
-        grid-column: 1 / -1;
-        margin-bottom: -4px;
-      }
-      .row input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
-        accent-color: var(--accent);
-      }
-      /* Checkbox rows: first line = [checkbox][title], second line = description under title */
-      .row.checkbox {
-        grid-template-columns: auto 1fr;
-        row-gap: 2px;
-      }
-      .row.checkbox input[type="checkbox"] {
-        grid-column: 1;
-        grid-row: 1;
-        align-self: center;
-        justify-self: start;
-      }
-      .row.checkbox label {
-        grid-column: 2;
-        grid-row: 1;
-        margin: 0;
-      }
-      .row.checkbox .desc {
-        grid-column: 2;
-        grid-row: 2;
-        margin-top: 2px;
-      }
-      .row .input,
-      .row .select,
-      .row input[type="checkbox"],
-      .row select {
-        grid-column: 1 / -1;
-      }
-      .row .input,
-      .row .select {
-        width: 100%;
-        max-width: 100%;
-      }
-      .desc {
-        grid-column: 1 / -1;
-        font-size: 12px;
-        color: var(--muted);
-        margin-top: -6px;
-      }
-      .subtle {
-        color: var(--muted);
-        font-size: 12px;
-        background: var(--hover);
-        padding: 12px;
-        border-radius: 6px;
-        border-left: 3px solid var(--accent);
+        gap: 0.75rem;
       }
 
-      /* Accessibility helpers */
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+      }
+
+      .hint {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        text-align: center;
+        padding: 1rem;
+        background: var(--accent-light);
+        border-radius: var(--radius-sm);
+        margin-top: 1rem;
+      }
+
+      .subtle {
+        background: var(--accent-light);
+        color: var(--text-secondary);
+        padding: 0.75rem;
+        border-radius: var(--radius-sm);
+        border-left: 3px solid var(--accent);
+        font-size: 0.875rem;
+        margin: 0 0 1rem 0;
+      }
+
+      /* Page host styling */
+      #page-host {
+        min-height: 100%;
+        border: 2px dashed var(--border);
+        border-radius: var(--radius-sm);
+        padding: 1rem;
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .topbar {
+          padding: 0.75rem 1rem;
+        }
+
+        .controls {
+          gap: 0.5rem;
+        }
+
+        .content {
+          padding: 1rem;
+        }
+
+        .config-panel {
+          right: 0.5rem;
+          top: 4.5rem;
+          width: calc(100vw - 1rem);
+        }
+
+        .grid-2,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+
+        .canvas {
+          height: calc(100vh - 7rem);
+        }
+      }
+
+      /* Accessibility */
       .sr-only {
         position: absolute;
         width: 1px;
@@ -454,184 +528,222 @@
         white-space: nowrap;
         border: 0;
       }
+
       :focus-visible {
-        outline: 3px solid var(--accent-2);
+        outline: 2px solid var(--accent);
         outline-offset: 2px;
-      }
-
-      .floating-controls {
-        position: absolute;
-        top: 14px;
-        right: 14px;
-        display: flex;
-        gap: 8px;
-      }
-
-      @media (max-width: 860px) {
-        .row {
-          grid-template-columns: 1fr;
-        }
-        .grid-2,
-        .grid-3 {
-          grid-template-columns: 1fr;
-        }
-        .config-panel {
-          right: 12px;
-          top: 74px;
-        }
       }
     </style>
   </head>
   <body>
     <div class="shell">
-      <!-- Header (semantic) -->
+      <!-- Header -->
       <header class="topbar" role="banner">
         <div class="brand">
-          <img class="logo" src="https://korin.ai/logo/KorinAILogo-Black.svg" alt="Korin Logo" />
-          <h1 style="margin: 0">Korin Embed Playground</h1>
+          <div class="logo">
+            <img src="https://korin.ai/logo/KorinAILogo-Black.svg" alt="Korin Logo" />
+          </div>
+          <h1>Korin Embed Playground</h1>
         </div>
         <div class="controls">
           <button
             id="mode-toggle"
-            class="button ghost"
+            class="button secondary"
             aria-pressed="false"
             aria-label="Switch between Page and Floating modes"
           >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <line x1="9" y1="9" x2="15" y2="15" />
+              <line x1="15" y1="9" x2="9" y2="15" />
+            </svg>
             Variant: Page
           </button>
-          <button id="toggle-theme" class="theme-toggle" title="Toggle Theme" aria-label="Toggle theme">🌙/☀️</button>
+          <button id="toggle-theme" class="button ghost icon-button" title="Toggle Theme" aria-label="Toggle theme">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
           <button
             id="toggle-float"
             class="button primary"
             title="Toggle Floating Window"
             aria-label="Toggle floating chat window"
           >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
             Toggle Floating
           </button>
         </div>
       </header>
 
-      <!-- Main content (semantic) -->
+      <!-- Main content -->
       <main class="content" role="main">
-        <!-- Hero section -->
-        <section class="hero" aria-labelledby="hero-title">
-          <h2 id="hero-title" class="sr-only">Overview</h2>
-        </section>
-
         <div class="canvas">
-          <div class="canvas-tabs" role="tablist" aria-label="Canvas tabs">
-            <button
-              id="ctab-component"
-              class="ctab active"
-              role="tab"
-              aria-selected="true"
-              aria-controls="canvas-component"
-              data-tab="component"
-            >
-              Component
-            </button>
-            <button
-              id="ctab-embed"
-              class="ctab"
-              role="tab"
-              aria-selected="false"
-              aria-controls="canvas-embed"
-              data-tab="embed"
-            >
-              Embed code
-            </button>
-            <button
-              id="ctab-docs"
-              class="ctab"
-              role="tab"
-              aria-selected="false"
-              aria-controls="canvas-docs"
-              data-tab="docs"
-            >
-              Docs
-            </button>
+          <div class="canvas-header">
+            <div class="canvas-tabs" role="tablist" aria-label="Canvas tabs">
+              <button
+                id="ctab-component"
+                class="ctab active"
+                role="tab"
+                aria-selected="true"
+                aria-controls="canvas-component"
+                data-tab="component"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="16,18 22,12 16,6" />
+                  <polyline points="8,6 2,12 8,18" />
+                </svg>
+                Component
+              </button>
+              <button
+                id="ctab-embed"
+                class="ctab"
+                role="tab"
+                aria-selected="false"
+                aria-controls="canvas-embed"
+                data-tab="embed"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14,2 14,8 20,8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                  <polyline points="10,9 9,9 8,9" />
+                </svg>
+                Embed code
+              </button>
+              <button
+                id="ctab-docs"
+                class="ctab"
+                role="tab"
+                aria-selected="false"
+                aria-controls="canvas-docs"
+                data-tab="docs"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14,2 14,8 20,8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
+                Docs
+              </button>
+            </div>
             <button
               id="gear-config"
-              class="button ghost gear"
+              class="button ghost icon-button"
               title="Toggle Configurator"
               aria-label="Toggle configurator panel"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="lucide lucide-cog"
-              >
-                <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3" />
                 <path
-                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 9.91 3.1V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0A1.65 1.65 0 0 0 21 11h.09a2 2 0 1 1 0 4H21a1.65 1.65 0 0 0-1.51 1Z"
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
                 />
               </svg>
             </button>
           </div>
 
-          <section
-            id="canvas-component"
-            class="canvas-panel"
-            role="tabpanel"
-            aria-labelledby="ctab-component"
-            aria-hidden="false"
-          >
-            <div
-              id="page-host"
-              style="min-height: 520px; border: 1px dashed #1c2846; border-radius: 10px; padding: 12px; display: block"
-            ></div>
-            <div id="floating-host" style="position: fixed; bottom: 24px; right: 24px"></div>
-          </section>
+          <div class="canvas-body">
+            <section
+              id="canvas-component"
+              class="canvas-panel"
+              role="tabpanel"
+              aria-labelledby="ctab-component"
+              aria-hidden="false"
+            >
+              <div id="page-host">
+                <div style="text-align: center; color: var(--text-secondary)">
+                  <svg
+                    width="48"
+                    height="48"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    style="margin-bottom: 1rem"
+                  >
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  <p>Chat component will appear here</p>
+                </div>
+              </div>
+              <div id="floating-host" style="position: fixed; bottom: 24px; right: 24px"></div>
+            </section>
 
-          <section
-            id="canvas-embed"
-            class="canvas-panel hidden"
-            role="tabpanel"
-            aria-labelledby="ctab-embed"
-            aria-hidden="true"
-          >
-            <div class="row">
-              <label>Copy-pasteable embed code</label>
-              <div class="desc">
-                This snippet reflects your current settings. Adjust the script src path to match your environment.
+            <section
+              id="canvas-embed"
+              class="canvas-panel hidden"
+              role="tabpanel"
+              aria-labelledby="ctab-embed"
+              aria-hidden="true"
+            >
+              <div class="row">
+                <label>Copy-pasteable embed code</label>
+                <div class="desc">
+                  This snippet reflects your current settings. Adjust the script src path to match your environment.
+                </div>
+                <div class="code-actions">
+                  <button id="copy-embed" class="button secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="codebox">
+                  <pre><code id="embed-code" class="language-html"></code></pre>
+                </div>
               </div>
-              <div class="code-actions">
-                <button id="copy-embed" class="button ghost">Copy</button>
-              </div>
-              <pre class="codebox"><code id="embed-code"></code></pre>
-            </div>
-          </section>
+            </section>
 
-          <section
-            id="canvas-docs"
-            class="canvas-panel hidden"
-            role="tabpanel"
-            aria-labelledby="ctab-docs"
-            aria-hidden="true"
-          >
-            <div class="row">
-              <label>Documentation</label>
-              <div class="desc">Open the latest Quick Start guide in a new tab.</div>
-              <div>
-                <a
-                  class="button ghost"
-                  target="_blank"
-                  rel="noopener"
-                  href="https://korinai.com/documentation/getting-started/quick-start"
-                  >Open Docs</a
-                >
+            <section
+              id="canvas-docs"
+              class="canvas-panel hidden"
+              role="tabpanel"
+              aria-labelledby="ctab-docs"
+              aria-hidden="true"
+            >
+              <div class="row">
+                <label>Documentation</label>
+                <div class="desc">Open the latest Quick Start guide in a new tab.</div>
+                <div>
+                  <a
+                    class="button secondary"
+                    target="_blank"
+                    rel="noopener"
+                    href="https://korinai.com/documentation/getting-started/quick-start"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                      <polyline points="15,3 21,3 21,9" />
+                      <line x1="10" y1="14" x2="21" y2="3" />
+                    </svg>
+                    Open Docs
+                  </a>
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
+          </div>
         </div>
+
         <div class="hint">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            style="margin-right: 0.5rem"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 16v-4" />
+            <path d="M12 8h.01" />
+          </svg>
           Only one demo is active at a time. Switching modes will hide the other and reset visibility appropriately.
         </div>
       </main>
@@ -640,29 +752,33 @@
     <!-- Configurator Panel -->
     <aside id="config" class="config-panel hidden">
       <div class="config-header">
-        <strong>Configurator</strong>
-        <button id="close-config" class="button ghost close">
+        <h3>Configurator</h3>
+        <button id="close-config" class="button ghost icon-button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="config-body">
+        <p class="subtle">
           <svg
-            xmlns="http://www.w3.org/2000/svg"
             width="16"
             height="16"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-x-icon lucide-x"
+            style="margin-right: 0.5rem"
           >
-            <path d="M18 6 6 18" />
-            <path d="m6 6 12 12" />
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 16v-4" />
+            <path d="M12 8h.01" />
           </svg>
-        </button>
-      </div>
-      <div class="config-body">
-        <p class="subtle" style="margin: 0 2px 8px">
           Note: This configurator is not complete yet. Some properties are not configurable in this demo.
         </p>
+
         <div class="tabbar" role="tablist" aria-label="Configurator tabs">
           <button
             id="tab-provider"
@@ -721,37 +837,46 @@
           <p class="desc">
             Configure the base connection for Korin Embed. These settings apply to both Page and Floating chat.
           </p>
+
           <div class="row">
             <label for="prov-base">Base URL</label>
             <div class="desc">Root URL of your host app serving static assets and pages.</div>
             <input id="prov-base" class="input" type="text" value="https://api.korinai.com" />
           </div>
+
           <div class="row">
             <label for="prov-chatapi">Chat API endpoint</label>
             <div class="desc">HTTP endpoint used by the chat component to send and receive messages.</div>
             <input id="prov-chatapi" class="input" type="text" value="https://api.korinai.com/api/chat" />
           </div>
+
           <div class="row">
             <label for="prov-credits">Minimum credits warning</label>
             <div class="desc">Show a warning if credits drop below this value.</div>
             <input id="prov-credits" class="input" type="text" value="10" />
           </div>
+
           <div class="row">
             <label for="prov-token">Auth token</label>
             <div class="desc">Bearer token used to authenticate requests to your API.</div>
             <input id="prov-token" class="input" type="text" value="" />
           </div>
+
           <div class="row">
             <label for="prov-lang">Language</label>
             <div class="desc">Two-letter language code (e.g. en, id) for UI labels.</div>
             <input id="prov-lang" class="input" type="text" value="en" />
           </div>
+
           <div class="row checkbox">
-            <label for="prov-ensure">Ensure styles</label>
-            <div class="desc">Inject core styles automatically if your site does not include them.</div>
             <input id="prov-ensure" type="checkbox" checked />
+            <div class="checkbox-content">
+              <label for="prov-ensure">Ensure styles</label>
+              <div class="desc">Inject core styles automatically if your site does not include them.</div>
+            </div>
           </div>
         </div>
+
         <div
           id="panel-chat"
           class="fieldset section hidden"
@@ -762,11 +887,13 @@
         >
           <div class="legend">Chat Settings</div>
           <p class="desc">Unified options applied to both Page and Floating chat.</p>
+
           <div class="row">
             <label for="cfg-title">Title</label>
             <div class="desc">Displayed at the top of the chat UI.</div>
             <input id="cfg-title" class="input" type="text" value="Chat with KorinAI" />
           </div>
+
           <div class="row">
             <label for="cfg-variant">Variant</label>
             <div class="desc">Choose between a flat layout or a card-styled chat UI.</div>
@@ -775,62 +902,89 @@
               <option value="card">card</option>
             </select>
           </div>
+
           <div class="row checkbox">
-            <label for="pc-show-close">Show Close button</label>
-            <div class="desc">Display a close button on the page chat header.</div>
             <input id="pc-show-close" type="checkbox" />
+            <div class="checkbox-content">
+              <label for="pc-show-close">Show Close button</label>
+              <div class="desc">Display a close button on the page chat header.</div>
+            </div>
           </div>
+
           <div class="row checkbox">
-            <label for="pc-show-room">Show room name</label>
-            <div class="desc">Display the current room name in the header.</div>
             <input id="pc-show-room" type="checkbox" />
+            <div class="checkbox-content">
+              <label for="pc-show-room">Show room name</label>
+              <div class="desc">Display the current room name in the header.</div>
+            </div>
           </div>
+
           <div class="row checkbox">
-            <label for="cfg-hide-history">Hide history</label>
-            <div class="desc">Hide previous messages when opening the chat.</div>
             <input id="cfg-hide-history" type="checkbox" />
+            <div class="checkbox-content">
+              <label for="cfg-hide-history">Hide history</label>
+              <div class="desc">Hide previous messages when opening the chat.</div>
+            </div>
           </div>
+
           <div class="row">
             <label for="pc-default-room">Default room ID</label>
             <div class="desc">Set an initial room to load when the chat mounts.</div>
             <input id="pc-default-room" class="input" type="text" placeholder="room-id" />
           </div>
+
           <div class="row">
             <label for="cfg-page-size">Page size</label>
             <div class="desc">Number of messages to fetch per page.</div>
             <input id="cfg-page-size" class="input" type="number" min="5" max="50" value="10" />
           </div>
+
           <div class="row">
             <label for="cfg-header-slot">Header right slot</label>
             <div class="desc">Optional text or indicator to display on the right of the header.</div>
             <input id="cfg-header-slot" class="input" type="text" placeholder="e.g. Beta" />
           </div>
+
           <div class="row">
             <label for="cfg-throttle">Throttle (ms)</label>
             <div class="desc">Debounce time for user input to reduce API calls.</div>
             <input id="cfg-throttle" class="input" type="number" min="0" max="1000" value="100" />
           </div>
+
           <div class="legend subtle">UI Controls</div>
+
           <div class="row checkbox">
-            <label for="cfg-ui-stop">Show Stop button</label>
-            <div class="desc">Allow users to stop a generation mid-way.</div>
             <input id="cfg-ui-stop" type="checkbox" checked />
+            <div class="checkbox-content">
+              <label for="cfg-ui-stop">Show Stop button</label>
+              <div class="desc">Allow users to stop a generation mid-way.</div>
+            </div>
           </div>
+
           <div class="row checkbox">
-            <label for="cfg-ui-attach">Show Attach button</label>
-            <div class="desc">Allow users to attach files to messages.</div>
             <input id="cfg-ui-attach" type="checkbox" checked />
+            <div class="checkbox-content">
+              <label for="cfg-ui-attach">Show Attach button</label>
+              <div class="desc">Allow users to attach files to messages.</div>
+            </div>
           </div>
+
           <div class="row checkbox">
-            <label for="cfg-ui-actions">Show Actions menu</label>
-            <div class="desc">Show extra quick actions in the composer.</div>
             <input id="cfg-ui-actions" type="checkbox" checked />
+            <div class="checkbox-content">
+              <label for="cfg-ui-actions">Show Actions menu</label>
+              <div class="desc">Show extra quick actions in the composer.</div>
+            </div>
           </div>
+
           <div class="row checkbox">
-            <label for="cfg-ui-agent">Show agent selector</label>
-            <div class="desc">Let users pick a default agent/persona.</div>
             <input id="cfg-ui-agent" type="checkbox" />
+            <div class="checkbox-content">
+              <label for="cfg-ui-agent">Show agent selector</label>
+              <div class="desc">Let users pick a default agent/persona.</div>
+            </div>
           </div>
+
           <div class="row">
             <label for="cfg-default-agent">Default agent username</label>
             <div class="desc">Username of the agent to select by default.</div>
@@ -848,35 +1002,47 @@
         >
           <div class="legend">Floating Chat (optional)</div>
           <p class="desc">Settings specific to the floating launcher and window.</p>
+
           <div class="row checkbox">
-            <label for="fc-show">Show floating button</label>
-            <div class="desc">Show or hide the launcher button on the page.</div>
             <input id="fc-show" type="checkbox" checked />
+            <div class="checkbox-content">
+              <label for="fc-show">Show floating button</label>
+              <div class="desc">Show or hide the launcher button on the page.</div>
+            </div>
           </div>
+
           <div class="row">
             <label for="fc-trigger">Trigger icon size</label>
             <div class="desc">Size of the floating launcher icon (in pixels).</div>
             <input id="fc-trigger" class="input" type="number" min="16" max="64" value="28" />
           </div>
+
           <div class="row">
             <label for="fc-btn-class">Button CSS classes</label>
             <div class="desc">Optional Tailwind or CSS classes to style the launcher button.</div>
             <input id="fc-btn-class" class="input" type="text" placeholder="e.g. bg-emerald-600" />
           </div>
+
           <div class="row">
             <label for="fc-win-class">Chat window CSS classes</label>
             <div class="desc">Optional classes to control the floating chat window size and layout.</div>
             <input id="fc-win-class" class="input" type="text" placeholder="e.g. sm:w-[520px] sm:h-[680px]" />
           </div>
+
           <div class="row checkbox">
-            <label for="fc-ctrl-open">Controlled open</label>
-            <div class="desc">When enabled, opening is controlled programmatically via callbacks.</div>
             <input id="fc-ctrl-open" type="checkbox" />
+            <div class="checkbox-content">
+              <label for="fc-ctrl-open">Controlled open</label>
+              <div class="desc">When enabled, opening is controlled programmatically via callbacks.</div>
+            </div>
           </div>
+
           <div class="row checkbox">
-            <label for="fc-def-open">Open by default</label>
-            <div class="desc">Start with the floating chat window open on page load.</div>
             <input id="fc-def-open" type="checkbox" />
+            <div class="checkbox-content">
+              <label for="fc-def-open">Open by default</label>
+              <div class="desc">Start with the floating chat window open on page load.</div>
+            </div>
           </div>
         </div>
 
@@ -890,12 +1056,15 @@
         >
           <div class="legend">Request Configuration</div>
           <p class="desc">Optional headers and body fields that will be sent with chat requests.</p>
+
           <div class="row">
             <label for="pc-headers">Request headers (JSON)</label>
             <div class="desc">JSON object of headers to merge into each request.</div>
             <input id="pc-headers" class="input" type="text" placeholder='{"X-Debug":"1"}' />
           </div>
+
           <div class="legend subtle">Request body fields</div>
+
           <div class="grid-2">
             <div class="row">
               <label for="pb-requester-id">requesterId</label>
@@ -908,6 +1077,7 @@
               <input id="pb-requester-email" class="input" type="email" />
             </div>
           </div>
+
           <div class="grid-2">
             <div class="row">
               <label for="pb-participant-id">participantId</label>
@@ -920,6 +1090,7 @@
               <input id="pb-participant-email" class="input" type="email" />
             </div>
           </div>
+
           <div class="grid-2">
             <div class="row">
               <label for="pb-room-id">roomId</label>
@@ -932,6 +1103,7 @@
               <input id="pb-gallery-id" class="input" type="text" />
             </div>
           </div>
+
           <div class="grid-2">
             <div class="row">
               <label for="pb-file-url">file_url</label>
@@ -944,6 +1116,7 @@
               <input id="pb-file-caption" class="input" type="text" />
             </div>
           </div>
+
           <div class="grid-2">
             <div class="row">
               <label for="pb-extra">extra_context</label>
@@ -956,6 +1129,7 @@
               <input id="pb-message-id" class="input" type="text" />
             </div>
           </div>
+
           <div class="row">
             <label for="pb-secrets">secrets (JSON)</label>
             <div class="desc">Array of secret key-value pairs used for secure operations.</div>
@@ -972,22 +1146,29 @@
           aria-hidden="true"
         >
           <div class="legend">Branding Configuration</div>
+
           <div class="row checkbox">
-            <label for="pc-brand-show">showHeaderLogo</label>
-            <div class="desc">Display your brand logo in the chat header.</div>
             <input id="pc-brand-show" type="checkbox" checked />
+            <div class="checkbox-content">
+              <label for="pc-brand-show">showHeaderLogo</label>
+              <div class="desc">Display your brand logo in the chat header.</div>
+            </div>
           </div>
+
           <div class="row">
             <label for="pc-logo-light">logoLightUrl</label>
             <div class="desc">Logo shown when using the light theme.</div>
             <input id="pc-logo-light" class="input" type="text" placeholder="https://.../logo-light.svg" />
           </div>
+
           <div class="row">
             <label for="pc-logo-dark">logoDarkUrl</label>
             <div class="desc">Logo shown when using the dark theme.</div>
             <input id="pc-logo-dark" class="input" type="text" placeholder="https://.../logo-dark.svg" />
           </div>
+
           <div class="legend subtle">Logo Sizes</div>
+
           <div class="grid-2">
             <div class="row">
               <label for="pc-logo-w">logoSize.width</label>
@@ -1000,6 +1181,7 @@
               <input id="pc-logo-h" class="input" type="number" min="12" max="300" value="50" />
             </div>
           </div>
+
           <div class="grid-2">
             <div class="row">
               <label for="pc-hlogo-w">headerLogoSize.width</label>
@@ -1016,22 +1198,19 @@
       </div>
     </aside>
 
-    <!-- IIFE bundle -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.js"></script>
     <script>
       (function () {
-        // Mode toggle button replaces the old <select>
-        const elMode = document.getElementById("mode"); // legacy, may be null
+        // All the original JavaScript functionality preserved
         const elModeToggle = document.getElementById("mode-toggle");
-        const elToggleConfig = document.getElementById("toggle-config");
         const elToggleTheme = document.getElementById("toggle-theme");
         const elToggleFloat = document.getElementById("toggle-float");
         const panel = document.getElementById("config");
         const closeConfig = document.getElementById("close-config");
         const pageHost = document.getElementById("page-host");
         const floatingHost = document.getElementById("floating-host");
-        const canvasTitle = document.getElementById("canvas-title");
-        let currentMode = "page"; // 'page' | 'floating'
+        let currentMode = "page";
 
         function updateFloatingToggleVisibility() {
           if (!elToggleFloat) return;
@@ -1044,7 +1223,16 @@
           currentMode = mode;
           if (elModeToggle) {
             const isFloating = mode === "floating";
-            elModeToggle.textContent = `Variant: ${isFloating ? "Floating" : "Page"}`;
+            elModeToggle.innerHTML = `
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                ${
+                  isFloating
+                    ? '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'
+                    : '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/>'
+                }
+              </svg>
+              Variant: ${isFloating ? "Floating" : "Page"}
+            `;
             elModeToggle.setAttribute("aria-pressed", String(isFloating));
           }
           if (mode === "floating") {
@@ -1053,7 +1241,6 @@
             mountPage();
           }
           updateFloatingToggleVisibility();
-          // Refresh embed code view when switching modes
           try {
             updateEmbedCode();
           } catch (e) {}
@@ -1236,7 +1423,6 @@
             floatingHost.style.display = "none";
             pageHost.style.display = "block";
 
-            // Make sure floating chat is hidden if previously active
             try {
               window.KorinAI.toggleFloatingChat(false);
             } catch (e) {}
@@ -1277,7 +1463,6 @@
           }
         }
 
-        // --- Canvas tabs + Embed code generation ---
         function buildEmbedPayload() {
           const mode = currentMode || "page";
           const provider = providerOpts();
@@ -1290,7 +1475,6 @@
             ...provider,
             props,
           };
-          // Remove functions/undefined for clean embed output
           const sanitized = JSON.parse(JSON.stringify(payload, (k, v) => (typeof v === "function" ? undefined : v)));
           return sanitized;
         }
@@ -1298,8 +1482,13 @@
         function generateEmbedString() {
           const payload = buildEmbedPayload();
           const payloadStr = JSON.stringify(payload, null, 2);
-          // Use <\/script> to avoid closing the current script tag in HTML parsing
-          const code = `<!-- Include Korin Embed assets -->\n<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.css\" />\n<div id=\"my-chat\"></div>\n<script src=\"https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.js\"><\/script>\n<script>\n  window.KorinAI.init(${payloadStr});\n<\/script>`;
+          const code = `<!-- Include Korin Embed assets -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.css" />
+<div id="my-chat"></div>
+<script src="https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.js"><\/script>
+<script>
+  window.KorinAI.init(${payloadStr});
+<\/script>`;
           return code;
         }
 
@@ -1308,12 +1497,16 @@
           if (!codeEl) return;
           try {
             codeEl.textContent = generateEmbedString();
+            // Trigger Prism.js syntax highlighting
+            if (window.Prism) {
+              window.Prism.highlightElement(codeEl);
+            }
           } catch (e) {
             codeEl.textContent = "<!-- Failed to generate embed code -->";
           }
         }
 
-        // Wire up UI with error handling
+        // Event listeners
         if (elModeToggle) {
           elModeToggle.addEventListener("click", () => {
             try {
@@ -1324,8 +1517,9 @@
           });
         }
 
-        if (elToggleConfig && panel) {
-          elToggleConfig.addEventListener("click", () => panel.classList.toggle("hidden"));
+        const gearBtn = document.getElementById("gear-config");
+        if (gearBtn && panel) {
+          gearBtn.addEventListener("click", () => panel.classList.toggle("hidden"));
         }
 
         if (closeConfig && panel) {
@@ -1335,35 +1529,31 @@
         if (elToggleTheme) {
           elToggleTheme.addEventListener("click", () => {
             document.body.classList.toggle("dark");
-            // Update theme button text
-            elToggleTheme.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
+            const isDark = document.body.classList.contains("dark");
+            elToggleTheme.innerHTML = `
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                ${
+                  isDark
+                    ? '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>'
+                    : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+                }
+              </svg>
+            `;
           });
         }
 
-        // Hero CTA -> open configurator
-        const ctaOpenConfig = document.getElementById("cta-open-config");
-        if (ctaOpenConfig && panel) {
-          ctaOpenConfig.addEventListener("click", () => {
-            panel.classList.remove("hidden");
-            // Focus the first tab for accessibility
-            document.getElementById("tab-provider")?.focus();
-          });
-        }
-
-        // Tabs with accessibility and keyboard support
+        // Tabs functionality
         const tabs = Array.from(document.querySelectorAll(".tabbar .tab"));
         const panels = Array.from(document.querySelectorAll(".section"));
         const activateTab = (btn) => {
           try {
             const tab = btn.getAttribute("data-tab");
-            // Update tab buttons
             tabs.forEach((b) => {
               const isActive = b === btn;
               b.classList.toggle("active", isActive);
               b.setAttribute("aria-selected", isActive ? "true" : "false");
               b.tabIndex = isActive ? 0 : -1;
             });
-            // Update panels
             panels.forEach((sec) => {
               const s = sec.getAttribute("data-section");
               const show = s === tab;
@@ -1388,12 +1578,11 @@
           });
         });
 
-        // Canvas tabs (Component / Docs / Embed code) + configurator gear
+        // Canvas tabs
         (function () {
           const btnComp = document.getElementById("ctab-component");
           const btnDocs = document.getElementById("ctab-docs");
           const btnEmbed = document.getElementById("ctab-embed");
-          const gearBtn = document.getElementById("gear-config");
           const panelComp = document.getElementById("canvas-component");
           const panelDocs = document.getElementById("canvas-docs");
           const panelEmbed = document.getElementById("canvas-embed");
@@ -1426,21 +1615,20 @@
           btnDocs?.addEventListener("click", () => setActive("docs"));
           btnEmbed?.addEventListener("click", () => setActive("embed"));
 
-          gearBtn?.addEventListener("click", () => {
-            try {
-              panel?.classList.toggle("hidden");
-            } catch (e) {}
-          });
-
           if (copyBtn) {
             copyBtn.addEventListener("click", async () => {
               try {
                 const codeEl = document.getElementById("embed-code");
                 if (!codeEl) return;
                 await navigator.clipboard.writeText(codeEl.textContent || "");
-                const prev = copyBtn.textContent;
-                copyBtn.textContent = "Copied";
-                setTimeout(() => (copyBtn.textContent = prev || "Copy"), 1200);
+                const prev = copyBtn.innerHTML;
+                copyBtn.innerHTML = `
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20,6 9,17 4,12"/>
+                  </svg>
+                  Copied
+                `;
+                setTimeout(() => (copyBtn.innerHTML = prev), 1200);
               } catch (e) {
                 console.error("Copy failed", e);
               }
@@ -1458,7 +1646,7 @@
           });
         }
 
-        // Live change handlers with debouncing
+        // Live change handlers
         let reloadTimeout;
         const debouncedReload = () => {
           clearTimeout(reloadTimeout);
@@ -1477,12 +1665,6 @@
 
         // Initial setup
         try {
-          // Set initial theme button text
-          if (elToggleTheme) {
-            elToggleTheme.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
-          }
-
-          // Initial mount (Page Chat by default) and set button label
           setMode("page");
           updateFloatingToggleVisibility();
           updateEmbedCode();
