@@ -22,7 +22,7 @@ import { CodeBlock as CodeBlockContainer, CodeBlockCode } from "@monorepo/ui/cod
 import { CodeBlock as CodeBlockWithCopy, CodeBlockCopyButton } from "@monorepo/ui/code-block-with-copy";
 import { Card, CardContent, CardHeader, CardTitle } from "@monorepo/shadcn-ui/card";
 import { Button } from "@monorepo/shadcn-ui/button";
-import type { KorinAIConfig } from "@korinai/libs/contexts/korinai-context";
+import type { KorinAIConfig } from "@korinai/libs/types";
 
 const apiKey = process.env.NEXT_PUBLIC_KORINAI_API_KEY;
 

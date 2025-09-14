@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@monorepo/shadcn-ui/dialog";
 import { Button } from "@monorepo/shadcn-ui/button";
-import { getFileCategory, getFileName } from "@korinai/libs/fileCategories";
+import { getFileCategory, getFileName } from "@korinai/libs";
 import { getFileIcon } from "@korinai/libs/ui/getFileIcon";
 import { useRef, useState, useEffect, useCallback, memo } from "react";
 import { useGalleryDetail } from "@korinai/libs/hooks/useGalleryDetail";

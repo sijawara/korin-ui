@@ -1,6 +1,6 @@
-import React from "react";
+import type { ReactElement } from "react";
 
-export const getFileIcon = (fileName: string): React.ReactElement => {
+export const getFileIcon = (fileName: string): ReactElement => {
   const extension = fileName.split(".").pop()?.toLowerCase();
   switch (extension) {
     case "pdf":
@@ -224,5 +224,3 @@ export const getFileIcon = (fileName: string): React.ReactElement => {
       );
   }
 };
-
-export default getFileIcon;

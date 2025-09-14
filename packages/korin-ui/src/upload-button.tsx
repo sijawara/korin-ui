@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@monorepo/shadcn-ui/button";
 import { Upload, Loader2 } from "lucide-react";
 import { Progress } from "@monorepo/shadcn-ui/progress";
-import { getFileCategory } from "@korinai/libs/fileCategories";
+import { getFileCategory } from "@korinai/libs";
 import { useGalleryUpload } from "@korinai/libs/hooks/useGalleryUpload";
 import {
   Drawer,
@@ -13,7 +13,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@monorepo/shadcn-ui/drawer";
-import getFileIcon from "@korinai/libs/ui/getFileIcon";
+import { getFileIcon } from "@korinai/libs/ui/getFileIcon";
 import { useKorinAI } from "@korinai/libs/contexts/korinai-context";
 import { useUser } from "@korinai/libs/hooks/useUser";
 
@@ -23,11 +23,7 @@ interface UploadButtonProps {
   onError?: (error: string) => void;
 }
 
-export function UploadButton({
-  onUploadComplete,
-  isKnowledge = false,
-  onError,
-}: UploadButtonProps) {
+export function UploadButton({ onUploadComplete, isKnowledge = false, onError }: UploadButtonProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -55,7 +51,7 @@ export function UploadButton({
   useEffect(() => {
     if (isDrawerOpen && drawerContentRef.current) {
       const focusableElements = drawerContentRef.current.querySelectorAll(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
       );
       if (focusableElements.length > 0) {
         (focusableElements[0] as HTMLElement).focus();
@@ -106,7 +102,7 @@ export function UploadButton({
         selectedFile,
         false, // Always private
         user?.email ? [user.email] : [], // Current user email as default access if available
-        isKnowledge
+        isKnowledge,
       );
 
       if (result.success) {
@@ -126,9 +122,7 @@ export function UploadButton({
       }
     } catch (error) {
       console.error("Error uploading file:", error);
-      setError(
-        typeof error === "string" ? error : "Upload failed. Please try again."
-      );
+      setError(typeof error === "string" ? error : "Upload failed. Please try again.");
     }
   };
 
@@ -164,16 +158,11 @@ export function UploadButton({
           }
         }}
       >
-        <DrawerContent
-          ref={drawerContentRef}
-          className="focus:outline-none max-h-[85vh] flex flex-col"
-        >
+        <DrawerContent ref={drawerContentRef} className="focus:outline-none max-h-[85vh] flex flex-col">
           <div className="flex-none px-4 pb-2 pt-4">
             <DrawerHeader className="p-0">
               <DrawerTitle>Upload File</DrawerTitle>
-              <DrawerDescription>
-                Preview your file before uploading
-              </DrawerDescription>
+              <DrawerDescription>Preview your file before uploading</DrawerDescription>
             </DrawerHeader>
           </div>
 
@@ -185,22 +174,12 @@ export function UploadButton({
                   <div className="flex items-center justify-center">
                     {getFileCategory(selectedFile.name) === "image" ? (
                       <div className="w-full max-w-md rounded-lg overflow-hidden">
-                        {previewUrl && (
-                          <img
-                            src={previewUrl}
-                            alt="Preview"
-                            className="w-full h-auto"
-                          />
-                        )}
+                        {previewUrl && <img src={previewUrl} alt="Preview" className="w-full h-auto" />}
                       </div>
                     ) : getFileCategory(selectedFile.name) === "video" ? (
                       <div className="w-full max-w-md rounded-lg overflow-hidden">
                         {previewUrl && (
-                          <video
-                            src={previewUrl}
-                            controls
-                            className="w-full h-auto"
-                          >
+                          <video src={previewUrl} controls className="w-full h-auto">
                             Your browser does not support the video tag.
                           </video>
                         )}
@@ -208,11 +187,7 @@ export function UploadButton({
                     ) : getFileCategory(selectedFile.name) === "audio" ? (
                       <div className="w-full max-w-md bg-secondary rounded-lg overflow-hidden">
                         {previewUrl && (
-                          <audio
-                            src={previewUrl}
-                            controls
-                            className="w-full p-2"
-                          >
+                          <audio src={previewUrl} controls className="w-full p-2">
                             Your browser does not support the audio tag.
                           </audio>
                         )}
@@ -220,9 +195,7 @@ export function UploadButton({
                     ) : (
                       <div className="w-full max-w-md h-48 bg-secondary rounded-lg flex items-center justify-center">
                         {getFileIcon(selectedFile.name)}
-                        <span className="ml-2 text-sm font-medium">
-                          {selectedFile.name}
-                        </span>
+                        <span className="ml-2 text-sm font-medium">{selectedFile.name}</span>
                       </div>
                     )}
                   </div>
@@ -239,27 +212,17 @@ export function UploadButton({
 
           {/* Upload Progress Section */}
           {(isUploading || isAnalyzing) && (
-            <div
-              className="flex-none p-4 border-t bg-background/95 space-y-2"
-              role="status"
-              aria-live="polite"
-            >
+            <div className="flex-none p-4 border-t bg-background/95 space-y-2" role="status" aria-live="polite">
               <div className="flex items-center justify-between">
                 <span>Upload Progress</span>
-                <span className="text-sm text-muted-foreground">
-                  {Math.round(uploadProgress.progress)}%
-                </span>
+                <span className="text-sm text-muted-foreground">{Math.round(uploadProgress.progress)}%</span>
               </div>
               <Progress
                 value={uploadProgress.progress}
                 className="w-full"
-                aria-label={`Upload progress: ${Math.round(
-                  uploadProgress.progress
-                )}%`}
+                aria-label={`Upload progress: ${Math.round(uploadProgress.progress)}%`}
               />
-              <p className="text-sm text-center text-muted-foreground">
-                {uploadProgress.status}
-              </p>
+              <p className="text-sm text-center text-muted-foreground">{uploadProgress.status}</p>
             </div>
           )}
 
@@ -281,11 +244,7 @@ export function UploadButton({
                 )}
               </Button>
               <DrawerClose asChild>
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  disabled={isUploading || isAnalyzing}
-                >
+                <Button variant="outline" className="w-full" disabled={isUploading || isAnalyzing}>
                   Cancel
                 </Button>
               </DrawerClose>

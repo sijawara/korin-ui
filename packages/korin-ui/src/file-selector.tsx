@@ -1,17 +1,12 @@
 import { useState, useMemo, useCallback } from "react";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@monorepo/shadcn-ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@monorepo/shadcn-ui/tabs";
 import { Card, CardContent } from "@monorepo/shadcn-ui/card";
 import { Input } from "@monorepo/shadcn-ui/input";
 import { Image, File, Search, FileVideo, FileAudio } from "lucide-react";
 import { ScrollArea } from "@monorepo/shadcn-ui/scroll-area";
 import { useGallery } from "@korinai/libs/hooks/useGallery";
-import { getFileCategory, getFileName } from "@korinai/libs/fileCategories";
-import getFileIcon from "@korinai/libs/ui/getFileIcon";
+import { getFileCategory, getFileName } from "@korinai/libs";
+import { getFileIcon } from "@korinai/libs/ui/getFileIcon";
 import { UploadButton } from "@monorepo/ui/upload-button";
 import { FilePreviewDialog } from "@monorepo/ui/file-preview-dialog";
 
@@ -38,21 +33,12 @@ type StorageItem = {
   updated_at: string;
 };
 
-const FileCard = ({
-  item,
-  onSelect,
-}: {
-  item: StorageItem;
-  onSelect: () => void;
-}) => {
+const FileCard = ({ item, onSelect }: { item: StorageItem; onSelect: () => void }) => {
   const fileName = getFileName(item.file_url);
   const fileCategory = getFileCategory(item.file_url);
 
   return (
-    <Card
-      className="cursor-pointer hover:bg-accent/50 transition-colors"
-      onClick={onSelect}
-    >
+    <Card className="cursor-pointer hover:bg-accent/50 transition-colors" onClick={onSelect}>
       <CardContent className="p-4 space-y-4">
         {fileCategory === "video" ? (
           <div className="aspect-square w-full overflow-hidden rounded-lg">
@@ -76,19 +62,12 @@ const FileCard = ({
                 {getFileIcon(item.file_url)}
               </div>
             ) : (
-              <img
-                src={item.file_url}
-                alt={fileName}
-                className="w-full h-full object-cover"
-              />
+              <img src={item.file_url} alt={fileName} className="w-full h-full object-cover" />
             )}
           </div>
         )}
         <div className="relative w-full overflow-hidden">
-          <p
-            className="text-sm font-medium line-clamp-2 break-all"
-            title={fileName}
-          >
+          <p className="text-sm font-medium line-clamp-2 break-all" title={fileName}>
             {fileName}
           </p>
         </div>
@@ -97,12 +76,7 @@ const FileCard = ({
   );
 };
 
-export function FileSelector({
-  onSelect,
-  onClose,
-  initialTab = "images",
-  disabledTabs = [],
-}: FileSelectorProps) {
+export function FileSelector({ onSelect, onClose, initialTab = "images", disabledTabs = [] }: FileSelectorProps) {
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [searchTerm, setSearchTerm] = useState("");
   const { items, isLoading, isError, mutate } = useGallery();
@@ -150,7 +124,7 @@ export function FileSelector({
       });
       onClose();
     },
-    [onSelect, onClose]
+    [onSelect, onClose],
   );
 
   const handleUploadComplete = useCallback(async () => {
@@ -182,25 +156,16 @@ export function FileSelector({
         </div>
       </div>
 
-      <Tabs
-        value={activeTab}
-        onValueChange={(value) => setActiveTab(value as TabType)}
-      >
+      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TabType)}>
         <TabsList className="grid w-full grid-cols-4">
           {tabs.map(
             ({ value, icon: Icon, label }) =>
               !disabledTabs.includes(value) && (
-                <TabsTrigger
-                  key={value}
-                  value={value}
-                  disabled={disabledTabs.includes(value)}
-                >
+                <TabsTrigger key={value} value={value} disabled={disabledTabs.includes(value)}>
                   <Icon className="h-4 w-4" />
-                  <span className="hidden sm:inline-block sm:ml-2">
-                    {label}
-                  </span>
+                  <span className="hidden sm:inline-block sm:ml-2">{label}</span>
                 </TabsTrigger>
-              )
+              ),
           )}
         </TabsList>
 
@@ -221,11 +186,7 @@ export function FileSelector({
                 ) : filteredItems.length > 0 ? (
                   <div className="grid grid-cols-2 gap-4">
                     {filteredItems.map((item) => (
-                      <FileCard
-                        key={item.id}
-                        item={item}
-                        onSelect={() => setPreviewItem(item)}
-                      />
+                      <FileCard key={item.id} item={item} onSelect={() => setPreviewItem(item)} />
                     ))}
                   </div>
                 ) : (

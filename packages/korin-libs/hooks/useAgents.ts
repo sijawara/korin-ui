@@ -68,11 +68,7 @@ interface AgentsResponse {
  *   "totalItems": 48
  * }
  */
-export function useAgents(
-  page: number = 1,
-  limit: number = 10,
-  search: string = ""
-) {
+export function useAgents(page: number = 1, limit: number = 10, search: string = "") {
   const { authToken, config } = useKorinAI();
   const fetcher = async (url: string) => {
     const response = await fetch(url, {
@@ -94,10 +90,8 @@ export function useAgents(
   }).toString();
 
   const { data, error, mutate, isLoading } = useSWR<AgentsResponse>(
-    authToken
-      ? buildUrl(config.baseUrl, `/api/profile/agents?${queryParams}`)
-      : null,
-    fetcher
+    authToken ? buildUrl(config.baseUrl, `/api/profile/agents?${queryParams}`) : null,
+    fetcher,
   );
 
   return {

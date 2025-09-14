@@ -2,33 +2,74 @@
   "name": "@korinai/libs",
   "author": "Muhamad Rizki",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Shared hooks, contexts, utils, and UI helpers for KorinAI apps",
   "private": false,
-  "keywords": [],
+  "keywords": [
+    "korinai",
+    "hooks",
+    "libs",
+    "react"
+  ],
+  "license": "ISC",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.mjs"
+    },
+    "./hooks/*": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/hooks/*.mjs",
+      "require": "./dist/hooks/*.cjs",
+      "default": "./dist/hooks/*.mjs"
+    },
+    "./ui/*": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/ui/*.mjs",
+      "require": "./dist/ui/*.cjs",
+      "default": "./dist/ui/*.mjs"
+    },
+    "./contexts/*": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/contexts/*.mjs",
+      "require": "./dist/contexts/*.cjs",
+      "default": "./dist/contexts/*.mjs"
+    },
+    "./types": "./dist/index.d.ts"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build": "vite build",
+    "prepublishOnly": "pnpm run build"
   },
-  "license": "ISC",
+  "peerDependencies": {
+    "@ai-sdk/react": ">=2",
+    "ai": ">=5",
+    "react": ">=18",
+    "react-dom": ">=18",
+    "swr": ">=2"
+  },
   "devDependencies": {
+    "@monorepo/eslint-config": "workspace:*",
     "@monorepo/tsconfig": "workspace:*",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
-  },
-  "dependencies": {
-    "@ai-sdk/react": "^2.0.39",
-    "@monorepo/eslint-config": "workspace:*",
-    "ai": "^5.0.39",
-    "swr": "^2.3.6"
-  },
-  "exports": {
-    "./hooks/*": "./hooks/*.ts",
-    "./ui/*": "./ui/*.tsx",
-    "./contexts/*": "./contexts/*.tsx",
-    "./types": "./types.d.ts",
-    "./*": "./libs/*.ts"
+    "@vitejs/plugin-react": "^5.0.2",
+    "fast-glob": "^3.3.3",
+    "vite": "^7.1.5",
+    "vite-plugin-dts": "^4.5.4"
   }
 }

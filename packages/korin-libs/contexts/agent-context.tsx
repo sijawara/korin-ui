@@ -1,15 +1,8 @@
 "use client";
 
-import React from "react";
-import {
-  createContext,
-  useContext,
-  useState,
-  useCallback,
-  useEffect,
-} from "react";
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import { useAgents, type UserProfile } from "../hooks/useAgents";
-import { type PromptTemplate } from "@korinai/libs/types";
+import { type PromptTemplate } from "../types";
 
 // We'll keep the Agent interface for backward compatibility
 export interface Agent {
@@ -48,7 +41,7 @@ export function AgentProvider({
   initialAgentId = "fin-advisor",
   onAgentSwitch,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   initialAgentId?: string;
   onAgentSwitch?: (agent: Agent) => void;
 }) {
@@ -56,15 +49,11 @@ export function AgentProvider({
   const { agents: apiAgents, isLoading, isError } = useAgents(1, 100); // Fetch up to 100 agents
 
   // Convert API agents to our Agent interface
-  const availableAgents =
-    isLoading || isError ? [] : apiAgents.map(convertToAgent);
+  const availableAgents = isLoading || isError ? [] : apiAgents.map(convertToAgent);
 
   const [currentAgent, setCurrentAgent] = useState<Agent | null>(() => {
     // Try to get the agent from localStorage first
-    const storedAgentId =
-      typeof window !== "undefined"
-        ? localStorage.getItem("currentAgentId")
-        : null;
+    const storedAgentId = typeof window !== "undefined" ? localStorage.getItem("currentAgentId") : null;
     const agentId = storedAgentId || initialAgentId;
     const agent = availableAgents.find((a) => a.agent_id === agentId);
     return agent || availableAgents[0] || null;
@@ -73,14 +62,9 @@ export function AgentProvider({
   // Update current agent when API data loads
   useEffect(() => {
     if (!isLoading && !isError && apiAgents.length > 0) {
-      const storedAgentId =
-        typeof window !== "undefined"
-          ? localStorage.getItem("currentAgentId")
-          : null;
+      const storedAgentId = typeof window !== "undefined" ? localStorage.getItem("currentAgentId") : null;
       const agentId = storedAgentId || currentAgent?.agent_id;
-      const agent =
-        availableAgents.find((a) => a.agent_id === agentId) ||
-        availableAgents[0];
+      const agent = availableAgents.find((a) => a.agent_id === agentId) || availableAgents[0];
       setCurrentAgent(agent);
     }
   }, [apiAgents, isLoading, isError]);
@@ -97,7 +81,7 @@ export function AgentProvider({
         if (!silent) onAgentSwitch?.(agent);
       }
     },
-    [availableAgents]
+    [availableAgents],
   );
 
   const value = {
@@ -108,9 +92,7 @@ export function AgentProvider({
     isError,
   };
 
-  return (
-    <AgentContext.Provider value={value}>{children}</AgentContext.Provider>
-  );
+  return <AgentContext.Provider value={value}>{children}</AgentContext.Provider>;
 }
 
 export function useAgent() {

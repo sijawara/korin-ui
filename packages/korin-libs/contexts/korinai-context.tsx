@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo } from "react";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect, useMemo, type ReactNode } from "react";
 import useSWR from "swr";
 
 export type KorinAIConfig = {
@@ -80,20 +79,20 @@ export const KorinAIContext = createContext<KorinAIContextType>({
   translations: KORIN_TRANSLATIONS,
 });
 
-export const KorinAIProvider: React.FC<{
-  children: React.ReactNode;
-  config: KorinAIConfig;
-  authToken: AuthToken;
-  language?: string;
-  getAuthToken?: () => Promise<AuthToken>;
-  translations?: ChatTranslations;
-}> = ({
+export const KorinAIProvider = ({
   children,
   config: initialConfig,
   authToken: initialAuthToken,
   language: initialLanguage,
   getAuthToken,
   translations,
+}: {
+  children: ReactNode;
+  config: KorinAIConfig;
+  authToken: AuthToken;
+  language?: string;
+  getAuthToken?: () => Promise<AuthToken>;
+  translations?: ChatTranslations;
 }) => {
   const [config, setConfig] = useState<KorinAIConfig>(initialConfig);
   const [authToken, setAuthToken] = useState<AuthToken>(initialAuthToken);

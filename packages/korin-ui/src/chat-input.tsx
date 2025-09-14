@@ -1,15 +1,13 @@
 "use client";
 
+import { getFileCategory, getFileName, mimeTypes } from "@korinai/libs";
 import { useAgent } from "@korinai/libs/contexts/agent-context";
 import { useKorinAI } from "@korinai/libs/contexts/korinai-context";
-import { getFileCategory } from "@korinai/libs/fileCategories";
-import { getFileName } from "@korinai/libs/getFileName";
 import { useGalleryUpload } from "@korinai/libs/hooks/useGalleryUpload";
 import { useIsMobile } from "@korinai/libs/hooks/useIsMobile";
 import { useUser } from "@korinai/libs/hooks/useUser";
-import { mimeTypes } from "@korinai/libs/mimeTypes";
 import type { PromptTemplate } from "@korinai/libs/types";
-import getFileIcon from "@korinai/libs/ui/getFileIcon";
+import { getFileIcon } from "@korinai/libs/ui/getFileIcon";
 import { Avatar, AvatarFallback, AvatarImage } from "@monorepo/shadcn-ui/avatar";
 import { Button } from "@monorepo/shadcn-ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@monorepo/shadcn-ui/dialog";
