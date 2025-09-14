@@ -1,7 +1,7 @@
 {
   "name": "@korinai/libs",
   "author": "Muhamad Rizki",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Shared hooks, contexts, utils, and UI helpers for KorinAI apps",
   "private": false,
   "keywords": [
@@ -65,8 +65,8 @@
   "devDependencies": {
     "@monorepo/eslint-config": "workspace:*",
     "@monorepo/tsconfig": "workspace:*",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.2",
     "fast-glob": "^3.3.3",
     "vite": "^7.1.5",
