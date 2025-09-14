@@ -107,3 +107,220 @@ This monorepo structure has been successfully used to build:
 ## Further Reading
 
 For further details on building and setting up this monorepo, check out the original tutorial on [The Halftime Code](https://www.thehalftimecode.com/building-a-full-stack-monorepo-with-turbopack-biome-next-js-express-js-tailwind-css-and-shadcn/).
+
+# Korin UI Monorepo Guide
+
+This section documents the actual packages and apps in this repository and how to develop, build, and release them.
+
+## Overview
+
+- Package manager: `pnpm` (see `packageManager` in `package.json`)
+- Task runner: `turbo` (see `turbo.json`)
+- Workspace layout: `pnpm-workspace.yaml` with `apps/*` and `packages/*`
+- Linting/formatting: shared config via `@monorepo/eslint-config` and Prettier
+- Versioning/publishing: Changesets
+
+## Directory Structure
+
+```
+apps/
+  web/                # Next.js 15 app
+packages/
+  eslint-config/      # Shared ESLint config (published as @monorepo/eslint-config)
+  korin-embed/        # Embeddable widget package (@korinai/embed) built with Vite
+  korin-libs/         # Reusable hooks, contexts, libs (@korinai/libs)
+  korin-ui/           # UI components & Tailwind config (@monorepo/ui)
+tools/                # (if present) repo tooling
+```
+
+Key workspace files:
+
+- `pnpm-workspace.yaml` – declares `apps/*` and `packages/*`
+- `turbo.json` – task graph, caching, and outputs
+- Root `package.json` – top-level scripts (dev/build/lint/format, changesets)
+
+## Apps
+
+### `apps/web` (Next.js)
+
+- Scripts: `dev`, `build`, `start`, `lint`
+- Depends on workspace packages: `@korinai/libs`, `@monorepo/ui`, `@monorepo/shadcn-ui`, `@monorepo/types`
+- Start development server:
+
+```bash
+pnpm dev -F web
+# or run all dev tasks in parallel (see "Root scripts")
+```
+
+## Packages
+
+### `packages/korin-ui` → `@monorepo/ui`
+
+- Purpose: Shared UI components, Tailwind config, and utilities
+- Exports:
+  - `./globals.css` – base styles
+  - `./postcss.config` – PostCSS config
+  - `./tailwind.config` – Tailwind config
+  - `./*` – component entrypoints in `src/*.tsx`
+- Notable deps: Radix UI, shadcn, Tailwind CSS 4, `clsx`, `tailwind-merge`, `tw-animate-css`
+- Scripts: `check-types`, `add-shadcn-component`, `lint`
+
+Usage in other workspaces:
+
+```ts
+// Example import
+import { Button } from "@monorepo/ui/button";
+import "@monorepo/ui/globals.css";
+```
+
+Add a new shadcn component into this package:
+
+```bash
+pnpm add-shadcn-component -F @monorepo/ui
+# The root script proxies to package script via turbo
+```
+
+### `packages/korin-libs` → `@korinai/libs`
+
+- Purpose: Shared hooks, contexts, lightweight libs
+- Exports (from `package.json`):
+  - `./hooks/*` → `hooks/*.ts`
+  - `./ui/*` → `ui/*.tsx`
+  - `./contexts/*` → `contexts/*.tsx`
+  - `./types` → `types.d.ts`
+  - `./*` → `libs/*.ts`
+- Scripts: `check-types`, `lint`
+
+Usage in apps/packages:
+
+```ts
+import { useSomething } from "@korinai/libs/hooks/use-something";
+```
+
+### `packages/korin-embed` → `@korinai/embed`
+
+- Purpose: Embeddable widget bundle built with Vite
+- Entry: `dist/embed.js` (both `main` and `module`)
+- Scripts: `dev`, `build`, `lint`, `preview`
+- Build specifics: `pnpm build -F @korinai/embed` runs two Vite builds (codemod + main) via `vite.config.codemod.ts` and `vite.config.ts`
+
+Usage (in a host site):
+
+```html
+<script type="module" src="/path/to/node_modules/@korinai/embed/dist/embed.js"></script>
+```
+
+## Root Scripts
+
+Defined in root `package.json`:
+
+- `pnpm dev` – `turbo dev` (parallel dev for affected packages/apps)
+- `pnpm build` – `turbo build`
+- `pnpm lint` / `pnpm lint:fix` – repo-wide lint
+- `pnpm format` / `pnpm format:fix` – repo-wide formatting
+- `pnpm add-shadcn-component` – run `add-shadcn-component` in all packages that implement it
+- `pnpm clean` – `turbo clean`
+
+Common examples:
+
+```bash
+# Run dev for everything (apps and packages that implement dev)
+pnpm dev
+
+# Run dev only for Next.js app
+pnpm dev -F web
+
+# Build everything with caching
+pnpm build
+
+# Lint repo
+pnpm lint
+
+# Format (check) or write changes
+pnpm format
+pnpm format:fix
+```
+
+## Development Setup
+
+1. Install dependencies
+
+```bash
+pnpm install
+```
+
+2. Start development
+
+```bash
+pnpm dev
+# or focus on a specific workspace
+pnpm dev -F web
+pnpm dev -F @korinai/embed
+```
+
+3. Build locally
+
+```bash
+pnpm build
+# or focus
+pnpm build -F @monorepo/ui
+```
+
+## Linting & Formatting
+
+- ESLint config shared via `@monorepo/eslint-config`
+- Run across the repo from root:
+
+```bash
+pnpm lint
+pnpm lint:fix
+pnpm format
+pnpm format:fix
+```
+
+## Release & Versioning (Changesets)
+
+We use Changesets to manage versions and publishing of packages.
+
+Typical flow:
+
+```bash
+# After making changes to one or more packages
+pnpm changeset
+
+# Commit the generated changeset file
+git add . && git commit -m "chore: changeset for <packages>"
+
+# When ready to bump versions
+pnpm version:packages
+
+# Publish to the registry
+pnpm publish:packages
+```
+
+Notes:
+
+- `version:packages` runs `turbo build` first to ensure build artifacts are fresh.
+- Ensure you are logged in to your npm registry with correct scope access.
+- Private packages remain private; publish only the intended public packages.
+
+## Coding Conventions
+
+- React 19 and Next.js 15 in apps where applicable
+- Tailwind CSS 4 with utility-first patterns; use exported Tailwind config from `@monorepo/ui` when relevant
+- Prefer shared components from `@monorepo/ui` and shared logic from `@korinai/libs`
+- Keep packages focused and reusable; avoid app-specific code in library packages
+
+## Troubleshooting
+
+- If types or exports aren’t found, run a clean build:
+
+```bash
+pnpm clean && pnpm build
+```
+
+- Turbo caching: Some tasks are cached by default per `turbo.json`. For dev tasks, caching is disabled (`cache: false`).
+
+## License
+
+This repository is licensed under MIT unless stated otherwise within individual packages.
