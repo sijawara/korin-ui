@@ -8,7 +8,7 @@ import { cn } from "@monorepo/shadcn-ui/libs/utils";
 
 interface FilePreviewDialogProps {
   url: string;
-  name: string;
+  name?: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   showSelectButton?: boolean;
@@ -19,7 +19,7 @@ interface FilePreviewDialogProps {
 // Create a memoized version of FilePreviewDialog
 const FilePreviewDialog = memo(function FilePreviewDialogInner({
   url,
-  name,
+  name = "Unnamed",
   open,
   onOpenChange,
   showSelectButton = false,

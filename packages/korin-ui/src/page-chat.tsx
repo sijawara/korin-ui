@@ -104,8 +104,8 @@ export function PageChat({
   ui,
   branding,
 }: PageChatProps) {
-  const { language, config, translations } = useKorinAI();
-  const t = translations[language];
+  const { language = "en", config, translations } = useKorinAI();
+  const t = translations?.[language] || translations.en!;
   const { authToken } = useKorinAI();
   const { creditLimited, showWarning, mutate: mutateUserData, user } = useUser();
   const { currentAgent, agents, isLoading: isLoadingAgents } = useAgent();
@@ -187,22 +187,22 @@ export function PageChat({
 
     rooms.forEach((room) => {
       if (!room.last_message_part?.created_at) {
-        groups["Older"].push(room);
+        groups["Older"]!.push(room);
         return;
       }
 
       const msgDate = new Date(room.last_message_part.created_at);
 
       if (msgDate >= today) {
-        groups["Today"].push(room);
+        groups["Today"]!.push(room);
       } else if (msgDate >= yesterday) {
-        groups["Yesterday"].push(room);
+        groups["Yesterday"]!.push(room);
       } else if (msgDate >= thisWeekStart) {
-        groups["This Week"].push(room);
+        groups["This Week"]!.push(room);
       } else if (msgDate >= lastWeekStart) {
-        groups["Last Week"].push(room);
+        groups["Last Week"]!.push(room);
       } else {
-        groups["Older"].push(room);
+        groups["Older"]!.push(room);
       }
     });
 
@@ -321,7 +321,7 @@ export function PageChat({
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        if (entry.isIntersecting && hasMore && !isLoadingRooms) {
+        if (entry && entry.isIntersecting && hasMore && !isLoadingRooms) {
           setHistoryPage((p) => p + 1);
         }
       },

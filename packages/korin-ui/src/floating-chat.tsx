@@ -50,8 +50,8 @@ export function FloatingChat({
   chatProps,
   showFloatingButton = true,
 }: FloatingChatProps) {
-  const { language, config, translations } = useKorinAI();
-  const t = translations[language];
+  const { language = "en", config, translations } = useKorinAI();
+  const t = translations?.[language] || translations.en!;
   const isControlled = typeof open === "boolean";
   const [internalOpen, setInternalOpen] = useState<boolean>(defaultOpen ?? false);
   const isOpen = isControlled ? (open as boolean) : internalOpen;

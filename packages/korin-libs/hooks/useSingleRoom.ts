@@ -3,7 +3,7 @@ import { useKorinAI } from "../contexts/korinai-context";
 import { buildUrl } from "../libs/build-url";
 import type { Room } from "./useRooms";
 
-export function useSingleRoom(roomId: string, enableSWR: boolean = true) {
+export function useSingleRoom(roomId?: string, enableSWR: boolean = true) {
   const { authToken, config } = useKorinAI();
   const fetcher = async (url: string) => {
     const response = await fetch(url, {
@@ -19,10 +19,8 @@ export function useSingleRoom(roomId: string, enableSWR: boolean = true) {
   };
 
   const { data, error, mutate, isLoading } = useSWR<Room>(
-    enableSWR && authToken
-      ? buildUrl(config.baseUrl, `/api/room/${roomId}`)
-      : null,
-    fetcher
+    enableSWR && authToken && roomId ? buildUrl(config.baseUrl, `/api/room/${roomId}`) : null,
+    fetcher,
   );
 
   return {

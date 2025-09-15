@@ -26,7 +26,7 @@ function parseIncompleteMarkdown(text: string): string {
   // Pattern: [...] or ![...] where the closing ] is missing
   const linkImagePattern = /(!?\[)([^\]]*?)$/;
   const linkMatch = result.match(linkImagePattern);
-  if (linkMatch) {
+  if (linkMatch && linkMatch[1]) {
     // If we have an unterminated [ or ![, remove it and everything after
     const startIndex = result.lastIndexOf(linkMatch[1]);
     result = result.substring(0, startIndex);
@@ -123,8 +123,7 @@ function parseIncompleteMarkdown(text: string): string {
         if (result[i] === "`") {
           // Check if this backtick is part of a triple backtick sequence
           const isTripleStart = result.substring(i, i + 3) === "```";
-          const isTripleMiddle =
-            i > 0 && result.substring(i - 1, i + 2) === "```";
+          const isTripleMiddle = i > 0 && result.substring(i - 1, i + 2) === "```";
           const isTripleEnd = i > 1 && result.substring(i - 2, i + 1) === "```";
 
           if (!isTripleStart && !isTripleMiddle && !isTripleEnd) {
@@ -161,15 +160,9 @@ const HardenedMarkdown = hardenReactMarkdown(ReactMarkdown);
 export type ResponseProps = HTMLAttributes<HTMLDivElement> & {
   options?: Options;
   children: Options["children"];
-  allowedImagePrefixes?: ComponentProps<
-    ReturnType<typeof hardenReactMarkdown>
-  >["allowedImagePrefixes"];
-  allowedLinkPrefixes?: ComponentProps<
-    ReturnType<typeof hardenReactMarkdown>
-  >["allowedLinkPrefixes"];
-  defaultOrigin?: ComponentProps<
-    ReturnType<typeof hardenReactMarkdown>
-  >["defaultOrigin"];
+  allowedImagePrefixes?: ComponentProps<ReturnType<typeof hardenReactMarkdown>>["allowedImagePrefixes"];
+  allowedLinkPrefixes?: ComponentProps<ReturnType<typeof hardenReactMarkdown>>["allowedLinkPrefixes"];
+  defaultOrigin?: ComponentProps<ReturnType<typeof hardenReactMarkdown>>["defaultOrigin"];
   parseIncompleteMarkdown?: boolean;
 };
 
@@ -195,28 +188,17 @@ const components: Options["components"] = {
     </span>
   ),
   a: ({ node, children, className, ...props }) => (
-    <a
-      className={cn("font-medium text-primary underline", className)}
-      rel="noreferrer"
-      target="_blank"
-      {...props}
-    >
+    <a className={cn("font-medium text-primary underline", className)} rel="noreferrer" target="_blank" {...props}>
       {children}
     </a>
   ),
   h1: ({ node, children, className, ...props }) => (
-    <h1
-      className={cn("mt-6 mb-2 font-semibold text-3xl", className)}
-      {...props}
-    >
+    <h1 className={cn("mt-6 mb-2 font-semibold text-3xl", className)} {...props}>
       {children}
     </h1>
   ),
   h2: ({ node, children, className, ...props }) => (
-    <h2
-      className={cn("mt-6 mb-2 font-semibold text-2xl", className)}
-      {...props}
-    >
+    <h2 className={cn("mt-6 mb-2 font-semibold text-2xl", className)} {...props}>
       {children}
     </h2>
   ),
@@ -231,10 +213,7 @@ const components: Options["components"] = {
     </h4>
   ),
   h5: ({ node, children, className, ...props }) => (
-    <h5
-      className={cn("mt-6 mb-2 font-semibold text-base", className)}
-      {...props}
-    >
+    <h5 className={cn("mt-6 mb-2 font-semibold text-base", className)} {...props}>
       {children}
     </h5>
   ),
@@ -251,10 +230,7 @@ const components: Options["components"] = {
     }
 
     const childrenIsCode =
-      typeof children === "object" &&
-      children !== null &&
-      "type" in children &&
-      children.type === "code";
+      typeof children === "object" && children !== null && "type" in children && children.type === "code";
 
     if (!childrenIsCode) {
       return <pre>{children}</pre>;
@@ -288,18 +264,10 @@ export const Response = memo(
   }: ResponseProps) => {
     // Parse the children to remove incomplete markdown tokens if enabled
     const parsedChildren =
-      typeof children === "string" && shouldParseIncompleteMarkdown
-        ? parseIncompleteMarkdown(children)
-        : children;
+      typeof children === "string" && shouldParseIncompleteMarkdown ? parseIncompleteMarkdown(children) : children;
 
     return (
-      <div
-        className={cn(
-          "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
-          className
-        )}
-        {...props}
-      >
+      <div className={cn("size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0", className)} {...props}>
         <HardenedMarkdown
           components={components}
           rehypePlugins={[rehypeKatex]}
@@ -314,5 +282,5 @@ export const Response = memo(
       </div>
     );
   },
-  (prevProps, nextProps) => prevProps.children === nextProps.children
+  (prevProps, nextProps) => prevProps.children === nextProps.children,
 );

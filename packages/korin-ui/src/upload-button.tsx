@@ -62,6 +62,8 @@ export function UploadButton({ onUploadComplete, isKnowledge = false, onError }:
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
+      if (!file) return;
+
       // Check file size (max 10MB)
       if (file.size > 10 * 1024 * 1024) {
         onError?.("File size must be less than 10MB");

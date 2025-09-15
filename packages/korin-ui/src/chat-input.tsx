@@ -53,39 +53,6 @@ interface ChatInputTranslations {
   selectFile: string;
 }
 
-const translations: Record<string, ChatInputTranslations> = {
-  en: {
-    templates: "Templates",
-    fileSizeError: "File size must be less than 10MB",
-    fileTypeError: "File type not supported",
-    uploadSuccess: "File uploaded successfully",
-    uploadFailed: "Upload failed",
-    dropFile: "Drop your file here",
-    retry: "Retry",
-    selectAgent: "Select Agent",
-    attachFile: "Attach File",
-    stopGenerating: "Stop generating",
-    sendMessage: "Send message",
-    noCredits: "No credits available",
-    selectFile: "Select File",
-  },
-  id: {
-    templates: "Template",
-    fileSizeError: "Ukuran file harus kurang dari 10MB",
-    fileTypeError: "Tipe file tidak didukung",
-    uploadSuccess: "File berhasil diunggah",
-    uploadFailed: "Gagal mengunggah",
-    dropFile: "Letakkan file Anda di sini",
-    retry: "Coba Lagi",
-    selectAgent: "Pilih Agen",
-    attachFile: "Lampirkan File",
-    stopGenerating: "Hentikan pembuatan",
-    sendMessage: "Kirim pesan",
-    noCredits: "Kredit tidak tersedia",
-    selectFile: "Pilih File",
-  },
-};
-
 interface ChatInputProps {
   isLoading: boolean;
   showTemplate: boolean;
@@ -125,14 +92,13 @@ export function ChatInput({
   onFileAttach,
   handleAttachmentChange,
   ownerEmail,
-  translations: customTranslations,
   onError,
   variant = "default",
   showAttachButton = true,
   showStopButton = true,
   showAgentSelector = true,
 }: ChatInputProps) {
-  const { language } = useKorinAI();
+  const { language = "en", translations } = useKorinAI();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [inputValue, setInputValue] = useState("");
   const [isFileSelectorOpen, setIsFileSelectorOpen] = useState(false);
@@ -140,7 +106,7 @@ export function ChatInput({
   const [openFilePreviewIndex, setOpenFilePreviewIndex] = useState<number | null>(null);
   const { isUploading, uploadFile, uploadProgress } = useGalleryUpload();
   const { user } = useUser();
-  const t = customTranslations?.[language] || translations?.[language];
+  const t = translations?.[language] || translations.en!;
   const [isDragging, setIsDragging] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);

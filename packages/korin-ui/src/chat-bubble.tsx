@@ -515,7 +515,7 @@ function ChatBubbleComponent({
   const lastReasoningPartIndex = useMemo(() => {
     if (!message.parts) return -1;
     for (let i = message.parts.length - 1; i >= 0; i--) {
-      if (message.parts[i].type === "reasoning") {
+      if (message.parts[i]?.type === "reasoning") {
         return i;
       }
     }
