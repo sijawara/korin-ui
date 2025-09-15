@@ -43,6 +43,19 @@ export const KORIN_TRANSLATIONS: ChatTranslations = {
     ai: "AI",
     helloImYourAIAssistant: "Hello! I'm your AI assistant. How can I help you today? 👋",
     preparingExperience: "Preparing your chat experience… Please ensure your API URL and API key are configured.",
+    templates: "Templates",
+    fileSizeError: "File size must be less than 10MB",
+    fileTypeError: "File type not supported",
+    uploadSuccess: "File uploaded successfully",
+    uploadFailed: "Upload failed",
+    dropFile: "Drop your file here",
+    retry: "Retry",
+    selectAgent: "Select Agent",
+    attachFile: "Attach File",
+    stopGenerating: "Stop generating",
+    sendMessage: "Send message",
+    noCredits: "No credits available",
+    selectFile: "Select File",
   },
   id: {
     startChat: "Mulai Obrolan",
@@ -65,6 +78,19 @@ export const KORIN_TRANSLATIONS: ChatTranslations = {
     ai: "AI",
     helloImYourAIAssistant: "Halo! Saya asisten AI Anda. Ada yang bisa saya bantu? 👋",
     preparingExperience: "Menyiapkan pengalaman chat Anda… Pastikan URL API dan kunci API Anda telah dikonfigurasi.",
+    templates: "Template",
+    fileSizeError: "Ukuran file harus kurang dari 10MB",
+    fileTypeError: "Tipe file tidak didukung",
+    uploadSuccess: "File berhasil diunggah",
+    uploadFailed: "Gagal mengunggah",
+    dropFile: "Letakkan file Anda di sini",
+    retry: "Coba Lagi",
+    selectAgent: "Pilih Agen",
+    attachFile: "Lampirkan File",
+    stopGenerating: "Hentikan pembuatan",
+    sendMessage: "Kirim pesan",
+    noCredits: "Kredit tidak tersedia",
+    selectFile: "Pilih File",
   },
 };
 
@@ -186,5 +212,18 @@ export type ChatTranslations = {
     ai: string;
     helloImYourAIAssistant: string;
     preparingExperience: string;
+    templates: string;
+    fileSizeError: string;
+    fileTypeError: string;
+    uploadSuccess: string;
+    uploadFailed: string;
+    dropFile: string;
+    retry: string;
+    selectAgent: string;
+    attachFile: string;
+    stopGenerating: string;
+    sendMessage: string;
+    noCredits: string;
+    selectFile: string;
   };
 };

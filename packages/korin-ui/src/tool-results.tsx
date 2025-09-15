@@ -1,5 +1,5 @@
-import { AlertDialog, AlertDialogContent, AlertDialogTitle } from "@monorepo/shadcn-ui/alert-dialog";
-import { Button } from "@monorepo/shadcn-ui/button";
+import { AlertDialog, AlertDialogContent, AlertDialogTitle } from "@monorepo/shadcn-ui/components/ui/alert-dialog";
+import { Button } from "@monorepo/shadcn-ui/components/ui/button";
 import { AlertCircle, BookOpen, Download, ExternalLink, Maximize2 } from "lucide-react";
 import Image from "next/image";
 import React, { memo } from "react";

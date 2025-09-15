@@ -1,22 +1,11 @@
 "use client";
 
 import { useControllableState } from "@radix-ui/react-use-controllable-state";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@monorepo/shadcn-ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@monorepo/shadcn-ui/components/ui/collapsible";
 import { BrainIcon, ChevronDownIcon } from "lucide-react";
 import type { ComponentProps } from "react";
-import {
-  createContext,
-  memo,
-  useContext,
-  useEffect,
-  useState,
-  useRef,
-} from "react";
-import { cn } from "@monorepo/shadcn-ui/libs/utils";
+import { createContext, memo, useContext, useEffect, useState, useRef } from "react";
+import { cn } from "@monorepo/shadcn-ui/lib/utils";
 import { Response } from "@monorepo/ui/response";
 import { ScrollArea } from "@monorepo/ui/scroll-area-extended";
 
@@ -120,29 +109,22 @@ export const Reasoning = memo(
         </Collapsible>
       </ReasoningContext.Provider>
     );
-  }
+  },
 );
 
-export type ReasoningTriggerProps = ComponentProps<
-  typeof CollapsibleTrigger
-> & {
+export type ReasoningTriggerProps = ComponentProps<typeof CollapsibleTrigger> & {
   title?: string;
 };
 
 export const ReasoningTrigger = memo(
-  ({
-    className,
-    title = "Reasoning",
-    children,
-    ...props
-  }: ReasoningTriggerProps) => {
+  ({ className, title = "Reasoning", children, ...props }: ReasoningTriggerProps) => {
     const { isStreaming, isOpen, duration } = useReasoning();
 
     return (
       <CollapsibleTrigger
         className={cn(
           "flex items-center gap-2 text-muted-foreground/70 text-sm hover:text-muted-foreground transition-colors",
-          className
+          className,
         )}
         {...props}
       >
@@ -152,65 +134,50 @@ export const ReasoningTrigger = memo(
             {isStreaming ? (
               <p className="text-muted-foreground/70">Thinking...</p>
             ) : duration > 0 ? (
-              <p className="text-muted-foreground/70">
-                Thought for {duration} seconds
-              </p>
+              <p className="text-muted-foreground/70">Thought for {duration} seconds</p>
             ) : (
               <p className="text-muted-foreground/70">Thought</p>
             )}
             <ChevronDownIcon
-              className={cn(
-                "size-4 text-muted-foreground/70 transition-transform",
-                isOpen ? "rotate-180" : "rotate-0"
-              )}
+              className={cn("size-4 text-muted-foreground/70 transition-transform", isOpen ? "rotate-180" : "rotate-0")}
             />
           </>
         )}
       </CollapsibleTrigger>
     );
-  }
+  },
 );
 
-export type ReasoningContentProps = ComponentProps<
-  typeof CollapsibleContent
-> & {
+export type ReasoningContentProps = ComponentProps<typeof CollapsibleContent> & {
   children: string;
 };
 
-export const ReasoningContent = memo(
-  ({ className, children, ...props }: ReasoningContentProps) => {
-    const viewportRef = useRef<HTMLDivElement>(null);
-    const { isStreaming } = useReasoning();
+export const ReasoningContent = memo(({ className, children, ...props }: ReasoningContentProps) => {
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const { isStreaming } = useReasoning();
 
-    // Auto-scroll to bottom when content changes during streaming
-    useEffect(() => {
-      if (isStreaming && viewportRef.current) {
-        viewportRef.current.scrollTop = viewportRef.current.scrollHeight;
-      }
-    }, [children, isStreaming]);
+  // Auto-scroll to bottom when content changes during streaming
+  useEffect(() => {
+    if (isStreaming && viewportRef.current) {
+      viewportRef.current.scrollTop = viewportRef.current.scrollHeight;
+    }
+  }, [children, isStreaming]);
 
-    return (
-      <CollapsibleContent
-        className={cn(
-          "mt-4 text-sm",
-          "text-muted-foreground/80 outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-top-2 data-[state=open]:slide-in-from-top-2",
-          className
-        )}
-        {...props}
-      >
-        <ScrollArea
-          viewportClassName="max-h-32"
-          refOnViewport={true}
-          ref={viewportRef}
-        >
-          <Response className="grid gap-2 text-muted-foreground/80 pr-4">
-            {children}
-          </Response>
-        </ScrollArea>
-      </CollapsibleContent>
-    );
-  }
-);
+  return (
+    <CollapsibleContent
+      className={cn(
+        "mt-4 text-sm",
+        "text-muted-foreground/80 outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-top-2 data-[state=open]:slide-in-from-top-2",
+        className,
+      )}
+      {...props}
+    >
+      <ScrollArea viewportClassName="max-h-32" refOnViewport={true} ref={viewportRef}>
+        <Response className="grid gap-2 text-muted-foreground/80 pr-4">{children}</Response>
+      </ScrollArea>
+    </CollapsibleContent>
+  );
+});
 
 Reasoning.displayName = "Reasoning";
 ReasoningTrigger.displayName = "ReasoningTrigger";

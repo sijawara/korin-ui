@@ -1,9 +1,9 @@
 import { useState, useMemo, useCallback } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@monorepo/shadcn-ui/tabs";
-import { Card, CardContent } from "@monorepo/shadcn-ui/card";
-import { Input } from "@monorepo/shadcn-ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@monorepo/shadcn-ui/components/ui/tabs";
+import { Card, CardContent } from "@monorepo/shadcn-ui/components/ui/card";
+import { Input } from "@monorepo/shadcn-ui/components/ui/input";
 import { Image, File, Search, FileVideo, FileAudio } from "lucide-react";
-import { ScrollArea } from "@monorepo/shadcn-ui/scroll-area";
+import { ScrollArea } from "@monorepo/shadcn-ui/components/ui/scroll-area";
 import { useGallery } from "@korinai/libs/hooks/useGallery";
 import { getFileCategory, getFileName } from "@korinai/libs";
 import { getFileIcon } from "@korinai/libs/ui/getFileIcon";

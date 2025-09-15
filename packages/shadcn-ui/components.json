@@ -4,18 +4,18 @@
   "rsc": true,
   "tsx": true,
   "tailwind": {
-    "config": "tailwind.config.ts",
-    "css": "../../apps/web/src/app/globals.css",
+    "config": "",
+    "css": "../../apps/web/app/globals.css",
     "baseColor": "neutral",
     "cssVariables": true,
     "prefix": ""
   },
   "aliases": {
-    "components": "@monorepo/shadcn-ui",
-    "ui": "@monorepo/shadcn-ui",
-    "utils": "@monorepo/shadcn-ui/libs/utils",
-    "lib": "@monorepo/shadcn-ui/libs/utils",
-    "hooks": "@monorepo/shadcn-ui/hooks"
+    "components": "@monorepo/shadcn-ui/components",
+    "utils": "@monorepo/shadcn-ui/lib/utils",
+    "hooks": "@monorepo/shadcn-ui/hooks",
+    "lib": "@monorepo/shadcn-ui/lib",
+    "ui": "@monorepo/shadcn-ui/components/ui"
   },
   "iconLibrary": "lucide"
 }

@@ -1,20 +1,8 @@
-import {
-  Check,
-  CheckCircle,
-  ChevronDown,
-  Loader2,
-  ShieldCheck,
-  X,
-  XCircle,
-} from "lucide-react";
+import { Check, CheckCircle, ChevronDown, Loader2, ShieldCheck, X, XCircle } from "lucide-react";
 import { memo, useMemo, type ReactNode } from "react";
 
-import { Button } from "@monorepo/shadcn-ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@monorepo/shadcn-ui/collapsible";
+import { Button } from "@monorepo/shadcn-ui/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@monorepo/shadcn-ui/components/ui/collapsible";
 
 type UserConfirmationState =
   | "input-streaming"
@@ -53,8 +41,7 @@ function formatTypeLabel(type: string) {
 
 function StatusPill({ state }: { state: UserConfirmationState }) {
   const normalized = state ?? "input-streaming";
-  const isRunning =
-    normalized === "input-streaming" || normalized === "input-available";
+  const isRunning = normalized === "input-streaming" || normalized === "input-available";
   const isComplete = normalized === "output-available";
   const isError = normalized === "output-error";
 
@@ -122,11 +109,7 @@ function useSummary(input?: any, output?: any) {
     if (safeInput == null && safeOutput == null) return "";
 
     // Prefer human-readable hints
-    if (
-      safeInput &&
-      typeof safeInput === "object" &&
-      (safeInput as any).explanation
-    )
+    if (safeInput && typeof safeInput === "object" && (safeInput as any).explanation)
       return String((safeInput as any).explanation);
     if (safeInput && typeof (safeInput as any).path !== "undefined")
       return `Target: ${truncate((safeInput as any).path, 64)}`;
@@ -134,15 +117,13 @@ function useSummary(input?: any, output?: any) {
       return `Command: ${truncate((safeInput as any).command, 64)}`;
     if (safeInput && typeof (safeInput as any).title !== "undefined")
       return `Title: ${truncate((safeInput as any).title, 64)}`;
-    if (safeOutput && typeof (safeOutput as any).error !== "undefined")
-      return truncate((safeOutput as any).error, 120);
+    if (safeOutput && typeof (safeOutput as any).error !== "undefined") return truncate((safeOutput as any).error, 120);
 
     // Fallback to minimal JSON/text preview
     const candidate = safeInput ?? safeOutput;
     if (candidate == null) return "";
     try {
-      const text =
-        typeof candidate === "string" ? candidate : JSON.stringify(candidate);
+      const text = typeof candidate === "string" ? candidate : JSON.stringify(candidate);
       if (!text) return "";
       return truncate(text.replace(/\s+/g, " ").trim(), 120);
     } catch {
@@ -180,9 +161,7 @@ export const UserConfirmation = memo(function UserConfirmation({
                 <CollapsibleTrigger asChild>
                   <button className="flex items-center gap-1.5 flex-wrap text-left">
                     <ShieldCheck className="h-4 w-4" />
-                    <h3 className="text-xs font-medium">
-                      {label || "Confirmation"}
-                    </h3>
+                    <h3 className="text-xs font-medium">{label || "Confirmation"}</h3>
                     <StatusPill state={state} />
                     <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200 group-data-[state=open]:rotate-180 text-muted-foreground" />
                   </button>
@@ -198,11 +177,7 @@ export const UserConfirmation = memo(function UserConfirmation({
                         onClick={onCancel}
                         disabled={canceling || confirming}
                       >
-                        {canceling ? (
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                        ) : (
-                          <X className="h-3.5 w-3.5" />
-                        )}
+                        {canceling ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <X className="h-3.5 w-3.5" />}
                       </Button>
                     )}
                     {onConfirm && (
@@ -227,16 +202,8 @@ export const UserConfirmation = memo(function UserConfirmation({
               {(extraUI || summary) && (
                 <CollapsibleContent className="mt-1">
                   <div className="rounded-md border border-border/40 bg-background/70 p-2 text-[11px] text-muted-foreground">
-                    {summary && (
-                      <p className="whitespace-pre-wrap break-words">
-                        {summary}
-                      </p>
-                    )}
-                    {extraUI && (
-                      <div className="mt-1 whitespace-pre-wrap break-words">
-                        {extraUI}
-                      </div>
-                    )}
+                    {summary && <p className="whitespace-pre-wrap break-words">{summary}</p>}
+                    {extraUI && <div className="mt-1 whitespace-pre-wrap break-words">{extraUI}</div>}
                   </div>
                 </CollapsibleContent>
               )}

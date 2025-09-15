@@ -1,14 +1,20 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@monorepo/shadcn-ui/dialog";
-import { Button } from "@monorepo/shadcn-ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@monorepo/shadcn-ui/components/ui/dialog";
+import { Button } from "@monorepo/shadcn-ui/components/ui/button";
 import { getFileCategory, getFileName } from "@korinai/libs";
 import { getFileIcon } from "@korinai/libs/ui/getFileIcon";
 import { useRef, useState, useEffect, useCallback, memo } from "react";
 import { useGalleryDetail } from "@korinai/libs/hooks/useGalleryDetail";
-import { cn } from "@monorepo/shadcn-ui/libs/utils";
+import { cn } from "@monorepo/shadcn-ui/lib/utils";
 
 interface FilePreviewDialogProps {
   url: string;
-  name: string;
+  name?: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   showSelectButton?: boolean;
@@ -19,7 +25,7 @@ interface FilePreviewDialogProps {
 // Create a memoized version of FilePreviewDialog
 const FilePreviewDialog = memo(function FilePreviewDialogInner({
   url,
-  name,
+  name = "Unnamed",
   open,
   onOpenChange,
   showSelectButton = false,
@@ -54,51 +60,6 @@ const FilePreviewDialog = memo(function FilePreviewDialogInner({
     fileCategory === "video" || /\.(mp4|mpeg|mov|avi|flv|mpg|webm|wmv|3gpp)$/i.test(displayUrl.toLowerCase());
   const isAudio = fileCategory === "audio" || /\.(wav|mp3|aiff|aac|ogg|flac)$/i.test(displayUrl.toLowerCase());
 
-  // Remove console logs
-  // console.log("Is PDF:", isPdf, { urlExtension, nameExtension, fileCategory });
-
-  // Use useCallback to prevent recreating this function
-  const getFileUrl = useCallback(async () => {
-    if (!isPdf || !open) return;
-
-    setIsLoading(true);
-    setError(null);
-    try {
-      // TODO: rewrite without firebase
-      // Extract the path from the Firebase Storage URL
-      // const urlObj = new URL(displayUrl);
-      // const pathStart = urlObj.pathname.indexOf("/o/") + 3;
-      // const pathEnd = urlObj.pathname.indexOf("?", pathStart);
-      // const path = decodeURIComponent(
-      //   urlObj.pathname.substring(
-      //     pathStart,
-      //     pathEnd !== -1 ? pathEnd : undefined
-      //   )
-      // );
-      // // Get a fresh download URL
-      // const storageRef = ref(storage, path);
-      // const url = await getDownloadURL(storageRef);
-      // setDownloadUrl(url);
-    } catch (err) {
-      console.error("Error getting download URL:", err);
-      setError(err instanceof Error ? err : new Error("Failed to load file"));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [isPdf, displayUrl, open]);
-
-  useEffect(() => {
-    if (open) {
-      // Reset image loaded state on dialog open
-      setIsImageLoaded(false);
-      getFileUrl();
-    } else {
-      // Cleanup on dialog close
-      setDownloadUrl(null);
-      setError(null);
-    }
-  }, [open, getFileUrl]);
-
   // Memoized handlers to prevent recreating functions on every render
   const handleImageLoad = useCallback(() => {
     setIsImageLoaded(true);
@@ -122,7 +83,7 @@ const FilePreviewDialog = memo(function FilePreviewDialogInner({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-[95vw] md:max-w-[85vw] lg:max-w-[75vw] h-[90vh] flex flex-col overflow-hidden p-4 md:p-6">
         <DialogHeader className="flex-shrink-0">
           <DialogTitle className="text-lg">{displayName}</DialogTitle>
         </DialogHeader>
@@ -140,10 +101,9 @@ const FilePreviewDialog = memo(function FilePreviewDialogInner({
                   key={displayUrl}
                   src={displayUrl}
                   alt={displayName}
-                  className={cn("max-w-full max-h-[70vh] object-contain rounded transition-opacity duration-200", {
-                    "opacity-100": isImageLoaded,
-                    "opacity-0": !isImageLoaded,
-                  })}
+                  className={`max-w-full max-h-[70vh] object-contain rounded transition-opacity duration-200 ${
+                    isImageLoaded ? "opacity-100" : "opacity-0"
+                  }`}
                   onError={handleImageError}
                   onLoad={handleImageLoad}
                   loading="lazy"
@@ -176,8 +136,8 @@ const FilePreviewDialog = memo(function FilePreviewDialogInner({
                   <div className="flex items-center justify-center h-full min-h-[50vh]">
                     <p>Error loading PDF. Please try again.</p>
                   </div>
-                ) : downloadUrl ? (
-                  <iframe src={downloadUrl} className="w-full h-[65vh] border-0 rounded" title="PDF Preview" />
+                ) : displayUrl ? (
+                  <iframe src={displayUrl} className="w-full h-[65vh] border-0 rounded" title="PDF Preview" />
                 ) : null}
               </div>
             ) : (

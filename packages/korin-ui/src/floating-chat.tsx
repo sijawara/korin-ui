@@ -1,10 +1,10 @@
 "use client";
 
 import { useKorinAI } from "@korinai/libs/contexts/korinai-context";
-import { Button } from "@monorepo/shadcn-ui/button";
-import { Card } from "@monorepo/shadcn-ui/card";
-import { cn } from "@monorepo/shadcn-ui/libs/utils";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@monorepo/shadcn-ui/tooltip";
+import { Button } from "@monorepo/shadcn-ui/components/ui/button";
+import { Card } from "@monorepo/shadcn-ui/components/ui/card";
+import { cn } from "@monorepo/shadcn-ui/lib/utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@monorepo/shadcn-ui/components/ui/tooltip";
 import { PageChat, type PageChatProps } from "@monorepo/ui/page-chat";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { MessageCircleMore } from "lucide-react";
@@ -50,8 +50,8 @@ export function FloatingChat({
   chatProps,
   showFloatingButton = true,
 }: FloatingChatProps) {
-  const { language, config, translations } = useKorinAI();
-  const t = translations[language];
+  const { language = "en", config, translations } = useKorinAI();
+  const t = translations?.[language] || translations.en!;
   const isControlled = typeof open === "boolean";
   const [internalOpen, setInternalOpen] = useState<boolean>(defaultOpen ?? false);
   const isOpen = isControlled ? (open as boolean) : internalOpen;

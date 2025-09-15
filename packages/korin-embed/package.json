@@ -1,7 +1,7 @@
 {
   "name": "@korinai/embed",
   "private": false,
-  "version": "1.0.2",
+  "version": "1.0.4",
   "author": "Muhamad Rizki",
   "type": "module",
   "main": "dist/embed.js",

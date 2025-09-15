@@ -1,8 +1,5 @@
-import { cn } from "@monorepo/shadcn-ui/libs/utils";
-import {
-  CodeBlock,
-  CodeBlockCopyButton,
-} from "@monorepo/ui/code-block-with-copy";
+import { cn } from "@monorepo/shadcn-ui/lib/utils";
+import { CodeBlock, CodeBlockCopyButton } from "@monorepo/ui/code-block-with-copy";
 import "katex/dist/katex.min.css";
 import { marked } from "marked";
 import React, { memo, useId, useMemo } from "react";
@@ -40,27 +37,20 @@ function parseMarkdownIntoBlocks(markdown: string): string[] {
 function extractLanguage(className?: string): string {
   if (!className) return "plaintext";
   const match = className.match(/language-(\w+)/);
-  return match ? match[1] : "plaintext";
+  return match && match[1] ? match[1] : "plaintext";
 }
 
 const INITIAL_COMPONENTS: Partial<Components> = {
   code: memo(function CodeComponent({ className, children, ...props }) {
     const isInline =
-      !props.node?.position?.start.line ||
-      props.node?.position?.start.line === props.node?.position?.end.line;
+      !props.node?.position?.start.line || props.node?.position?.start.line === props.node?.position?.end.line;
 
     const language = useMemo(() => extractLanguage(className), [className]);
     const code = useMemo(() => String(children).replace(/\n$/, ""), [children]);
 
     if (isInline) {
       return (
-        <span
-          className={cn(
-            "bg-primary-foreground rounded-sm px-1 font-mono text-sm",
-            className
-          )}
-          {...props}
-        >
+        <span className={cn("bg-primary-foreground rounded-sm px-1 font-mono text-sm", className)} {...props}>
           {children}
         </span>
       );
@@ -97,10 +87,7 @@ const INITIAL_COMPONENTS: Partial<Components> = {
   }),
   tr: memo(function TrComponent({ children, className, ...props }) {
     return (
-      <tr
-        className={cn("even:bg-muted m-0 border-t p-0", className)}
-        {...props}
-      >
+      <tr className={cn("even:bg-muted m-0 border-t p-0", className)} {...props}>
         {children}
       </tr>
     );
@@ -110,7 +97,7 @@ const INITIAL_COMPONENTS: Partial<Components> = {
       <th
         className={cn(
           "border px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right",
-          className
+          className,
         )}
         {...props}
       >
@@ -123,7 +110,7 @@ const INITIAL_COMPONENTS: Partial<Components> = {
       <td
         className={cn(
           "border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right",
-          className
+          className,
         )}
         {...props}
       >
@@ -136,10 +123,7 @@ const INITIAL_COMPONENTS: Partial<Components> = {
 
     return (
       <a
-        className={cn(
-          "text-primary hover:text-primary/80 underline underline-offset-4",
-          className
-        )}
+        className={cn("text-primary hover:text-primary/80 underline underline-offset-4", className)}
         href={href}
         target="_blank"
         rel="noopener noreferrer"
@@ -171,11 +155,7 @@ const MemoizedMarkdownBlock = memo(
   }) {
     return (
       <ReactMarkdown
-        remarkPlugins={[
-          remarkGfm,
-          remarkBreaks,
-          [remarkMath, { singleDollarTextMath: false }],
-        ]}
+        remarkPlugins={[remarkGfm, remarkBreaks, [remarkMath, { singleDollarTextMath: false }]]}
         rehypePlugins={[() => rehypeKatex({ output: "htmlAndMathml" })]}
         components={components}
       >
@@ -184,11 +164,8 @@ const MemoizedMarkdownBlock = memo(
     );
   },
   function propsAreEqual(prevProps, nextProps) {
-    return (
-      prevProps.content === nextProps.content &&
-      prevProps.components === nextProps.components
-    );
-  }
+    return prevProps.content === nextProps.content && prevProps.components === nextProps.components;
+  },
 );
 
 MemoizedMarkdownBlock.displayName = "MemoizedMarkdownBlock";
@@ -202,16 +179,10 @@ function SimpleMemoizedMarkdownComponent({
   const generatedId = useId();
 
   // Memoize the processed content
-  const processedContent = useMemo(
-    () => processKatexInMarkdown(content),
-    [content]
-  );
+  const processedContent = useMemo(() => processKatexInMarkdown(content), [content]);
 
   // Memoize the parsed blocks
-  const blocks = useMemo(
-    () => parseMarkdownIntoBlocks(processedContent),
-    [processedContent]
-  );
+  const blocks = useMemo(() => parseMarkdownIntoBlocks(processedContent), [processedContent]);
 
   // Memoize the anchor component with click handler
   const anchorComponentWithClick = useMemo(() => {
@@ -232,10 +203,7 @@ function SimpleMemoizedMarkdownComponent({
 
       return (
         <a
-          className={cn(
-            "text-primary hover:text-primary/80 underline underline-offset-4",
-            className
-          )}
+          className={cn("text-primary hover:text-primary/80 underline underline-offset-4", className)}
           href={href}
           target="_blank"
           rel="noopener noreferrer"
@@ -264,19 +232,15 @@ function SimpleMemoizedMarkdownComponent({
     () =>
       cn(
         "prose dark:prose-invert prose-p:text-inherit prose-headings:text-inherit prose-li:text-inherit prose-strong:text-inherit prose-em:text-inherit max-w-none",
-        className
+        className,
       ),
-    [className]
+    [className],
   );
 
   return (
     <div className={containerClassName}>
       {blocks.map((block, index) => (
-        <MemoizedMarkdownBlock
-          key={`${generatedId}-block-${index}`}
-          content={block}
-          components={mergedComponents}
-        />
+        <MemoizedMarkdownBlock key={`${generatedId}-block-${index}`} content={block} components={mergedComponents} />
       ))}
     </div>
   );
@@ -291,7 +255,7 @@ export const SimpleMemoizedMarkdown = memo(
       prevProps.onHyperlinkClicked === nextProps.onHyperlinkClicked &&
       prevProps.components === nextProps.components
     );
-  }
+  },
 );
 
 export const MemoizedMarkdown = SimpleMemoizedMarkdown;

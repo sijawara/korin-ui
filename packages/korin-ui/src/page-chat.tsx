@@ -9,14 +9,14 @@ import { useRooms } from "@korinai/libs/hooks/useRooms";
 import { useSingleRoom } from "@korinai/libs/hooks/useSingleRoom";
 import { useUser } from "@korinai/libs/hooks/useUser";
 import type { FileAttachment } from "@korinai/libs/types";
-import { Avatar, AvatarFallback, AvatarImage } from "@monorepo/shadcn-ui/avatar";
-import { Badge } from "@monorepo/shadcn-ui/badge";
-import { Button } from "@monorepo/shadcn-ui/button";
-import { Card } from "@monorepo/shadcn-ui/card";
-import { Input } from "@monorepo/shadcn-ui/input";
-import { cn } from "@monorepo/shadcn-ui/libs/utils";
-import { Skeleton } from "@monorepo/shadcn-ui/skeleton";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@monorepo/shadcn-ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@monorepo/shadcn-ui/components/ui/avatar";
+import { Badge } from "@monorepo/shadcn-ui/components/ui/badge";
+import { Button } from "@monorepo/shadcn-ui/components/ui/button";
+import { Card } from "@monorepo/shadcn-ui/components/ui/card";
+import { Input } from "@monorepo/shadcn-ui/components/ui/input";
+import { cn } from "@monorepo/shadcn-ui/lib/utils";
+import { Skeleton } from "@monorepo/shadcn-ui/components/ui/skeleton";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@monorepo/shadcn-ui/components/ui/tooltip";
 import { ChatBubble } from "@monorepo/ui/chat-bubble";
 import { ChatInput } from "@monorepo/ui/chat-input";
 import { DefaultChatTransport, generateId } from "ai";
@@ -50,6 +50,7 @@ export interface PageChatProps {
   onSend?: (message: { text: string; roomId: string }) => void;
   headerRightSlot?: ReactNode;
   variant?: "card" | "flat";
+  chatInputVariant?: "default" | "compact";
   // Network/config overrides
   throttleMs?: number; // maps to experimental_throttle
   requestHeaders?: Record<string, string>; // merged into transport headers (in addition to Authorization)
@@ -103,10 +104,11 @@ export function PageChat({
   requestBody,
   ui,
   branding,
+  chatInputVariant,
 }: PageChatProps) {
-  const { language, config, translations } = useKorinAI();
-  const t = translations[language];
-  const { authToken } = useKorinAI();
+  const { language = "en", config, translations } = useKorinAI();
+  const t = translations?.[language] || translations.en!;
+  const { getAuthToken, authToken } = useKorinAI();
   const { creditLimited, showWarning, mutate: mutateUserData, user } = useUser();
   const { currentAgent, agents, isLoading: isLoadingAgents } = useAgent();
   // Resolve active agent (allow overriding with defaultAgentUsername when provided)
@@ -187,22 +189,22 @@ export function PageChat({
 
     rooms.forEach((room) => {
       if (!room.last_message_part?.created_at) {
-        groups["Older"].push(room);
+        groups["Older"]!.push(room);
         return;
       }
 
       const msgDate = new Date(room.last_message_part.created_at);
 
       if (msgDate >= today) {
-        groups["Today"].push(room);
+        groups["Today"]!.push(room);
       } else if (msgDate >= yesterday) {
-        groups["Yesterday"].push(room);
+        groups["Yesterday"]!.push(room);
       } else if (msgDate >= thisWeekStart) {
-        groups["This Week"].push(room);
+        groups["This Week"]!.push(room);
       } else if (msgDate >= lastWeekStart) {
-        groups["Last Week"].push(room);
+        groups["Last Week"]!.push(room);
       } else {
-        groups["Older"].push(room);
+        groups["Older"]!.push(room);
       }
     });
 
@@ -267,9 +269,12 @@ export function PageChat({
     experimental_throttle: typeof throttleMs === "number" ? throttleMs : 100,
     transport: new DefaultChatTransport({
       api: config.chatApi,
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-        ...(requestHeaders || {}),
+      headers: async () => {
+        const token = authToken || (await getAuthToken());
+        return {
+          Authorization: `Bearer ${token}`,
+          ...(requestHeaders || {}),
+        };
       },
     }),
     onFinish: async () => {
@@ -321,7 +326,7 @@ export function PageChat({
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        if (entry.isIntersecting && hasMore && !isLoadingRooms) {
+        if (entry && entry.isIntersecting && hasMore && !isLoadingRooms) {
           setHistoryPage((p) => p + 1);
         }
       },
@@ -923,7 +928,7 @@ export function PageChat({
             <div className="w-full">
               <ChatInput
                 isLoading={isStreaming || isLoadingHistory}
-                variant="compact"
+                variant={chatInputVariant}
                 showTemplate={messages.length === 0}
                 handleSubmit={handleSubmit}
                 onStop={stop}

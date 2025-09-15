@@ -1,6 +1,6 @@
 # Full Stack Monorepo with Turbopack, Eslint, Next.js, Express.js, Tailwind CSS, and shadcn
 
-This repository is a full-stack monorepo starter template that integrates several modern web development tools and libraries, including **Turbopack**, **Eslint**, **Next.js**, **Express.js**, **Tailwind CSS**, and **shadcn**. It follows the tutorial from [The Halftime Code](https://www.thehalftimecode.com/building-a-full-stack-monorepo-with-turbopack-biome-next-js-express-js-tailwind-css-and-shadcn/) on how to set up a full-stack monorepo, combining both frontend and backend services in a single codebase.
+This repository is a full-stack monorepo starter template that integrates several modern web development tools and libraries, including **Turbopack**, **Eslint**, **Next.js**, **Express.js**, **Tailwind CSS**, and **shadcn**.
 
 ## Features
 
@@ -125,6 +125,15 @@ This section documents the actual packages and apps in this repository and how t
 - Workspace layout: `pnpm-workspace.yaml` with `apps/*` and `packages/*`
 - Linting/formatting: shared config via `@monorepo/eslint-config` and Prettier
 - Versioning/publishing: Changesets
+
+### Quick Links
+
+- Playground (live demo): https://sijawara.github.io/korin-ui/packages/korin-embed/examples/playground.html
+- UI Showcase & shadcn registry: https://ui.korinai.com
+- Sub‑package READMEs:
+  - `packages/korin-ui/README.md` – UI components and Tailwind config (@monorepo/ui)
+  - `packages/korin-libs/README.md` – Hooks, contexts, and utilities (@korinai/libs)
+  - `packages/korin-embed/README.md` – Embeddable widget docs (@korinai/embed)
 
 ## Directory Structure
 

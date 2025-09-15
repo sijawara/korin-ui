@@ -1,4 +1,4 @@
-import { cn } from "@monorepo/shadcn-ui/libs/utils";
+import { cn } from "@monorepo/shadcn-ui/lib/utils";
 import { useEffect, useState } from "react";
 
 interface TypingLoaderProps {

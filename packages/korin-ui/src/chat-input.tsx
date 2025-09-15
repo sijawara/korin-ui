@@ -8,13 +8,13 @@ import { useIsMobile } from "@korinai/libs/hooks/useIsMobile";
 import { useUser } from "@korinai/libs/hooks/useUser";
 import type { PromptTemplate } from "@korinai/libs/types";
 import { getFileIcon } from "@korinai/libs/ui/getFileIcon";
-import { Avatar, AvatarFallback, AvatarImage } from "@monorepo/shadcn-ui/avatar";
-import { Button } from "@monorepo/shadcn-ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@monorepo/shadcn-ui/dialog";
-import { cn } from "@monorepo/shadcn-ui/libs/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "@monorepo/shadcn-ui/popover";
-import { Textarea } from "@monorepo/shadcn-ui/textarea";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@monorepo/shadcn-ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@monorepo/shadcn-ui/components/ui/avatar";
+import { Button } from "@monorepo/shadcn-ui/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@monorepo/shadcn-ui/components/ui/dialog";
+import { cn } from "@monorepo/shadcn-ui/lib/utils";
+import { Popover, PopoverContent, PopoverTrigger } from "@monorepo/shadcn-ui/components/ui/popover";
+import { Textarea } from "@monorepo/shadcn-ui/components/ui/textarea";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@monorepo/shadcn-ui/components/ui/tooltip";
 import { AvatarKorin } from "@monorepo/ui/avatar-korin";
 import ChatLimited from "@monorepo/ui/chat-limited";
 import { FilePreviewDialog } from "@monorepo/ui/file-preview-dialog";
@@ -52,39 +52,6 @@ interface ChatInputTranslations {
   noCredits: string;
   selectFile: string;
 }
-
-const translations: Record<string, ChatInputTranslations> = {
-  en: {
-    templates: "Templates",
-    fileSizeError: "File size must be less than 10MB",
-    fileTypeError: "File type not supported",
-    uploadSuccess: "File uploaded successfully",
-    uploadFailed: "Upload failed",
-    dropFile: "Drop your file here",
-    retry: "Retry",
-    selectAgent: "Select Agent",
-    attachFile: "Attach File",
-    stopGenerating: "Stop generating",
-    sendMessage: "Send message",
-    noCredits: "No credits available",
-    selectFile: "Select File",
-  },
-  id: {
-    templates: "Template",
-    fileSizeError: "Ukuran file harus kurang dari 10MB",
-    fileTypeError: "Tipe file tidak didukung",
-    uploadSuccess: "File berhasil diunggah",
-    uploadFailed: "Gagal mengunggah",
-    dropFile: "Letakkan file Anda di sini",
-    retry: "Coba Lagi",
-    selectAgent: "Pilih Agen",
-    attachFile: "Lampirkan File",
-    stopGenerating: "Hentikan pembuatan",
-    sendMessage: "Kirim pesan",
-    noCredits: "Kredit tidak tersedia",
-    selectFile: "Pilih File",
-  },
-};
 
 interface ChatInputProps {
   isLoading: boolean;
@@ -125,14 +92,13 @@ export function ChatInput({
   onFileAttach,
   handleAttachmentChange,
   ownerEmail,
-  translations: customTranslations,
   onError,
   variant = "default",
   showAttachButton = true,
   showStopButton = true,
   showAgentSelector = true,
 }: ChatInputProps) {
-  const { language } = useKorinAI();
+  const { language = "en", translations } = useKorinAI();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [inputValue, setInputValue] = useState("");
   const [isFileSelectorOpen, setIsFileSelectorOpen] = useState(false);
@@ -140,7 +106,7 @@ export function ChatInput({
   const [openFilePreviewIndex, setOpenFilePreviewIndex] = useState<number | null>(null);
   const { isUploading, uploadFile, uploadProgress } = useGalleryUpload();
   const { user } = useUser();
-  const t = customTranslations?.[language] || translations?.[language];
+  const t = translations?.[language] || translations.en!;
   const [isDragging, setIsDragging] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);
@@ -667,12 +633,12 @@ export function ChatInput({
                       <Button
                         type="button"
                         size="icon"
-                        variant="secondary"
                         onClick={onStop}
+                        variant="destructive"
                         className="h-10 w-10 md:h-9 md:w-9 rounded-xl shadow-md hover:shadow-lg transition-all"
                         disabled={!isStreaming}
                       >
-                        <Square className="h-4 w-4 text-primary" />
+                        <Square className="h-4 w-4 text-primary-foreground" />
                         <span className="sr-only">{t.stopGenerating}</span>
                       </Button>
                     ) : (
