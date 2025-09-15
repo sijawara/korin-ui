@@ -69,6 +69,110 @@ Checklist (common gotchas):
 - Pass `authToken` or `getAuthToken` to authenticate requests.
 - Ensure your backend exposes the endpoints used by the hooks (see hook names for intent).
 
+## Beginner roadmap (5 minutes)
+
+1. Install and wrap your app with `KorinAIProvider`.
+2. Set `config.baseUrl` (and optionally `config.chatApi`).
+3. Provide an `authToken` or `getAuthToken()` that returns a valid token.
+4. Try your first hook: `useGallery()` or `useRooms()` and render the data.
+5. Add actions: upload with `useGalleryUpload()`, or send chat messages with your own API using the Vercel AI SDK.
+
+## Concepts in 2 minutes
+
+- `KorinAIProvider`: a React context that stores your API config, language, and auth token.
+- Hooks like `useGallery`, `useRooms`, `useMessages`: SWR-based data hooks that call your backend.
+- Utilities like `getFileName` or `getFileCategory`: small helpers you can call anywhere.
+- UI helper `getFileIcon`: returns an SVG icon based on file type.
+
+## Common recipes
+
+### 1) Display a simple gallery grid
+
+```tsx
+import { useGallery } from "@korinai/libs";
+
+export function GalleryGrid() {
+  const { items, isLoading, isError } = useGallery({ page: 1, limit: 12 });
+  if (isLoading) return <p>Loading…</p>;
+  if (isError) return <p>Failed to load</p>;
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      {items.map((it) => (
+        <figure key={it.id} className="border rounded p-2">
+          <img src={it.file_url} alt={it.caption || "item"} />
+          <figcaption className="text-sm mt-1">{it.caption}</figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+}
+```
+
+### 2) Upload a file and refresh the gallery
+
+```tsx
+import { useGallery, useGalleryUpload } from "@korinai/libs";
+
+export function Uploader() {
+  const { mutate } = useGallery({ page: 1, limit: 12 });
+  const { uploadFile, isUploading, uploadProgress } = useGalleryUpload();
+
+  async function onSelect(file: File) {
+    const res = await uploadFile(file, false, []);
+    if (res.success) await mutate();
+  }
+
+  return (
+    <div>
+      <input type="file" onChange={(e) => e.target.files && onSelect(e.target.files[0]!)} />
+      {isUploading && (
+        <p>
+          {uploadProgress.status}: {Math.round(uploadProgress.progress)}%
+        </p>
+      )}
+    </div>
+  );
+}
+```
+
+### 3) Render a file icon for a URL
+
+```tsx
+import { getFileIcon } from "@korinai/libs/ui/getFileIcon";
+
+export function FileRow({ url }: { url: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      {getFileIcon(url)}
+      <span className="text-sm">{url.split("/").pop()}</span>
+    </div>
+  );
+}
+```
+
+## Auth & configuration (beginner-safe)
+
+The minimum config you need is set on `KorinAIProvider`:
+
+```tsx
+<KorinAIProvider
+  config={{
+    baseUrl: "https://api.example.com", // your API base for gallery/rooms/etc.
+    chatApi: "/api/chat", // your chat streaming endpoint (optional here)
+  }}
+  // Either pass a token…
+  authToken={"<jwt-or-session>"}
+  // …or provide an async getter (recommended):
+  // getAuthToken={async () => fetch('/api/token').then(r => r.text())}
+>
+  {children}
+</KorinAIProvider>
+```
+
+Tips:
+- Use `getAuthToken` if your token changes or you need to refresh it.
+- For chat UIs, see the minimal `chatApi` endpoint example in the Korin UI README.
+
 ---
 
 ## Exports overview
@@ -289,6 +393,24 @@ To keep this README concise (no duplicated schemas), refer to the source files f
 - `Room` – exported from `packages/korin-libs/hooks/useRooms.ts`
 - `MimeTypes` – in `packages/korin-libs/libs/mimeTypes.ts`
 - File category types – `packages/korin-libs/libs/fileCategories.ts`
+
+## Troubleshooting
+
+- Missing or invalid token: Ensure you pass `authToken` or implement `getAuthToken`. Inspect network requests in your browser devtools; a 401 usually means your token is absent/expired.
+- Wrong `baseUrl` or `chatApi`: Double-check `config.baseUrl` and `config.chatApi`. Try opening the URL directly in the browser to verify it responds.
+- CORS errors: Configure your backend to allow your app’s origin. In development, enable permissive CORS or use a proxy.
+- SWR not updating: Call `mutate()` from the relevant hook after an action (e.g., upload) to revalidate data.
+- Type errors: Make sure your project uses a compatible TypeScript version and the `@types/react` that matches React 18.
+
+## FAQ
+
+- Do I need Next.js? No. Any React 18 app works. Examples use Next.js because it’s common.
+- Can I secure my APIs? Yes. Use `authToken`/`getAuthToken` and validate the `Authorization` header server-side.
+- Can I use my own UI? Yes. `@korinai/libs` is headless. Pair with `korin-ui` for ready-made components, or build your own.
+- How do I paginate rooms/gallery? Use the `page` and `limit` parameters on `useRooms`/`useGallery` and render load-more or infinite scroll.
+- How do I change language? Pass `language` and optional `translations` to `KorinAIProvider`.
+- Subpath imports? Yes. Import only what you use, e.g., `@korinai/libs/hooks/useGallery`.
+- File size/type limits for uploads? Validate before calling `uploadFile`. Use `mimeTypes` and `getFileCategory` helpers.
 
 ## Contributing
 
