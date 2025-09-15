@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@monorepo/shadcn-ui/libs/utils";
+import { cn } from "@monorepo/shadcn-ui/lib/utils";
 import { useTheme } from "next-themes";
 import React, { useEffect, useState } from "react";
 import { codeToHtml } from "shikiji";
@@ -16,7 +16,7 @@ function CodeBlock({ children, className, ...props }: CodeBlockProps) {
       className={cn(
         "not-prose flex w-full flex-col overflow-clip border",
         "border-border bg-card text-card-foreground rounded-xl",
-        className
+        className,
       )}
       {...props}
     >
@@ -32,13 +32,7 @@ export type CodeBlockCodeProps = {
   className?: string;
 } & React.HTMLProps<HTMLDivElement>;
 
-function CodeBlockCode({
-  code,
-  language = "tsx",
-  theme = "github-light",
-  className,
-  ...props
-}: CodeBlockCodeProps) {
+function CodeBlockCode({ code, language = "tsx", theme = "github-light", className, ...props }: CodeBlockCodeProps) {
   const { resolvedTheme: appTheme } = useTheme();
   const [highlightedHtml, setHighlightedHtml] = useState<string | null>(null);
 
@@ -69,16 +63,12 @@ function CodeBlockCode({
 
   const classNames = cn(
     "w-full overflow-x-auto rounded-xl text-[13px] [&>pre]:px-4 [&>pre]:py-4 [&>pre]:!bg-background",
-    className
+    className,
   );
 
   // SSR fallback: render plain code if not hydrated yet
   return highlightedHtml ? (
-    <div
-      className={classNames}
-      dangerouslySetInnerHTML={{ __html: highlightedHtml }}
-      {...props}
-    />
+    <div className={classNames} dangerouslySetInnerHTML={{ __html: highlightedHtml }} {...props} />
   ) : (
     <div className={classNames} {...props}>
       <pre>
@@ -90,16 +80,9 @@ function CodeBlockCode({
 
 export type CodeBlockGroupProps = React.HTMLAttributes<HTMLDivElement>;
 
-function CodeBlockGroup({
-  children,
-  className,
-  ...props
-}: CodeBlockGroupProps) {
+function CodeBlockGroup({ children, className, ...props }: CodeBlockGroupProps) {
   return (
-    <div
-      className={cn("flex items-center justify-between", className)}
-      {...props}
-    >
+    <div className={cn("flex items-center justify-between", className)} {...props}>
       {children}
     </div>
   );

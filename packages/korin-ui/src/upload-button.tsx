@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { Button } from "@monorepo/shadcn-ui/button";
+import { Button } from "@monorepo/shadcn-ui/components/ui/button";
 import { Upload, Loader2 } from "lucide-react";
-import { Progress } from "@monorepo/shadcn-ui/progress";
+import { Progress } from "@monorepo/shadcn-ui/components/ui/progress";
 import { getFileCategory } from "@korinai/libs";
 import { useGalleryUpload } from "@korinai/libs/hooks/useGalleryUpload";
 import {
@@ -12,7 +12,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from "@monorepo/shadcn-ui/drawer";
+} from "@monorepo/shadcn-ui/components/ui/drawer";
 import { getFileIcon } from "@korinai/libs/ui/getFileIcon";
 import { useKorinAI } from "@korinai/libs/contexts/korinai-context";
 import { useUser } from "@korinai/libs/hooks/useUser";

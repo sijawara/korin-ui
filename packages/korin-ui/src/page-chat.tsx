@@ -9,14 +9,14 @@ import { useRooms } from "@korinai/libs/hooks/useRooms";
 import { useSingleRoom } from "@korinai/libs/hooks/useSingleRoom";
 import { useUser } from "@korinai/libs/hooks/useUser";
 import type { FileAttachment } from "@korinai/libs/types";
-import { Avatar, AvatarFallback, AvatarImage } from "@monorepo/shadcn-ui/avatar";
-import { Badge } from "@monorepo/shadcn-ui/badge";
-import { Button } from "@monorepo/shadcn-ui/button";
-import { Card } from "@monorepo/shadcn-ui/card";
-import { Input } from "@monorepo/shadcn-ui/input";
-import { cn } from "@monorepo/shadcn-ui/libs/utils";
-import { Skeleton } from "@monorepo/shadcn-ui/skeleton";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@monorepo/shadcn-ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@monorepo/shadcn-ui/components/ui/avatar";
+import { Badge } from "@monorepo/shadcn-ui/components/ui/badge";
+import { Button } from "@monorepo/shadcn-ui/components/ui/button";
+import { Card } from "@monorepo/shadcn-ui/components/ui/card";
+import { Input } from "@monorepo/shadcn-ui/components/ui/input";
+import { cn } from "@monorepo/shadcn-ui/lib/utils";
+import { Skeleton } from "@monorepo/shadcn-ui/components/ui/skeleton";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@monorepo/shadcn-ui/components/ui/tooltip";
 import { ChatBubble } from "@monorepo/ui/chat-bubble";
 import { ChatInput } from "@monorepo/ui/chat-input";
 import { DefaultChatTransport, generateId } from "ai";
@@ -50,6 +50,7 @@ export interface PageChatProps {
   onSend?: (message: { text: string; roomId: string }) => void;
   headerRightSlot?: ReactNode;
   variant?: "card" | "flat";
+  chatInputVariant?: "default" | "compact";
   // Network/config overrides
   throttleMs?: number; // maps to experimental_throttle
   requestHeaders?: Record<string, string>; // merged into transport headers (in addition to Authorization)
@@ -103,6 +104,7 @@ export function PageChat({
   requestBody,
   ui,
   branding,
+  chatInputVariant,
 }: PageChatProps) {
   const { language = "en", config, translations } = useKorinAI();
   const t = translations?.[language] || translations.en!;
@@ -923,7 +925,7 @@ export function PageChat({
             <div className="w-full">
               <ChatInput
                 isLoading={isStreaming || isLoadingHistory}
-                variant="compact"
+                variant={chatInputVariant}
                 showTemplate={messages.length === 0}
                 handleSubmit={handleSubmit}
                 onStop={stop}

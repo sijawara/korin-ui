@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
-import { KorinProvider } from "@monorepo/ui/korin-provider";
-import { Card, CardContent, CardHeader, CardTitle } from "@monorepo/shadcn-ui/card";
-import { Button } from "@monorepo/shadcn-ui/button";
-import { Input } from "@monorepo/shadcn-ui/input";
 import type { KorinAIConfig } from "@korinai/libs/types";
+import { Button } from "@monorepo/shadcn-ui/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@monorepo/shadcn-ui/components/ui/card";
+import { Input } from "@monorepo/shadcn-ui/components/ui/input";
+import { KorinProvider } from "@monorepo/ui/korin-provider";
+import { useState } from "react";
 
 // Examples (deduplicated demos)
 import AvatarKorinExample from "@monorepo/example/avatar-korin";
@@ -17,7 +17,6 @@ import CodeBlockWithCopyExample from "@monorepo/example/code-block-with-copy";
 import FilePreviewDialogExample from "@monorepo/example/file-preview-dialog";
 import FileSelectorExample from "@monorepo/example/file-selector";
 import FloatingChatExample from "@monorepo/example/floating-chat";
-import KorinProviderExample from "@monorepo/example/korin-provider";
 import MemoizedMarkdownExample from "@monorepo/example/memoized-markdown";
 import PageChatExample from "@monorepo/example/page-chat";
 import ReasoningExample from "@monorepo/example/reasoning";
@@ -85,8 +84,8 @@ export default function Home() {
 
   // Minimal Korin config and token getter for demos
   const korinConfig: KorinAIConfig = {
-    baseUrl: "https://api.korinai.com",
-    chatApi: "https://api.korinai.com/api/chat",
+    baseUrl: process.env.NEXT_PUBLIC_KORINAI_BASE_URL || "https://api.korinai.com",
+    chatApi: process.env.NEXT_PUBLIC_KORINAI_CHAT_API || "https://api.korinai.com/api/chat",
   };
   const getAuthToken = async () => apiKey;
 

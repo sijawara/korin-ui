@@ -71,13 +71,5 @@
     "tw-animate-css": "^1.3.8",
     "vaul": "^1.1.2",
     "zod": "^4.1.8"
-  },
-  "exports": {
-    "./globals.css": "./src/styles/globals.css",
-    "./postcss.config": "./postcss.config.mjs",
-    "./tailwind.config": "./tailwind.config.ts",
-    "./libs/*": "./src/libs/*.ts",
-    "./hooks/*": "./src/hooks/*.ts",
-    "./*": "./src/*.tsx"
   }
 }

@@ -1,4 +1,4 @@
-import { cn } from "@monorepo/shadcn-ui/libs/utils";
+import { cn } from "@monorepo/shadcn-ui/lib/utils";
 import { CodeBlock, CodeBlockCopyButton } from "@monorepo/ui/code-block-with-copy";
 import "katex/dist/katex.min.css";
 import { marked } from "marked";

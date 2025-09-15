@@ -6,28 +6,47 @@ const audioExtensions = [".wav", ".mp3", ".aiff", ".aac", ".ogg", ".flac"];
 const documentExtensions = [".pdf", ".doc", ".docx", ".txt", ".rtf"];
 
 /**
- * Extracts the file name from a Firebase storage path or URL and removes timestamp prefix
- * @param path Firebase storage path or URL
- * @returns The file name without the path and timestamp
+ * Extracts the filename from a URL, with special handling for Firebase Storage URLs.
+ * For Firebase Storage URLs, it decodes the URL and extracts the original filename.
+ * For other URLs, it extracts the last segment of the path.
+ *
+ * @param {string} url - The URL to extract the filename from
+ * @returns {string} The extracted filename, or "Untitled" if no filename can be determined
  */
-export function getFileName(path: string): string {
-  // Handle full Firebase Storage URLs
-  if (path.includes("firebasestorage.googleapis.com")) {
-    // Extract the file name from the URL parameters
-    const match = path.match(/([^/?]+)(?=\?|$)/);
-    if (match) {
-      const fullName = decodeURIComponent(match[0]);
-      // Remove timestamp prefix if it exists
-      return fullName.replace(/^\d+_/, "");
-    }
-  }
+export const getFileName = (url: string): string => {
+  if (!url) return "Untitled";
 
-  // Handle regular paths
-  const parts = path.split("/");
-  const fullName = parts[parts.length - 1] || "Unnamed file";
-  // Remove timestamp prefix if it exists
-  return fullName.replace(/^\d+_/, "");
-}
+  try {
+    // Decode the URL to handle encoded characters
+    const decodedUrl = decodeURIComponent(url);
+
+    // Handle Firebase Storage URLs
+    if (decodedUrl.includes("firebasestorage.googleapis.com")) {
+      // Extract the path after /o/ and before the query parameters
+      const pathMatch = decodedUrl.match(/\/o\/([^?]+)/);
+      if (!pathMatch) return "Untitled";
+
+      // Get the last part of the path which contains the filename
+      const pathParts = pathMatch[1].split("/");
+      const fileNameWithTimestamp = pathParts[pathParts.length - 1];
+
+      // Remove timestamp prefix if present (format: timestamp_originalName)
+      const parts = fileNameWithTimestamp.split("_");
+      const lastTwoParts = parts.slice(parts.findLastIndex((x) => x.match(/\d{11,}/))).join("_");
+      return lastTwoParts;
+    }
+
+    // Handle regular URLs
+    const urlObj = new URL(decodedUrl);
+    const pathname = urlObj.pathname;
+    const fileName = pathname.split("/").pop() || "Untitled";
+
+    return fileName;
+  } catch (error) {
+    console.error("Error parsing URL:", error);
+    return "Untitled";
+  }
+};
 
 export const getFileCategory = (url: string): FileCategory => {
   if (!url) return "document";

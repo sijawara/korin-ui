@@ -7,8 +7,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@monorepo/shadcn-ui/alert-dialog";
-import { Button } from "@monorepo/shadcn-ui/button";
+} from "@monorepo/shadcn-ui/components/ui/alert-dialog";
+import { Button } from "@monorepo/shadcn-ui/components/ui/button";
 import { FilePreviewDialog } from "@monorepo/ui/file-preview-dialog";
 import type { ChatMessage, FileAttachment, MessageMetadata } from "@korinai/libs/types";
 import { SimpleMemoizedMarkdown } from "@monorepo/ui/memoized-markdown";
@@ -19,7 +19,7 @@ import { UserConfirmation } from "@monorepo/ui/user-confirmation";
 import type { StaticToolError, StaticToolResult, TextPart, UIMessagePart } from "ai";
 import { CheckCircle, Copy, Loader2, Paperclip, Play, RefreshCw, Trash2, XCircleIcon } from "lucide-react";
 import React, { useCallback, useMemo, useState } from "react";
-import { cn } from "@monorepo/shadcn-ui/libs/utils";
+import { cn } from "@monorepo/shadcn-ui/lib/utils";
 
 /**
  * Expected message structure:

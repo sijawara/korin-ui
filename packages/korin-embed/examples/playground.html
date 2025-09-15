@@ -67,7 +67,6 @@
         color: var(--text);
         background: var(--bg);
         min-height: 100vh;
-        overflow-x: hidden;
         line-height: 1.6;
       }
 
@@ -77,7 +76,6 @@
         flex-direction: column;
         min-height: 100vh;
         max-height: 100vh;
-        overflow: hidden;
       }
 
       /* Header */
@@ -211,7 +209,6 @@
         grid-template-columns: 1fr;
         gap: 1.5rem;
         padding: 1.5rem;
-        overflow: hidden;
       }
 
       /* Canvas */
@@ -222,7 +219,6 @@
         box-shadow: var(--shadow-lg);
         display: flex;
         flex-direction: column;
-        overflow: hidden;
         height: calc(100vh - 8rem);
       }
 
@@ -729,23 +725,6 @@
             </section>
           </div>
         </div>
-
-        <div class="hint">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            style="margin-right: 0.5rem"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 16v-4" />
-            <path d="M12 8h.01" />
-          </svg>
-          Only one demo is active at a time. Switching modes will hide the other and reset visibility appropriately.
-        </div>
       </main>
     </div>
 
@@ -908,6 +887,15 @@
             <select id="cfg-variant" class="select">
               <option value="flat" selected>flat</option>
               <option value="card">card</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <label for="cfg-chat-input-variant">Chat Input Variant</label>
+            <div class="desc">Choose between a default layout or a compact chat input UI.</div>
+            <select id="cfg-chat-input-variant" class="select">
+              <option value="default" selected>default</option>
+              <option value="compact">compact</option>
             </select>
           </div>
 
@@ -1328,6 +1316,7 @@
             chatProps: {
               ...pagePropsData,
               variant: getValue("cfg-variant") || getValue("fc-chat-variant", "flat"),
+              chatInputVariant: getValue("cfg-chat-input-variant") || getValue("fc-chat-input-variant", "default"),
               hideHistory: getChecked("cfg-hide-history") || getChecked("fc-hide-history"),
               pageSize: getNumber("cfg-page-size", getNumber("fc-page-size", 10)),
               headerRightSlot: getValue("cfg-header-slot") || getValue("fc-header-slot") || undefined,
@@ -1362,6 +1351,7 @@
           return {
             title: getValue("cfg-title") || getValue("pc-title", "Chat with KorinAI"),
             variant: getValue("cfg-variant") || getValue("pc-variant", "flat"),
+            chatInputVariant: getValue("cfg-chat-input-variant") || getValue("pc-chat-input-variant", "default"),
             showCloseButton: getChecked("pc-show-close"),
             defaultRoomId: getValue("pc-default-room") || undefined,
             showRoomName: getChecked("pc-show-room"),
@@ -1660,46 +1650,6 @@
             });
           }
         })();
-
-        if (elToggleFloat) {
-          elToggleFloat.addEventListener("click", () => {
-            try {
-              window.KorinAI?.toggleFloatingChat?.();
-            } catch (error) {
-              console.error("Error toggling floating chat:", error);
-            }
-          });
-        }
-
-        // Live change handlers
-        let reloadTimeout;
-        const debouncedReload = () => {
-          clearTimeout(reloadTimeout);
-          reloadTimeout = setTimeout(() => {
-            reloadActive();
-            try {
-              updateEmbedCode();
-            } catch (e) {}
-          }, 300);
-        };
-
-        document.querySelectorAll("#config input, #config select").forEach((el) => {
-          el.addEventListener("input", debouncedReload);
-          el.addEventListener("change", debouncedReload);
-        });
-
-        // Initial setup
-        try {
-          setMode("page");
-          updateFloatingToggleVisibility();
-          updateEmbedCode();
-        } catch (error) {
-          console.error("Error during initial setup:", error);
-        }
-      })();
-    </script>
-  </body>
-</html>
 
         if (elToggleFloat) {
           elToggleFloat.addEventListener("click", () => {

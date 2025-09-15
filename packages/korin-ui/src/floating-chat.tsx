@@ -1,10 +1,10 @@
 "use client";
 
 import { useKorinAI } from "@korinai/libs/contexts/korinai-context";
-import { Button } from "@monorepo/shadcn-ui/button";
-import { Card } from "@monorepo/shadcn-ui/card";
-import { cn } from "@monorepo/shadcn-ui/libs/utils";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@monorepo/shadcn-ui/tooltip";
+import { Button } from "@monorepo/shadcn-ui/components/ui/button";
+import { Card } from "@monorepo/shadcn-ui/components/ui/card";
+import { cn } from "@monorepo/shadcn-ui/lib/utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@monorepo/shadcn-ui/components/ui/tooltip";
 import { PageChat, type PageChatProps } from "@monorepo/ui/page-chat";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { MessageCircleMore } from "lucide-react";

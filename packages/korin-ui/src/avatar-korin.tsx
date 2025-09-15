@@ -1,6 +1,6 @@
 import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@monorepo/shadcn-ui/avatar";
-import { cn } from "@monorepo/shadcn-ui/libs/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@monorepo/shadcn-ui/components/ui/avatar";
+import { cn } from "@monorepo/shadcn-ui/lib/utils";
 
 interface AvatarKorinProps extends React.ComponentPropsWithoutRef<typeof Avatar> {
   src?: string;

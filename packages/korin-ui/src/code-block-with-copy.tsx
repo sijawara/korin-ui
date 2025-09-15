@@ -1,27 +1,12 @@
 "use client";
 
 import { CheckIcon, CopyIcon, Loader2, Square } from "lucide-react";
-import type {
-  ComponentProps,
-  HTMLAttributes,
-  ReactNode,
-  MouseEvent as ReactMouseEvent,
-} from "react";
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import type { ComponentProps, HTMLAttributes, ReactNode, MouseEvent as ReactMouseEvent } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { Button } from "@monorepo/shadcn-ui/button";
-import { cn } from "@monorepo/shadcn-ui/libs/utils";
-import {
-  CodeBlock as UiCodeBlock,
-  CodeBlockCode,
-} from "@monorepo/ui/code-block";
+import { cn } from "@monorepo/shadcn-ui/lib/utils";
+import { CodeBlock as UiCodeBlock, CodeBlockCode } from "@monorepo/ui/code-block";
+import { Button } from "@monorepo/shadcn-ui/components/ui/button";
 
 type CodeBlockContextType = {
   code: string;
@@ -79,20 +64,13 @@ export const CodeBlock = ({
   isStreaming = false,
   ...props
 }: CodeBlockProps) => {
-  const paddingClass = compact
-    ? "[&>pre]:px-2.5 [&>pre]:py-2.5"
-    : "[&>pre]:px-4 [&>pre]:py-4";
+  const paddingClass = compact ? "[&>pre]:px-2.5 [&>pre]:py-2.5" : "[&>pre]:px-4 [&>pre]:py-4";
   const textSizeClass = compact ? "text-[12px]" : "text-[13px]";
-  const [isExpanded, setIsExpanded] = useState<boolean>(
-    expanded ?? !collapseByDefault
-  );
+  const [isExpanded, setIsExpanded] = useState<boolean>(expanded ?? !collapseByDefault);
   const [isOverflowing, setIsOverflowing] = useState<boolean>(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const displayTitle = title ?? terminalTitle ?? "";
-  const lines = useMemo(
-    () => (virtualize ? code.split("\n") : []),
-    [virtualize, code]
-  );
+  const lines = useMemo(() => (virtualize ? code.split("\n") : []), [virtualize, code]);
   const rowVirtualizer = useVirtualizer({
     count: virtualize ? lines.length : 0,
     getScrollElement: () => scrollContainerRef.current,
@@ -144,12 +122,11 @@ export const CodeBlock = ({
       const target = e.target as HTMLElement | null;
       if (target) {
         const interactive = target.closest(
-          'button, a, input, textarea, select, [contenteditable="true"], [role="button"], [data-no-toggle="true"]'
+          'button, a, input, textarea, select, [contenteditable="true"], [role="button"], [data-no-toggle="true"]',
         );
         if (interactive) return;
       }
-      const sel =
-        typeof window !== "undefined" ? window.getSelection?.() : null;
+      const sel = typeof window !== "undefined" ? window.getSelection?.() : null;
       if (sel && !sel.isCollapsed && sel.toString().trim().length > 0) return;
     }
 
@@ -163,11 +140,7 @@ export const CodeBlock = ({
     <CodeBlockContext.Provider value={{ code }}>
       <div className="relative">
         <UiCodeBlock
-          className={cn(
-            "relative w-full rounded-xl border-border bg-muted/20",
-            "overflow-hidden",
-            className
-          )}
+          className={cn("relative w-full rounded-xl border-border bg-muted/20", "overflow-hidden", className)}
           {...props}
         >
           <div
@@ -176,43 +149,26 @@ export const CodeBlock = ({
               "overflow-y-auto": collapsible && isExpanded,
             })}
             style={{
-              maxHeight:
-                collapsible && !isExpanded
-                  ? collapsedMaxHeight
-                  : virtualize
-                    ? maxHeight
-                    : undefined,
+              maxHeight: collapsible && !isExpanded ? collapsedMaxHeight : virtualize ? maxHeight : undefined,
             }}
             onClick={collapsible ? handleToggle : undefined}
           >
             <div
-              className={cn(
-                "flex items-center justify-between border-b px-2 py-1.5",
-                "border-border/40 bg-muted/30"
-              )}
+              className={cn("flex items-center justify-between border-b px-2 py-1.5", "border-border/40 bg-muted/30")}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex min-w-0 items-center gap-1.5">
-                <span
-                  className="ml-2 truncate text-xs font-mono text-muted-foreground"
-                  title={language}
-                >
+                <span className="ml-2 truncate text-xs font-mono text-muted-foreground" title={language}>
                   {language}
                 </span>
                 {displayTitle && (
-                  <span
-                    className="ml-2 truncate text-xs text-muted-foreground"
-                    title={displayTitle}
-                  >
+                  <span className="ml-2 truncate text-xs text-muted-foreground" title={displayTitle}>
                     {displayTitle}
                   </span>
                 )}
               </div>
               {children && (
-                <div
-                  className="flex items-center gap-2"
-                  onClick={(e) => e.stopPropagation()}
-                >
+                <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                   {children}
                 </div>
               )}
@@ -273,14 +229,8 @@ export const CodeBlock = ({
 };
 
 // Convenience component for terminal blocks
-export type TerminalBlockProps = Omit<
-  CodeBlockProps,
-  "variant" | "language"
-> & { language?: string };
-export const TerminalBlock = ({
-  language = "bash",
-  ...props
-}: TerminalBlockProps) => (
+export type TerminalBlockProps = Omit<CodeBlockProps, "variant" | "language"> & { language?: string };
+export const TerminalBlock = ({ language = "bash", ...props }: TerminalBlockProps) => (
   <CodeBlock variant="terminal" language={language} {...props} />
 );
 
@@ -321,10 +271,7 @@ export const CodeBlockCopyButton = ({
 
   return (
     <Button
-      className={cn(
-        "h-6 w-6 p-0 shrink-0 text-muted-foreground hover:text-foreground",
-        className
-      )}
+      className={cn("h-6 w-6 p-0 shrink-0 text-muted-foreground hover:text-foreground", className)}
       onClick={copyToClipboard}
       size="icon"
       variant="ghost"
@@ -336,17 +283,11 @@ export const CodeBlockCopyButton = ({
 };
 
 export type CodeBlockStopButtonProps = ComponentProps<typeof Button> & {};
-export const CodeBlockStopButton = ({
-  className,
-  ...props
-}: CodeBlockStopButtonProps) => (
+export const CodeBlockStopButton = ({ className, ...props }: CodeBlockStopButtonProps) => (
   <Button
     size="icon"
     variant="ghost"
-    className={cn(
-      "h-6 w-6 p-0 shrink-0 text-destructive hover:bg-destructive/10",
-      className
-    )}
+    className={cn("h-6 w-6 p-0 shrink-0 text-destructive hover:bg-destructive/10", className)}
     data-no-toggle="true"
     {...props}
   >
@@ -355,7 +296,5 @@ export const CodeBlockStopButton = ({
 );
 
 export const CodeBlockSpinner = ({ className }: { className?: string }) => (
-  <Loader2
-    className={cn("h-3.5 w-3.5 animate-spin text-muted-foreground", className)}
-  />
+  <Loader2 className={cn("h-3.5 w-3.5 animate-spin text-muted-foreground", className)} />
 );
