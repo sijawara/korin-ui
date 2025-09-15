@@ -35,6 +35,7 @@ const devDependenciesSet = new Set(
 dependenciesSet.add("ai");
 dependenciesSet.add("@ai-sdk/react");
 dependenciesSet.add("zod");
+dependenciesSet.add("swr");
 dependenciesSet.add("@korinai/libs");
 
 const dependencies = Array.from(dependenciesSet);
