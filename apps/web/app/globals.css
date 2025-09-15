@@ -3,7 +3,7 @@
 
 @plugin "@tailwindcss/typography";
 
-@source "../../node_modules/@monorepo/**/*.{ts,tsx}";
+@source "../node_modules/@monorepo/**/*.{ts,tsx}";
 
 @custom-variant dark (&:is(.dark *));
 

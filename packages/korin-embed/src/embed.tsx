@@ -14,23 +14,25 @@ import type { ChatTranslations } from "@korinai/libs";
 
 // Minimal shims for plain browser environments (no bundler globals)
 declare global {
-  // eslint-disable-next-line no-var
-  var process: { env: Record<string, string | undefined> } | undefined;
-  // eslint-disable-next-line no-var
-  var global: any;
   interface Window {
     process?: { env: Record<string, string | undefined> };
+    React?: typeof React;
+    ReactDOM?: typeof ReactDOMClient;
+    KorinAI?: any;
   }
 }
 
 if (typeof window !== "undefined") {
   // Provide a minimal process shim if missing
   if (typeof window.process === "undefined") {
-    window.process = { env: {} };
+    (window as any).process = { env: {} };
   }
   // Some libs check `global`
   if (typeof (window as any).global === "undefined") {
     (window as any).global = window;
+  }
+  if (typeof (globalThis as any).global === "undefined") {
+    (globalThis as any).global = globalThis;
   }
   // Expose React and ReactDOM on window for libraries that try to access globals
   (window as any).React = (window as any).React || React;

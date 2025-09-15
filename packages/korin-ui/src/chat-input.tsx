@@ -651,7 +651,9 @@ export function ChatInput({
                           className="h-full w-full object-cover"
                         />
                       </div>
-                      <span className="text-sm md:text-xs text-muted-foreground">@{currentAgent?.username}</span>
+                      <span className="text-sm md:text-xs text-muted-foreground">
+                        @{currentAgent?.username || "username"}
+                      </span>
                     </div>
                   )
                 ) : null}

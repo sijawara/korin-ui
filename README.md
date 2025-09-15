@@ -150,7 +150,7 @@ Key workspace files:
 ### `apps/web` (Next.js)
 
 - Scripts: `dev`, `build`, `start`, `lint`
-- Depends on workspace packages: `@korinai/libs`, `@monorepo/ui`, `@monorepo/shadcn-ui`, `@monorepo/types`
+- Depends on workspace packages: `@korinai/libs`, `@monorepo/ui`, `@monorepo/shadcn-ui`
 - Start development server:
 
 ```bash
