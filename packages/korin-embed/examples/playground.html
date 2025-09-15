@@ -1,0 +1,1677 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Korin Embed – Playground</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <style>
+      :root {
+        /* Light theme */
+        --bg: #fafbfc;
+        --bg-secondary: #ffffff;
+        --panel: #ffffff;
+        --text: #1a1d29;
+        --text-secondary: #64748b;
+        --muted: #94a3b8;
+        --accent: #6366f1;
+        --accent-hover: #5855eb;
+        --accent-light: #eef2ff;
+        --border: #e2e8f0;
+        --border-light: #f1f5f9;
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        --radius: 12px;
+        --radius-sm: 8px;
+        --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-accent: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      }
+
+      body.dark {
+        /* Dark theme */
+        --bg: #0f172a;
+        --bg-secondary: #1e293b;
+        --panel: #1e293b;
+        --text: #f8fafc;
+        --text-secondary: #cbd5e1;
+        --muted: #64748b;
+        --accent: #818cf8;
+        --accent-hover: #6366f1;
+        --accent-light: #1e1b4b;
+        --border: #334155;
+        --border-light: #475569;
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
+        --gradient-bg: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        --gradient-accent: linear-gradient(135deg, #818cf8 0%, #a855f7 100%);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        color: var(--text);
+        background: var(--bg);
+        min-height: 100vh;
+        overflow-x: hidden;
+        line-height: 1.6;
+      }
+
+      /* Layout */
+      .shell {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        max-height: 100vh;
+        overflow: hidden;
+      }
+
+      /* Header */
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        background: var(--panel);
+        border-bottom: 1px solid var(--border);
+        backdrop-filter: blur(12px);
+        box-shadow: var(--shadow);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .logo {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-sm);
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow);
+      }
+
+      .brand h1 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0;
+        background: var(--gradient-accent);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .controls {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      /* Buttons */
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.625rem 1rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid transparent;
+        text-decoration: none;
+      }
+
+      .button.primary {
+        background: var(--gradient-accent);
+        color: white;
+        box-shadow: var(--shadow);
+      }
+
+      .button.primary:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .button.secondary {
+        background: var(--bg-secondary);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .button.secondary:hover {
+        background: var(--accent-light);
+        border-color: var(--accent);
+      }
+
+      .button.ghost {
+        background: transparent;
+        color: var(--text-secondary);
+      }
+
+      .button.ghost:hover {
+        background: var(--accent-light);
+        color: var(--accent);
+      }
+
+      .icon-button {
+        width: 2.5rem;
+        height: 2.5rem;
+        padding: 0;
+        border-radius: 50%;
+      }
+
+      /* Form elements */
+      .input,
+      .select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--bg-secondary);
+        color: var(--text);
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
+      }
+
+      .input:focus,
+      .select:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-light);
+      }
+
+      /* Main content */
+      .content {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        overflow: hidden;
+      }
+
+      /* Canvas */
+      .canvas {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        height: calc(100vh - 8rem);
+      }
+
+      .canvas-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg-secondary);
+      }
+
+      .canvas-tabs {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .ctab {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        background: transparent;
+        color: var(--text-secondary);
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .ctab:hover {
+        background: var(--accent-light);
+        color: var(--accent);
+      }
+
+      .ctab.active {
+        background: var(--accent);
+        color: white;
+        box-shadow: var(--shadow);
+      }
+
+      .canvas-body {
+        flex: 1;
+        padding: 1.5rem;
+        overflow-y: auto;
+      }
+
+      .canvas-panel.hidden {
+        display: none;
+      }
+
+      /* Code block with syntax highlighting */
+      .codebox {
+        background: var(--bg-secondary) !important;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        overflow: auto;
+        max-height: 400px;
+        font-size: 0.875rem;
+      }
+
+      .codebox pre {
+        margin: 0;
+        padding: 1rem;
+      }
+
+      .code-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+      }
+
+      /* Config panel */
+      .config-panel {
+        position: fixed;
+        right: 1rem;
+        top: 5rem;
+        width: min(480px, calc(100vw - 2rem));
+        max-height: calc(100vh - 6rem);
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-xl);
+        transform: translateX(0);
+        transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 40;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .config-panel.hidden {
+        transform: translateX(calc(100% + 1rem));
+      }
+
+      .config-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg-secondary);
+      }
+
+      .config-header h3 {
+        margin: 0;
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+
+      .config-body {
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .tabbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        padding: 1rem 1.5rem 0.75rem;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg-secondary);
+      }
+
+      .tab {
+        padding: 0.5rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        background: transparent;
+        color: var(--text-secondary);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .tab:hover {
+        background: var(--accent-light);
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .tab.active {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+      }
+
+      .section {
+        padding: 1.5rem;
+      }
+
+      .section.hidden {
+        display: none;
+      }
+
+      .fieldset {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .legend {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 1rem;
+      }
+
+      .legend.subtle {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin: 1.5rem 0 0.75rem 0;
+      }
+
+      .row {
+        margin-bottom: 1rem;
+      }
+
+      .row label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+      }
+
+      .row .desc {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin-top: 0.25rem;
+      }
+
+      .row.checkbox {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+
+      .row.checkbox input[type="checkbox"] {
+        width: 1.125rem;
+        height: 1.125rem;
+        margin-top: 0.125rem;
+        accent-color: var(--accent);
+      }
+
+      .row.checkbox .checkbox-content {
+        flex: 1;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+      }
+
+      .hint {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        text-align: center;
+        padding: 1rem;
+        background: var(--accent-light);
+        border-radius: var(--radius-sm);
+        margin-top: 1rem;
+      }
+
+      .subtle {
+        background: var(--accent-light);
+        color: var(--text-secondary);
+        padding: 0.75rem;
+        border-radius: var(--radius-sm);
+        border-left: 3px solid var(--accent);
+        font-size: 0.875rem;
+        margin: 0 0 1rem 0;
+      }
+
+      /* Page host styling */
+      #page-host {
+        min-height: 100%;
+        border: 2px dashed var(--border);
+        border-radius: var(--radius-sm);
+        padding: 1rem;
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .topbar {
+          padding: 0.75rem 1rem;
+        }
+
+        .controls {
+          gap: 0.5rem;
+        }
+
+        .content {
+          padding: 1rem;
+        }
+
+        .config-panel {
+          right: 0.5rem;
+          top: 4.5rem;
+          width: calc(100vw - 1rem);
+        }
+
+        .grid-2,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+
+        .canvas {
+          height: calc(100vh - 7rem);
+        }
+      }
+
+      /* Accessibility */
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <!-- Header -->
+      <header class="topbar" role="banner">
+        <div class="brand">
+          <div class="logo">
+            <img src="https://korin.ai/logo/KorinAILogo-Black.svg" alt="Korin Logo" />
+          </div>
+          <h1>Korin Embed Playground</h1>
+        </div>
+        <div class="controls">
+          <button
+            id="mode-toggle"
+            class="button secondary"
+            aria-pressed="false"
+            aria-label="Switch between Page and Floating modes"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <line x1="9" y1="9" x2="15" y2="15" />
+              <line x1="15" y1="9" x2="9" y2="15" />
+            </svg>
+            Variant: Page
+          </button>
+          <button id="toggle-theme" class="button ghost icon-button" title="Toggle Theme" aria-label="Toggle theme">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+          <button
+            id="toggle-float"
+            class="button primary"
+            title="Toggle Floating Window"
+            aria-label="Toggle floating chat window"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            Toggle Floating
+          </button>
+        </div>
+      </header>
+
+      <!-- Main content -->
+      <main class="content" role="main">
+        <div class="canvas">
+          <div class="canvas-header">
+            <div class="canvas-tabs" role="tablist" aria-label="Canvas tabs">
+              <button
+                id="ctab-component"
+                class="ctab active"
+                role="tab"
+                aria-selected="true"
+                aria-controls="canvas-component"
+                data-tab="component"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="16,18 22,12 16,6" />
+                  <polyline points="8,6 2,12 8,18" />
+                </svg>
+                Component
+              </button>
+              <button
+                id="ctab-embed"
+                class="ctab"
+                role="tab"
+                aria-selected="false"
+                aria-controls="canvas-embed"
+                data-tab="embed"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14,2 14,8 20,8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                  <polyline points="10,9 9,9 8,9" />
+                </svg>
+                Embed code
+              </button>
+              <button
+                id="ctab-docs"
+                class="ctab"
+                role="tab"
+                aria-selected="false"
+                aria-controls="canvas-docs"
+                data-tab="docs"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14,2 14,8 20,8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
+                Docs
+              </button>
+            </div>
+            <button
+              id="gear-config"
+              class="button ghost icon-button"
+              title="Toggle Configurator"
+              aria-label="Toggle configurator panel"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <div class="canvas-body">
+            <section
+              id="canvas-component"
+              class="canvas-panel"
+              role="tabpanel"
+              aria-labelledby="ctab-component"
+              aria-hidden="false"
+            >
+              <div id="page-host">
+                <div style="text-align: center; color: var(--text-secondary)">
+                  <svg
+                    width="48"
+                    height="48"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    style="margin-bottom: 1rem"
+                  >
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  <p>Chat component will appear here</p>
+                </div>
+              </div>
+              <div id="floating-host" style="position: fixed; bottom: 24px; right: 24px"></div>
+            </section>
+
+            <section
+              id="canvas-embed"
+              class="canvas-panel hidden"
+              role="tabpanel"
+              aria-labelledby="ctab-embed"
+              aria-hidden="true"
+            >
+              <div class="row">
+                <label>Copy-pasteable embed code</label>
+                <div class="desc">
+                  This snippet reflects your current settings. Adjust the script src path to match your environment.
+                </div>
+                <div class="code-actions">
+                  <button id="copy-embed" class="button secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="codebox">
+                  <pre><code id="embed-code" class="language-html"></code></pre>
+                </div>
+              </div>
+            </section>
+
+            <section
+              id="canvas-docs"
+              class="canvas-panel hidden"
+              role="tabpanel"
+              aria-labelledby="ctab-docs"
+              aria-hidden="true"
+            >
+              <div class="row">
+                <label>Documentation</label>
+                <div class="desc">Open the latest Quick Start guide in a new tab.</div>
+                <div>
+                  <a
+                    class="button secondary"
+                    target="_blank"
+                    rel="noopener"
+                    href="https://korinai.com/documentation/getting-started/quick-start"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                      <polyline points="15,3 21,3 21,9" />
+                      <line x1="10" y1="14" x2="21" y2="3" />
+                    </svg>
+                    Open Docs
+                  </a>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div class="hint">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            style="margin-right: 0.5rem"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 16v-4" />
+            <path d="M12 8h.01" />
+          </svg>
+          Only one demo is active at a time. Switching modes will hide the other and reset visibility appropriately.
+        </div>
+      </main>
+    </div>
+
+    <!-- Configurator Panel -->
+    <aside id="config" class="config-panel hidden">
+      <div class="config-header">
+        <h3>Configurator</h3>
+        <button id="close-config" class="button ghost icon-button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="config-body">
+        <p class="subtle">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            style="margin-right: 0.5rem"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 16v-4" />
+            <path d="M12 8h.01" />
+          </svg>
+          Note: This configurator is not complete yet. Some properties are not configurable in this demo.
+        </p>
+
+        <div class="tabbar" role="tablist" aria-label="Configurator tabs">
+          <button
+            id="tab-provider"
+            class="tab active"
+            role="tab"
+            aria-selected="true"
+            aria-controls="panel-provider"
+            data-tab="provider"
+          >
+            Provider
+          </button>
+          <button
+            id="tab-floating"
+            class="tab"
+            role="tab"
+            aria-selected="false"
+            aria-controls="panel-floating"
+            data-tab="floating"
+          >
+            Floating
+          </button>
+          <button id="tab-page" class="tab" role="tab" aria-selected="false" aria-controls="panel-chat" data-tab="chat">
+            Chat
+          </button>
+          <button
+            id="tab-requests"
+            class="tab"
+            role="tab"
+            aria-selected="false"
+            aria-controls="panel-requests"
+            data-tab="requests"
+          >
+            Requests
+          </button>
+          <button
+            id="tab-branding"
+            class="tab"
+            role="tab"
+            aria-selected="false"
+            aria-controls="panel-branding"
+            data-tab="branding"
+          >
+            Branding
+          </button>
+        </div>
+
+        <div
+          id="panel-provider"
+          class="fieldset section"
+          data-section="provider"
+          role="tabpanel"
+          aria-labelledby="tab-provider"
+          aria-hidden="false"
+        >
+          <div class="legend">Embed Provider</div>
+          <p class="desc">
+            Configure the base connection for Korin Embed. These settings apply to both Page and Floating chat.
+          </p>
+
+          <div class="row">
+            <label for="prov-base">Base URL</label>
+            <div class="desc">Root URL of your host app serving static assets and pages.</div>
+            <input id="prov-base" class="input" type="text" value="https://api.korinai.com" />
+          </div>
+
+          <div class="row">
+            <label for="prov-chatapi">Chat API endpoint</label>
+            <div class="desc">HTTP endpoint used by the chat component to send and receive messages.</div>
+            <input id="prov-chatapi" class="input" type="text" value="https://api.korinai.com/api/chat" />
+          </div>
+
+          <div class="row">
+            <label for="prov-credits">Minimum credits warning</label>
+            <div class="desc">Show a warning if credits drop below this value.</div>
+            <input id="prov-credits" class="input" type="text" value="10" />
+          </div>
+
+          <div class="row">
+            <label for="prov-token">Auth token</label>
+            <div class="desc">Bearer token used to authenticate requests to your API.</div>
+            <input id="prov-token" class="input" type="text" value="" />
+          </div>
+
+          <div class="row">
+            <label for="prov-lang">Language</label>
+            <div class="desc">Two-letter language code (e.g. en, id) for UI labels.</div>
+            <input id="prov-lang" class="input" type="text" value="en" />
+          </div>
+
+          <div class="row checkbox">
+            <input id="prov-ensure" type="checkbox" checked />
+            <div class="checkbox-content">
+              <label for="prov-ensure">Ensure styles</label>
+              <div class="desc">Inject core styles automatically if your site does not include them.</div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="panel-chat"
+          class="fieldset section hidden"
+          data-section="chat"
+          role="tabpanel"
+          aria-labelledby="tab-page"
+          aria-hidden="true"
+        >
+          <div class="legend">Chat Settings</div>
+          <p class="desc">Unified options applied to both Page and Floating chat.</p>
+
+          <div class="row">
+            <label for="cfg-title">Title</label>
+            <div class="desc">Displayed at the top of the chat UI.</div>
+            <input id="cfg-title" class="input" type="text" value="Chat with KorinAI" />
+          </div>
+
+          <div class="row">
+            <label for="cfg-variant">Variant</label>
+            <div class="desc">Choose between a flat layout or a card-styled chat UI.</div>
+            <select id="cfg-variant" class="select">
+              <option value="flat" selected>flat</option>
+              <option value="card">card</option>
+            </select>
+          </div>
+
+          <div class="row checkbox">
+            <input id="pc-show-close" type="checkbox" />
+            <div class="checkbox-content">
+              <label for="pc-show-close">Show Close button</label>
+              <div class="desc">Display a close button on the page chat header.</div>
+            </div>
+          </div>
+
+          <div class="row checkbox">
+            <input id="pc-show-room" type="checkbox" />
+            <div class="checkbox-content">
+              <label for="pc-show-room">Show room name</label>
+              <div class="desc">Display the current room name in the header.</div>
+            </div>
+          </div>
+
+          <div class="row checkbox">
+            <input id="cfg-hide-history" type="checkbox" />
+            <div class="checkbox-content">
+              <label for="cfg-hide-history">Hide history</label>
+              <div class="desc">Hide previous messages when opening the chat.</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label for="pc-default-room">Default room ID</label>
+            <div class="desc">Set an initial room to load when the chat mounts.</div>
+            <input id="pc-default-room" class="input" type="text" placeholder="room-id" />
+          </div>
+
+          <div class="row">
+            <label for="cfg-page-size">Page size</label>
+            <div class="desc">Number of messages to fetch per page.</div>
+            <input id="cfg-page-size" class="input" type="number" min="5" max="50" value="10" />
+          </div>
+
+          <div class="row">
+            <label for="cfg-header-slot">Header right slot</label>
+            <div class="desc">Optional text or indicator to display on the right of the header.</div>
+            <input id="cfg-header-slot" class="input" type="text" placeholder="e.g. Beta" />
+          </div>
+
+          <div class="row">
+            <label for="cfg-throttle">Throttle (ms)</label>
+            <div class="desc">Debounce time for user input to reduce API calls.</div>
+            <input id="cfg-throttle" class="input" type="number" min="0" max="1000" value="100" />
+          </div>
+
+          <div class="legend subtle">UI Controls</div>
+
+          <div class="row checkbox">
+            <input id="cfg-ui-stop" type="checkbox" checked />
+            <div class="checkbox-content">
+              <label for="cfg-ui-stop">Show Stop button</label>
+              <div class="desc">Allow users to stop a generation mid-way.</div>
+            </div>
+          </div>
+
+          <div class="row checkbox">
+            <input id="cfg-ui-attach" type="checkbox" checked />
+            <div class="checkbox-content">
+              <label for="cfg-ui-attach">Show Attach button</label>
+              <div class="desc">Allow users to attach files to messages.</div>
+            </div>
+          </div>
+
+          <div class="row checkbox">
+            <input id="cfg-ui-actions" type="checkbox" checked />
+            <div class="checkbox-content">
+              <label for="cfg-ui-actions">Show Actions menu</label>
+              <div class="desc">Show extra quick actions in the composer.</div>
+            </div>
+          </div>
+
+          <div class="row checkbox">
+            <input id="cfg-ui-agent" type="checkbox" />
+            <div class="checkbox-content">
+              <label for="cfg-ui-agent">Show agent selector</label>
+              <div class="desc">Let users pick a default agent/persona.</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label for="cfg-default-agent">Default agent username</label>
+            <div class="desc">Username of the agent to select by default.</div>
+            <input id="cfg-default-agent" class="input" type="text" placeholder="agent_username" />
+          </div>
+        </div>
+
+        <div
+          id="panel-floating"
+          class="fieldset section hidden"
+          data-section="floating"
+          role="tabpanel"
+          aria-labelledby="tab-floating"
+          aria-hidden="true"
+        >
+          <div class="legend">Floating Chat (optional)</div>
+          <p class="desc">Settings specific to the floating launcher and window.</p>
+
+          <div class="row checkbox">
+            <input id="fc-show" type="checkbox" checked />
+            <div class="checkbox-content">
+              <label for="fc-show">Show floating button</label>
+              <div class="desc">Show or hide the launcher button on the page.</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label for="fc-trigger">Trigger icon size</label>
+            <div class="desc">Size of the floating launcher icon (in pixels).</div>
+            <input id="fc-trigger" class="input" type="number" min="16" max="64" value="28" />
+          </div>
+
+          <div class="row">
+            <label for="fc-btn-class">Button CSS classes</label>
+            <div class="desc">Optional Tailwind or CSS classes to style the launcher button.</div>
+            <input id="fc-btn-class" class="input" type="text" placeholder="e.g. bg-emerald-600" />
+          </div>
+
+          <div class="row">
+            <label for="fc-win-class">Chat window CSS classes</label>
+            <div class="desc">Optional classes to control the floating chat window size and layout.</div>
+            <input id="fc-win-class" class="input" type="text" placeholder="e.g. sm:w-[520px] sm:h-[680px]" />
+          </div>
+
+          <div class="row checkbox">
+            <input id="fc-ctrl-open" type="checkbox" />
+            <div class="checkbox-content">
+              <label for="fc-ctrl-open">Controlled open</label>
+              <div class="desc">When enabled, opening is controlled programmatically via callbacks.</div>
+            </div>
+          </div>
+
+          <div class="row checkbox">
+            <input id="fc-def-open" type="checkbox" />
+            <div class="checkbox-content">
+              <label for="fc-def-open">Open by default</label>
+              <div class="desc">Start with the floating chat window open on page load.</div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="panel-requests"
+          class="fieldset section hidden"
+          data-section="requests"
+          role="tabpanel"
+          aria-labelledby="tab-requests"
+          aria-hidden="true"
+        >
+          <div class="legend">Request Configuration</div>
+          <p class="desc">Optional headers and body fields that will be sent with chat requests.</p>
+
+          <div class="row">
+            <label for="pc-headers">Request headers (JSON)</label>
+            <div class="desc">JSON object of headers to merge into each request.</div>
+            <input id="pc-headers" class="input" type="text" placeholder='{"X-Debug":"1"}' />
+          </div>
+
+          <div class="legend subtle">Request body fields</div>
+
+          <div class="grid-2">
+            <div class="row">
+              <label for="pb-requester-id">requesterId</label>
+              <div class="desc">Unique ID of the user initiating the request.</div>
+              <input id="pb-requester-id" class="input" type="text" />
+            </div>
+            <div class="row">
+              <label for="pb-requester-email">requesterEmail</label>
+              <div class="desc">Email of the requester.</div>
+              <input id="pb-requester-email" class="input" type="email" />
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="row">
+              <label for="pb-participant-id">participantId</label>
+              <div class="desc">User ID of the other participant.</div>
+              <input id="pb-participant-id" class="input" type="text" />
+            </div>
+            <div class="row">
+              <label for="pb-participant-email">participantEmail</label>
+              <div class="desc">Email of the other participant.</div>
+              <input id="pb-participant-email" class="input" type="email" />
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="row">
+              <label for="pb-room-id">roomId</label>
+              <div class="desc">Room or conversation identifier.</div>
+              <input id="pb-room-id" class="input" type="text" />
+            </div>
+            <div class="row">
+              <label for="pb-gallery-id">gallery_id</label>
+              <div class="desc">Optional gallery identifier for shared assets.</div>
+              <input id="pb-gallery-id" class="input" type="text" />
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="row">
+              <label for="pb-file-url">file_url</label>
+              <div class="desc">URL of a file to include with the request.</div>
+              <input id="pb-file-url" class="input" type="url" />
+            </div>
+            <div class="row">
+              <label for="pb-file-caption">file_caption</label>
+              <div class="desc">Short caption for the attached file.</div>
+              <input id="pb-file-caption" class="input" type="text" />
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="row">
+              <label for="pb-extra">extra_context</label>
+              <div class="desc">Additional JSON or text context.</div>
+              <input id="pb-extra" class="input" type="text" />
+            </div>
+            <div class="row">
+              <label for="pb-message-id">messageId</label>
+              <div class="desc">Reference message ID related to this request.</div>
+              <input id="pb-message-id" class="input" type="text" />
+            </div>
+          </div>
+
+          <div class="row">
+            <label for="pb-secrets">secrets (JSON)</label>
+            <div class="desc">Array of secret key-value pairs used for secure operations.</div>
+            <input id="pb-secrets" class="input" type="text" placeholder='[{"key":"k","value":"v"}]' />
+          </div>
+        </div>
+
+        <div
+          id="panel-branding"
+          class="fieldset section hidden"
+          data-section="branding"
+          role="tabpanel"
+          aria-labelledby="tab-branding"
+          aria-hidden="true"
+        >
+          <div class="legend">Branding Configuration</div>
+
+          <div class="row checkbox">
+            <input id="pc-brand-show" type="checkbox" checked />
+            <div class="checkbox-content">
+              <label for="pc-brand-show">showHeaderLogo</label>
+              <div class="desc">Display your brand logo in the chat header.</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label for="pc-logo-light">logoLightUrl</label>
+            <div class="desc">Logo shown when using the light theme.</div>
+            <input id="pc-logo-light" class="input" type="text" placeholder="https://.../logo-light.svg" />
+          </div>
+
+          <div class="row">
+            <label for="pc-logo-dark">logoDarkUrl</label>
+            <div class="desc">Logo shown when using the dark theme.</div>
+            <input id="pc-logo-dark" class="input" type="text" placeholder="https://.../logo-dark.svg" />
+          </div>
+
+          <div class="legend subtle">Logo Sizes</div>
+
+          <div class="grid-2">
+            <div class="row">
+              <label for="pc-logo-w">logoSize.width</label>
+              <div class="desc">Width of the main logo (pixels).</div>
+              <input id="pc-logo-w" class="input" type="number" min="12" max="300" value="50" />
+            </div>
+            <div class="row">
+              <label for="pc-logo-h">logoSize.height</label>
+              <div class="desc">Height of the main logo (pixels).</div>
+              <input id="pc-logo-h" class="input" type="number" min="12" max="300" value="50" />
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="row">
+              <label for="pc-hlogo-w">headerLogoSize.width</label>
+              <div class="desc">Width of the header logo (pixels).</div>
+              <input id="pc-hlogo-w" class="input" type="number" min="12" max="300" value="28" />
+            </div>
+            <div class="row">
+              <label for="pc-hlogo-h">headerLogoSize.height</label>
+              <div class="desc">Height of the header logo (pixels).</div>
+              <input id="pc-hlogo-h" class="input" type="number" min="12" max="300" value="28" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.js"></script>
+    <script>
+      (function () {
+        // All the original JavaScript functionality preserved
+        const elModeToggle = document.getElementById("mode-toggle");
+        const elToggleTheme = document.getElementById("toggle-theme");
+        const elToggleFloat = document.getElementById("toggle-float");
+        const panel = document.getElementById("config");
+        const closeConfig = document.getElementById("close-config");
+        const pageHost = document.getElementById("page-host");
+        const floatingHost = document.getElementById("floating-host");
+        let currentMode = "page";
+
+        function updateFloatingToggleVisibility() {
+          if (!elToggleFloat) return;
+          const show = currentMode === "floating";
+          elToggleFloat.style.display = show ? "" : "none";
+          elToggleFloat.setAttribute("aria-hidden", show ? "false" : "true");
+        }
+
+        function setMode(mode) {
+          currentMode = mode;
+          if (elModeToggle) {
+            const isFloating = mode === "floating";
+            elModeToggle.innerHTML = `
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                ${
+                  isFloating
+                    ? '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'
+                    : '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/>'
+                }
+              </svg>
+              Variant: ${isFloating ? "Floating" : "Page"}
+            `;
+            elModeToggle.setAttribute("aria-pressed", String(isFloating));
+          }
+          if (mode === "floating") {
+            mountFloating();
+          } else {
+            mountPage();
+          }
+          updateFloatingToggleVisibility();
+          try {
+            updateEmbedCode();
+          } catch (e) {}
+        }
+
+        const $ = (id) => {
+          const el = document.getElementById(id);
+          if (!el) {
+            console.warn(`Element with id "${id}" not found`);
+            return { value: "", checked: false, textContent: "" };
+          }
+          return el;
+        };
+
+        const getValue = (id, defaultValue = "") => {
+          const el = $(id);
+          return el.value || defaultValue;
+        };
+
+        const getChecked = (id, defaultValue = false) => {
+          const el = $(id);
+          return el.checked !== undefined ? el.checked : defaultValue;
+        };
+
+        const getNumber = (id, defaultValue = 0) => {
+          const val = getValue(id);
+          const num = Number(val);
+          return isNaN(num) ? defaultValue : num;
+        };
+
+        const parseJson = (val) => {
+          try {
+            return val && val.trim() ? JSON.parse(val) : undefined;
+          } catch (e) {
+            console.warn("Invalid JSON:", val, e);
+            return undefined;
+          }
+        };
+
+        function providerOpts() {
+          return {
+            baseUrl: getValue("prov-base", "https://api.korinai.com"),
+            chatApi: getValue("prov-chatapi", "https://api.korinai.com/api/chat"),
+            minimumCreditsWarning: getValue("prov-credits", "10"),
+            authToken: getValue("prov-token"),
+            language: getValue("prov-lang", "en"),
+          };
+        }
+
+        function floatingProps() {
+          const controlled = getChecked("fc-ctrl-open");
+          const branding = {
+            logoLightUrl: getValue("pc-logo-light") || undefined,
+            logoDarkUrl: getValue("pc-logo-dark") || undefined,
+            logoSize: {
+              width: getNumber("pc-logo-w", 50),
+              height: getNumber("pc-logo-h", 50),
+            },
+            headerLogoSize: {
+              width: getNumber("pc-hlogo-w", 28),
+              height: getNumber("pc-hlogo-h", 28),
+            },
+            showHeaderLogo: getChecked("pc-brand-show", true),
+          };
+
+          const pagePropsData = pageProps();
+
+          return {
+            title: getValue("cfg-title") || getValue("fc-title", "Chat with KorinAI"),
+            triggerIconSize: getNumber("fc-trigger", 28),
+            showFloatingButton: getChecked("fc-show", true),
+            buttonClassName: getValue("fc-btn-class") || undefined,
+            chatWindowClassName: getValue("fc-win-class") || undefined,
+            open: controlled ? true : undefined,
+            onOpenChange: controlled ? (o) => console.log("open changed", o) : undefined,
+            defaultOpen: getChecked("fc-def-open"),
+            branding,
+            chatProps: {
+              ...pagePropsData,
+              variant: getValue("cfg-variant") || getValue("fc-chat-variant", "flat"),
+              hideHistory: getChecked("cfg-hide-history") || getChecked("fc-hide-history"),
+              pageSize: getNumber("cfg-page-size", getNumber("fc-page-size", 10)),
+              headerRightSlot: getValue("cfg-header-slot") || getValue("fc-header-slot") || undefined,
+              ui: {
+                ...(pagePropsData.ui || {}),
+                showStop: getChecked("cfg-ui-stop", getChecked("fc-ui-stop", true)),
+                showAttach: getChecked("cfg-ui-attach", getChecked("fc-ui-attach", true)),
+                showActions: getChecked("cfg-ui-actions", getChecked("fc-ui-actions", true)),
+                showAgentSelector: getChecked("cfg-ui-agent", getChecked("fc-ui-agent")),
+                defaultAgentUsername: getValue("cfg-default-agent") || getValue("fc-default-agent") || undefined,
+              },
+            },
+          };
+        }
+
+        function pageProps() {
+          const rb = {
+            requesterId: getValue("pb-requester-id") || undefined,
+            requesterEmail: getValue("pb-requester-email") || undefined,
+            participantId: getValue("pb-participant-id") || undefined,
+            participantEmail: getValue("pb-participant-email") || undefined,
+            roomId: getValue("pb-room-id") || undefined,
+            gallery_id: getValue("pb-gallery-id") || undefined,
+            file_url: getValue("pb-file-url") || undefined,
+            file_caption: getValue("pb-file-caption") || undefined,
+            extra_context: getValue("pb-extra") || undefined,
+            messageId: getValue("pb-message-id") || undefined,
+            secrets: parseJson(getValue("pb-secrets")),
+          };
+          Object.keys(rb).forEach((k) => rb[k] === undefined && delete rb[k]);
+
+          return {
+            title: getValue("cfg-title") || getValue("pc-title", "Chat with KorinAI"),
+            variant: getValue("cfg-variant") || getValue("pc-variant", "flat"),
+            showCloseButton: getChecked("pc-show-close"),
+            defaultRoomId: getValue("pc-default-room") || undefined,
+            showRoomName: getChecked("pc-show-room"),
+            pageSize: getNumber("cfg-page-size", getNumber("pc-page-size", 10)),
+            hideHistory: getChecked("cfg-hide-history") || getChecked("pc-hide"),
+            headerRightSlot: getValue("cfg-header-slot") || getValue("pc-slot") || undefined,
+            ui: {
+              showStop: getChecked("cfg-ui-stop", getChecked("pc-ui-stop", true)),
+              showAttach: getChecked("cfg-ui-attach", getChecked("pc-ui-attach", true)),
+              showActions: getChecked("cfg-ui-actions", getChecked("pc-ui-actions", true)),
+              showAgentSelector: getChecked("cfg-ui-agent", getChecked("pc-ui-agent", true)),
+              defaultAgentUsername: getValue("cfg-default-agent") || getValue("pc-ui-default-agent") || undefined,
+            },
+            branding: {
+              showHeaderLogo: getChecked("pc-brand-show", true),
+              logoLightUrl: getValue("pc-logo-light") || undefined,
+              logoDarkUrl: getValue("pc-logo-dark") || undefined,
+              logoSize: {
+                width: getNumber("pc-logo-w", 50),
+                height: getNumber("pc-logo-h", 50),
+              },
+              headerLogoSize: {
+                width: getNumber("pc-hlogo-w", 28),
+                height: getNumber("pc-hlogo-h", 28),
+              },
+            },
+            throttleMs: getNumber("cfg-throttle", getNumber("pc-throttle", 100)),
+            requestHeaders: parseJson(getValue("pc-headers")),
+            requestBody: Object.keys(rb).length > 0 ? rb : undefined,
+            onRoomChange: getChecked("pc-on-room") ? (rid) => console.log("room change", rid) : undefined,
+            onSend: undefined,
+          };
+        }
+
+        function ensureAPI() {
+          if (!window.KorinAI || typeof window.KorinAI.init !== "function") {
+            console.error(
+              "[KorinAI] global object not found. Did you build and include https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.js?",
+            );
+            return false;
+          }
+          return true;
+        }
+
+        function mountFloating() {
+          if (!ensureAPI()) return;
+          try {
+            pageHost.style.display = "none";
+            floatingHost.style.display = "block";
+
+            window.KorinAI.init({
+              target: "#floating-host",
+              ensureStyles: getChecked("prov-ensure", true),
+              variant: "floating",
+              ...providerOpts(),
+              props: floatingProps(),
+            });
+          } catch (error) {
+            console.error("Error mounting floating chat:", error);
+          }
+        }
+
+        function mountPage() {
+          if (!ensureAPI()) return;
+          try {
+            floatingHost.style.display = "none";
+            pageHost.style.display = "block";
+
+            try {
+              window.KorinAI.toggleFloatingChat(false);
+            } catch (e) {}
+            try {
+              window.KorinAI.floating && window.KorinAI.floating.reload({ props: { showFloatingButton: false } });
+            } catch (e) {}
+
+            window.KorinAI.init({
+              target: "#page-host",
+              ensureStyles: false,
+              variant: "page",
+              ...providerOpts(),
+              props: pageProps(),
+            });
+          } catch (error) {
+            console.error("Error mounting page chat:", error);
+          }
+        }
+
+        function reloadActive() {
+          try {
+            const mode = currentMode || "page";
+            if (mode === "floating") {
+              if (window.KorinAI?.floating?.reload) {
+                window.KorinAI.floating.reload({ props: floatingProps() });
+              } else {
+                mountFloating();
+              }
+            } else {
+              if (window.KorinAI?.page?.reload) {
+                window.KorinAI.page.reload({ props: pageProps() });
+              } else {
+                mountPage();
+              }
+            }
+          } catch (error) {
+            console.error("Error reloading active chat:", error);
+          }
+        }
+
+        function buildEmbedPayload() {
+          const mode = currentMode || "page";
+          const provider = providerOpts();
+          const props = mode === "floating" ? floatingProps() : pageProps();
+
+          const payload = {
+            target: "#my-chat",
+            ensureStyles: getChecked("prov-ensure", true),
+            variant: mode === "floating" ? "floating" : "page",
+            ...provider,
+            props,
+          };
+          const sanitized = JSON.parse(JSON.stringify(payload, (k, v) => (typeof v === "function" ? undefined : v)));
+          return sanitized;
+        }
+
+        function generateEmbedString() {
+          const payload = buildEmbedPayload();
+          const payloadStr = JSON.stringify(payload, null, 2);
+          const code = `<!-- Include Korin Embed assets -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.css" />
+<div id="my-chat"></div>
+<script src="https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.js"><\/script>
+<script>
+  window.KorinAI.init(${payloadStr});
+<\/script>`;
+          return code;
+        }
+
+        function updateEmbedCode() {
+          const codeEl = document.getElementById("embed-code");
+          if (!codeEl) return;
+          try {
+            codeEl.textContent = generateEmbedString();
+            // Trigger Prism.js syntax highlighting
+            if (window.Prism) {
+              window.Prism.highlightElement(codeEl);
+            }
+          } catch (e) {
+            codeEl.textContent = "<!-- Failed to generate embed code -->";
+          }
+        }
+
+        // Event listeners
+        if (elModeToggle) {
+          elModeToggle.addEventListener("click", () => {
+            try {
+              setMode(currentMode === "page" ? "floating" : "page");
+            } catch (error) {
+              console.error("Error toggling mode:", error);
+            }
+          });
+        }
+
+        const gearBtn = document.getElementById("gear-config");
+        if (gearBtn && panel) {
+          gearBtn.addEventListener("click", () => panel.classList.toggle("hidden"));
+        }
+
+        if (closeConfig && panel) {
+          closeConfig.addEventListener("click", () => panel.classList.add("hidden"));
+        }
+
+        if (elToggleTheme) {
+          elToggleTheme.addEventListener("click", () => {
+            document.body.classList.toggle("dark");
+            const isDark = document.body.classList.contains("dark");
+            elToggleTheme.innerHTML = `
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                ${
+                  isDark
+                    ? '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>'
+                    : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+                }
+              </svg>
+            `;
+          });
+        }
+
+        // Tabs functionality
+        const tabs = Array.from(document.querySelectorAll(".tabbar .tab"));
+        const panels = Array.from(document.querySelectorAll(".section"));
+        const activateTab = (btn) => {
+          try {
+            const tab = btn.getAttribute("data-tab");
+            tabs.forEach((b) => {
+              const isActive = b === btn;
+              b.classList.toggle("active", isActive);
+              b.setAttribute("aria-selected", isActive ? "true" : "false");
+              b.tabIndex = isActive ? 0 : -1;
+            });
+            panels.forEach((sec) => {
+              const s = sec.getAttribute("data-section");
+              const show = s === tab;
+              sec.classList.toggle("hidden", !show);
+              sec.setAttribute("aria-hidden", show ? "false" : "true");
+            });
+          } catch (error) {
+            console.error("Error switching tabs:", error);
+          }
+        };
+
+        tabs.forEach((btn, idx) => {
+          btn.addEventListener("click", () => activateTab(btn));
+          btn.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+              e.preventDefault();
+              const dir = e.key === "ArrowRight" ? 1 : -1;
+              const next = (idx + dir + tabs.length) % tabs.length;
+              tabs[next].focus();
+              activateTab(tabs[next]);
+            }
+          });
+        });
+
+        // Canvas tabs
+        (function () {
+          const btnComp = document.getElementById("ctab-component");
+          const btnDocs = document.getElementById("ctab-docs");
+          const btnEmbed = document.getElementById("ctab-embed");
+          const panelComp = document.getElementById("canvas-component");
+          const panelDocs = document.getElementById("canvas-docs");
+          const panelEmbed = document.getElementById("canvas-embed");
+          const copyBtn = document.getElementById("copy-embed");
+
+          const setActive = (tab) => {
+            const isComponent = tab === "component";
+            const isDocs = tab === "docs";
+            const isEmbed = tab === "embed";
+
+            btnComp?.classList.toggle("active", isComponent);
+            btnDocs?.classList.toggle("active", isDocs);
+            btnEmbed?.classList.toggle("active", isEmbed);
+
+            btnComp?.setAttribute("aria-selected", String(isComponent));
+            btnDocs?.setAttribute("aria-selected", String(isDocs));
+            btnEmbed?.setAttribute("aria-selected", String(isEmbed));
+
+            panelComp?.classList.toggle("hidden", !isComponent);
+            panelComp?.setAttribute("aria-hidden", String(!isComponent));
+            panelDocs?.classList.toggle("hidden", !isDocs);
+            panelDocs?.setAttribute("aria-hidden", String(!isDocs));
+            panelEmbed?.classList.toggle("hidden", !isEmbed);
+            panelEmbed?.setAttribute("aria-hidden", String(!isEmbed));
+
+            if (isEmbed) updateEmbedCode();
+          };
+
+          btnComp?.addEventListener("click", () => setActive("component"));
+          btnDocs?.addEventListener("click", () => setActive("docs"));
+          btnEmbed?.addEventListener("click", () => setActive("embed"));
+
+          if (copyBtn) {
+            copyBtn.addEventListener("click", async () => {
+              try {
+                const codeEl = document.getElementById("embed-code");
+                if (!codeEl) return;
+                await navigator.clipboard.writeText(codeEl.textContent || "");
+                const prev = copyBtn.innerHTML;
+                copyBtn.innerHTML = `
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20,6 9,17 4,12"/>
+                  </svg>
+                  Copied
+                `;
+                setTimeout(() => (copyBtn.innerHTML = prev), 1200);
+              } catch (e) {
+                console.error("Copy failed", e);
+              }
+            });
+          }
+        })();
+
+        if (elToggleFloat) {
+          elToggleFloat.addEventListener("click", () => {
+            try {
+              window.KorinAI?.toggleFloatingChat?.();
+            } catch (error) {
+              console.error("Error toggling floating chat:", error);
+            }
+          });
+        }
+
+        // Live change handlers
+        let reloadTimeout;
+        const debouncedReload = () => {
+          clearTimeout(reloadTimeout);
+          reloadTimeout = setTimeout(() => {
+            reloadActive();
+            try {
+              updateEmbedCode();
+            } catch (e) {}
+          }, 300);
+        };
+
+        document.querySelectorAll("#config input, #config select").forEach((el) => {
+          el.addEventListener("input", debouncedReload);
+          el.addEventListener("change", debouncedReload);
+        });
+
+        // Initial setup
+        try {
+          setMode("page");
+          updateFloatingToggleVisibility();
+          updateEmbedCode();
+        } catch (error) {
+          console.error("Error during initial setup:", error);
+        }
+      })();
+    </script>
+  </body>
+</html>

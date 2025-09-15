@@ -1,0 +1,49 @@
+{
+  "name": "@korinai/embed",
+  "private": false,
+  "version": "1.0.2",
+  "author": "Muhamad Rizki",
+  "type": "module",
+  "main": "dist/embed.js",
+  "module": "dist/embed.js",
+  "exports": {
+    ".": {
+      "default": "./dist/embed.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vite build --config vite.config.codemod.ts -l error && vite build --config vite.config.ts",
+    "lint": "eslint .",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "@korinai/libs": "workspace:*",
+    "@monorepo/shadcn-ui": "workspace:*",
+    "@monorepo/ui": "workspace:*",
+    "@tailwindcss/typography": "^0.5.16",
+    "@tailwindcss/vite": "^4.1.13",
+    "preact": "^10.27.2",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "tw-animate-css": "^1.3.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.2",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.35.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.4.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.13",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.43.0",
+    "vite": "^7.1.5"
+  }
+}
