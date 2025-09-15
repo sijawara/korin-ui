@@ -633,12 +633,12 @@ export function ChatInput({
                       <Button
                         type="button"
                         size="icon"
-                        variant="secondary"
                         onClick={onStop}
+                        variant="destructive"
                         className="h-10 w-10 md:h-9 md:w-9 rounded-xl shadow-md hover:shadow-lg transition-all"
                         disabled={!isStreaming}
                       >
-                        <Square className="h-4 w-4 text-primary" />
+                        <Square className="h-4 w-4 text-primary-foreground" />
                         <span className="sr-only">{t.stopGenerating}</span>
                       </Button>
                     ) : (

@@ -108,7 +108,7 @@ export function PageChat({
 }: PageChatProps) {
   const { language = "en", config, translations } = useKorinAI();
   const t = translations?.[language] || translations.en!;
-  const { authToken } = useKorinAI();
+  const { getAuthToken, authToken } = useKorinAI();
   const { creditLimited, showWarning, mutate: mutateUserData, user } = useUser();
   const { currentAgent, agents, isLoading: isLoadingAgents } = useAgent();
   // Resolve active agent (allow overriding with defaultAgentUsername when provided)
@@ -269,9 +269,12 @@ export function PageChat({
     experimental_throttle: typeof throttleMs === "number" ? throttleMs : 100,
     transport: new DefaultChatTransport({
       api: config.chatApi,
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-        ...(requestHeaders || {}),
+      headers: async () => {
+        const token = authToken || (await getAuthToken());
+        return {
+          Authorization: `Bearer ${token}`,
+          ...(requestHeaders || {}),
+        };
       },
     }),
     onFinish: async () => {
