@@ -1,7 +1,7 @@
 {
   "name": "@korinai/libs",
   "author": "Muhamad Rizki",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Shared hooks, contexts, utils, and UI helpers for KorinAI apps",
   "private": false,
   "keywords": [
