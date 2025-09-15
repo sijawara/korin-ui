@@ -98,8 +98,8 @@ const shadcnComponents =
     ?.map((path) => path.split("/").pop())
     .filter((name): name is string => Boolean(name)) || [];
 
-// Extract AI element components from file content
-const aiElementComponents =
+// Extract Korin UI components from file content
+const korinUIComponents =
   files
     .map((f) => f.content)
     .join("\n")
@@ -112,8 +112,8 @@ for (const component of shadcnComponents) {
   registryDependenciesSet.add(component);
 }
 
-// Add AI element components to set (these become registry dependencies)
-for (const component of aiElementComponents) {
+// Add Korin UI components to set (these become registry dependencies)
+for (const component of korinUIComponents) {
   registryDependenciesSet.add(component);
 }
 
@@ -128,7 +128,7 @@ const componentItems: RegistryItem[] = tsxFiles.map((componentFile) => {
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" "),
-    description: `AI-powered ${componentName.replace("-", " ")} component.`,
+    description: `Korin UI ${componentName.replace("-", " ")} component.`,
     files: [
       {
         path: `registry/default/korin-ui/${componentFile.name}`,
@@ -243,8 +243,8 @@ export const GET = async (_request: NextRequest, { params }: RequestProps) => {
       $schema: "https://ui.shadcn.com/schema/registry-item.json",
       name: "all",
       type: "registry:component",
-      title: "All KorinAI UI components",
-      description: "Bundle containing all KorinAI UI components.",
+      title: "All Korin UI components",
+      description: "Bundle containing all Korin UI components.",
       files: allFiles,
       dependencies: Array.from(allDependencies),
       devDependencies: Array.from(allDevDependencies),
@@ -318,7 +318,7 @@ export const GET = async (_request: NextRequest, { params }: RequestProps) => {
         }
       }
 
-      // Check if it's an AI element dependency
+      // Check if it's an Korin UI dependency
       if (moduleName.startsWith("@/components/korin-ui/")) {
         const componentName = moduleName.split("/").pop();
         if (componentName) {
