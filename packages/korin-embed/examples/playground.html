@@ -753,12 +753,20 @@
     <aside id="config" class="config-panel hidden">
       <div class="config-header">
         <h3>Configurator</h3>
-        <button id="close-config" class="button ghost icon-button">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
+        <div style="display: flex; gap: 0.5rem; align-items: center">
+          <button id="save-config" class="button primary" title="Apply changes">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20,6 9,17 4,12" />
+            </svg>
+            Save
+          </button>
+          <button id="close-config" class="button ghost icon-button" title="Close">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <div class="config-body">
@@ -1249,7 +1257,6 @@
         const $ = (id) => {
           const el = document.getElementById(id);
           if (!el) {
-            console.warn(`Element with id "${id}" not found`);
             return { value: "", checked: false, textContent: "" };
           }
           return el;
@@ -1446,17 +1453,9 @@
           try {
             const mode = currentMode || "page";
             if (mode === "floating") {
-              if (window.KorinAI?.floating?.reload) {
-                window.KorinAI.floating.reload({ props: floatingProps() });
-              } else {
-                mountFloating();
-              }
+              mountFloating();
             } else {
-              if (window.KorinAI?.page?.reload) {
-                window.KorinAI.page.reload({ props: pageProps() });
-              } else {
-                mountPage();
-              }
+              mountPage();
             }
           } catch (error) {
             console.error("Error reloading active chat:", error);
@@ -1523,7 +1522,33 @@
         }
 
         if (closeConfig && panel) {
-          closeConfig.addEventListener("click", () => panel.classList.add("hidden"));
+          closeConfig.addEventListener("click", () => {
+            panel.classList.add("hidden");
+            // Auto re-init after closing configurator
+            try {
+              reloadActive();
+              updateEmbedCode();
+            } catch (e) {}
+          });
+        }
+
+        const saveBtn = document.getElementById("save-config");
+        if (saveBtn) {
+          saveBtn.addEventListener("click", () => {
+            try {
+              reloadActive();
+              updateEmbedCode();
+              const prev = saveBtn.innerHTML;
+              saveBtn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12" />
+                </svg>
+                Saved`;
+              setTimeout(() => (saveBtn.innerHTML = prev), 1000);
+            } catch (e) {
+              console.error("Save failed", e);
+            }
+          });
         }
 
         if (elToggleTheme) {
@@ -1635,6 +1660,46 @@
             });
           }
         })();
+
+        if (elToggleFloat) {
+          elToggleFloat.addEventListener("click", () => {
+            try {
+              window.KorinAI?.toggleFloatingChat?.();
+            } catch (error) {
+              console.error("Error toggling floating chat:", error);
+            }
+          });
+        }
+
+        // Live change handlers
+        let reloadTimeout;
+        const debouncedReload = () => {
+          clearTimeout(reloadTimeout);
+          reloadTimeout = setTimeout(() => {
+            reloadActive();
+            try {
+              updateEmbedCode();
+            } catch (e) {}
+          }, 300);
+        };
+
+        document.querySelectorAll("#config input, #config select").forEach((el) => {
+          el.addEventListener("input", debouncedReload);
+          el.addEventListener("change", debouncedReload);
+        });
+
+        // Initial setup
+        try {
+          setMode("page");
+          updateFloatingToggleVisibility();
+          updateEmbedCode();
+        } catch (error) {
+          console.error("Error during initial setup:", error);
+        }
+      })();
+    </script>
+  </body>
+</html>
 
         if (elToggleFloat) {
           elToggleFloat.addEventListener("click", () => {
