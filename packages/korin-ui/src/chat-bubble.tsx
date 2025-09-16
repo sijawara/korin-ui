@@ -506,6 +506,7 @@ function ChatBubbleComponent({
   roomId?: string;
   onError?: (error: string) => void;
   showActions?: boolean;
+  isChatToOther?: boolean;
 }) {
   const isMe = message.role === "user";
   const isAI = message.role === "assistant";
@@ -614,14 +615,7 @@ function ChatBubbleComponent({
           })}
         >
           {/* Username */}
-          <div
-            className={cn("text-xs text-muted-foreground w-full", {
-              "text-right": isMe,
-              "text-left": !isMe,
-            })}
-          >
-            {username}
-          </div>
+          {!isMe && <div className="text-xs text-muted-foreground w-full text-right">{username}</div>}
 
           {/* Render message parts in their natural order */}
           <div className="w-full space-y-3">
