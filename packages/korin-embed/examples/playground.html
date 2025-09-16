@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Korin Embed – Playground</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
@@ -29,6 +28,10 @@
         --radius-sm: 8px;
         --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         --gradient-accent: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      }
+
+      button {
+        background-color: transparent;
       }
 
       body.dark {
@@ -537,7 +540,7 @@
       <header class="topbar" role="banner">
         <div class="brand">
           <div class="logo">
-            <img src="https://korin.ai/logo/KorinAILogo-Black.svg" alt="Korin Logo" />
+            <img src="https://korin.ai/logo/KorinAILogo-Black.svg" alt="Korin Logo" width="28" height="28" />
           </div>
           <h1>Korin Embed Playground</h1>
         </div>
@@ -1195,7 +1198,7 @@
     </aside>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.js"></script>
+    <script src="../dist/embed.js"></script>
     <script>
       (function () {
         // All the original JavaScript functionality preserved

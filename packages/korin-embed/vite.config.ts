@@ -12,7 +12,7 @@ export default defineConfig({
   plugins: [
     // Prefix all TSX/JSX className/class string literals with `korinai:`
     react(),
-    classnamePrefixPlugin({ prefix: "korinai" }),
+    // classnamePrefixPlugin({ prefix: "korinai" }),
     tailwindcss(),
   ],
   resolve: {

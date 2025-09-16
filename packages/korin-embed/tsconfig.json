@@ -10,9 +10,5 @@
     "noEmit": true,
     "skipLibCheck": true
   },
-  "include": [
-    "src",
-    "vite.config.ts",
-    "vite.config.codemod.ts"
-  ]
+  "include": ["src", "vite.config.ts"]
 }
