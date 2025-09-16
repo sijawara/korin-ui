@@ -20,10 +20,12 @@ npx shadcn@latest add https://ui.korinai.com/floating-chat.json
 ```
 
 Where files go:
+
 - Components will be placed under `@/components/korin-ui/*`.
 - Dependencies on shadcn primitives will use your local `@/components/ui/*` setup (installed by shadcn).
 
 Prerequisites:
+
 - Next.js 14+ (App Router) or React 18+ environment.
 - Tailwind CSS and shadcn/ui configured.
 - Icons: `lucide-react`.
@@ -49,7 +51,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <KorinProvider
       config={{
         baseUrl: "https://your.cdn.or.assets.base/url", // used for logos/images
-        chatApi: "/api/chat" // your chat endpoint compatible with Vercel AI SDK
+        chatApi: "/api/chat", // your chat endpoint compatible with Vercel AI SDK
       }}
       // Option A: static token (for testing only)
       // authToken="<JWT or API token>"
@@ -128,12 +130,10 @@ export default function FloatingExample() {
       {/* Your page content... */}
       <FloatingChat
         title="Chat with KorinAI"
-        chatProps={{
-          ui: { showStop: true, showAttach: true },
-          branding: {
-            logoLightUrl: "/logo/KorinAILogo-Black.svg",
-            logoDarkUrl: "/logo/KorinAILogo-White.svg",
-          },
+        ui={{ showStop: true, showAttach: true }}
+        branding={{
+          logoLightUrl: "/logo/KorinAILogo-Black.svg",
+          logoDarkUrl: "/logo/KorinAILogo-White.svg",
         }}
       />
     </>
@@ -189,39 +189,37 @@ export default function CustomInput() {
 import { ChatBubble } from "@/components/korin-ui/chat-bubble";
 
 // ... inside a component
-<ChatBubble
-  message={{ id: "1", role: "assistant", parts: [{ type: "text", text: "Hello!" }] }}
-  isStreaming={false}
-/>
+<ChatBubble message={{ id: "1", role: "assistant", parts: [{ type: "text", text: "Hello!" }] }} isStreaming={false} />;
 ```
 
 ## Component Inventory
 
 All components currently available in this package (as found under `packages/korin-ui/src/`):
 
-| Component | Command | Description |
-| --- | --- | --- |
-| `AvatarKorin` | `npx shadcn@latest add https://ui.korinai.com/avatar-korin.json` | Avatar component with Korin-specific fallback and styling. |
-| `ChatBubble` | `npx shadcn@latest add https://ui.korinai.com/chat-bubble.json` | Renders message parts (text, reasoning, tools, file attachments) with confirmations and status pills. |
-| `ChatInput` | `npx shadcn@latest add https://ui.korinai.com/chat-input.json` | Multiline input with auto-resize, file attach, agent selector, send/stop controls. |
-| `ChatLimited` | `npx shadcn@latest add https://ui.korinai.com/chat-limited.json` | Credit limit warning/notice component. |
-| `CodeBlock` / `CodeBlockCopyButton` | `npx shadcn@latest add https://ui.korinai.com/code-block-with-copy.json` | Pretty code block with copy-to-clipboard action. |
-| `CodeBlock` (base) | `npx shadcn@latest add https://ui.korinai.com/code-block.json` | Base code block renderer used by `Response` and others. |
-| `FilePreviewDialog` | `npx shadcn@latest add https://ui.korinai.com/file-preview-dialog.json` | Dialog/overlay for previewing images, video, audio, and documents; supports select mode. |
-| `FileSelector` | `npx shadcn@latest add https://ui.korinai.com/file-selector.json` | Gallery selector with tabs (images, videos, audio, documents) + search + upload integration. |
-| `FloatingChat` | `npx shadcn@latest add https://ui.korinai.com/floating-chat.json` | Floating button + overlay chat window (wraps `PageChat`). |
-| `KorinProvider` | `npx shadcn@latest add https://ui.korinai.com/korin-provider.json` | App-level provider that wires `KorinAIProvider` and `AgentProvider`. |
-| `SimpleMemoizedMarkdown` | `npx shadcn@latest add https://ui.korinai.com/memoized-markdown.json` | Memoized markdown rendering for simple content. |
-| `PageChat` | `npx shadcn@latest add https://ui.korinai.com/page-chat.json` | Full chat surface with header, history list, message list, and input area. |
-| `Reasoning`, `ReasoningContent`, `ReasoningTrigger` | `npx shadcn@latest add https://ui.korinai.com/reasoning.json` | Collapsible “reasoning” disclosure UI. |
-| `Response` | `npx shadcn@latest add https://ui.korinai.com/response.json` | Hardened Markdown renderer with KaTeX, GFM, streaming-friendly parsing. |
-| `ScrollAreaExtended` | `npx shadcn@latest add https://ui.korinai.com/scroll-area-extended.json` | Convenience wrapper around shadcn `ScrollArea` with tweaks. |
-| `ToolResults` (`WebSearchResults`, `KnowledgeResults`, `ImageGenerationResults`) | `npx shadcn@latest add https://ui.korinai.com/tool-results.json` | Renderers for tool outputs. |
-| `TypingLoader` | `npx shadcn@latest add https://ui.korinai.com/typing-loader.json` | Typing/streaming loader indicator. |
-| `UploadButton` | `npx shadcn@latest add https://ui.korinai.com/upload-button.json` | Drawer-based upload flow with preview and progress. |
-| `UserConfirmation` | `npx shadcn@latest add https://ui.korinai.com/user-confirmation.json` | Generic confirmation UI for tool actions (e.g., git commit/push). |
+| Component                                                                        | Command                                                                  | Description                                                                                           |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `AvatarKorin`                                                                    | `npx shadcn@latest add https://ui.korinai.com/avatar-korin.json`         | Avatar component with Korin-specific fallback and styling.                                            |
+| `ChatBubble`                                                                     | `npx shadcn@latest add https://ui.korinai.com/chat-bubble.json`          | Renders message parts (text, reasoning, tools, file attachments) with confirmations and status pills. |
+| `ChatInput`                                                                      | `npx shadcn@latest add https://ui.korinai.com/chat-input.json`           | Multiline input with auto-resize, file attach, agent selector, send/stop controls.                    |
+| `ChatLimited`                                                                    | `npx shadcn@latest add https://ui.korinai.com/chat-limited.json`         | Credit limit warning/notice component.                                                                |
+| `CodeBlock` / `CodeBlockCopyButton`                                              | `npx shadcn@latest add https://ui.korinai.com/code-block-with-copy.json` | Pretty code block with copy-to-clipboard action.                                                      |
+| `CodeBlock` (base)                                                               | `npx shadcn@latest add https://ui.korinai.com/code-block.json`           | Base code block renderer used by `Response` and others.                                               |
+| `FilePreviewDialog`                                                              | `npx shadcn@latest add https://ui.korinai.com/file-preview-dialog.json`  | Dialog/overlay for previewing images, video, audio, and documents; supports select mode.              |
+| `FileSelector`                                                                   | `npx shadcn@latest add https://ui.korinai.com/file-selector.json`        | Gallery selector with tabs (images, videos, audio, documents) + search + upload integration.          |
+| `FloatingChat`                                                                   | `npx shadcn@latest add https://ui.korinai.com/floating-chat.json`        | Floating button + overlay chat window (wraps `PageChat`).                                             |
+| `KorinProvider`                                                                  | `npx shadcn@latest add https://ui.korinai.com/korin-provider.json`       | App-level provider that wires `KorinAIProvider` and `AgentProvider`.                                  |
+| `SimpleMemoizedMarkdown`                                                         | `npx shadcn@latest add https://ui.korinai.com/memoized-markdown.json`    | Memoized markdown rendering for simple content.                                                       |
+| `PageChat`                                                                       | `npx shadcn@latest add https://ui.korinai.com/page-chat.json`            | Full chat surface with header, history list, message list, and input area.                            |
+| `Reasoning`, `ReasoningContent`, `ReasoningTrigger`                              | `npx shadcn@latest add https://ui.korinai.com/reasoning.json`            | Collapsible “reasoning” disclosure UI.                                                                |
+| `Response`                                                                       | `npx shadcn@latest add https://ui.korinai.com/response.json`             | Hardened Markdown renderer with KaTeX, GFM, streaming-friendly parsing.                               |
+| `ScrollAreaExtended`                                                             | `npx shadcn@latest add https://ui.korinai.com/scroll-area-extended.json` | Convenience wrapper around shadcn `ScrollArea` with tweaks.                                           |
+| `ToolResults` (`WebSearchResults`, `KnowledgeResults`, `ImageGenerationResults`) | `npx shadcn@latest add https://ui.korinai.com/tool-results.json`         | Renderers for tool outputs.                                                                           |
+| `TypingLoader`                                                                   | `npx shadcn@latest add https://ui.korinai.com/typing-loader.json`        | Typing/streaming loader indicator.                                                                    |
+| `UploadButton`                                                                   | `npx shadcn@latest add https://ui.korinai.com/upload-button.json`        | Drawer-based upload flow with preview and progress.                                                   |
+| `UserConfirmation`                                                               | `npx shadcn@latest add https://ui.korinai.com/user-confirmation.json`    | Generic confirmation UI for tool actions (e.g., git commit/push).                                     |
 
 Notes:
+
 - The remote registry exposes JSON entries that mirror these component names. Replace `all.json` with `<component-name>.json` to install only that component, e.g. `chat-input.json`, `page-chat.json`, `floating-chat.json`, etc.
 - Registry output paths are set to `@/components/korin-ui/*` so your imports look like `@/components/korin-ui/page-chat`.
 
