@@ -1,5 +1,15 @@
 # web
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies
+  - @korinai/libs@1.0.7
+  - @monorepo/example@1.0.7
+  - @monorepo/ui@1.0.7
+  - @monorepo/shadcn-ui@1.0.7
+
 ## 0.1.2
 
 ### Patch Changes

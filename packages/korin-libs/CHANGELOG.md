@@ -1,5 +1,11 @@
 # @korinai/libs
 
+## 1.0.7
+
+### Patch Changes
+
+- Simplify floating chat props
+
 ## 1.0.6
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @korinai/embed
 
+## 1.0.7
+
+### Patch Changes
+
+- Simplify floating chat props
+- Updated dependencies
+  - @korinai/libs@1.0.7
+  - @monorepo/ui@1.0.7
+  - @monorepo/shadcn-ui@1.0.7
+
 ## 1.0.6
 
 ### Patch Changes
