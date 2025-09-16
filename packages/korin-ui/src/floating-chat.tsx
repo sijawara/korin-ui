@@ -18,37 +18,25 @@ export type FloatingChatProps = {
   // Trigger icon configuration
   triggerIcon?: React.ReactNode;
   triggerIconSize?: number; // px
-  // Branding forwarded to PageChat
-  branding?: {
-    logoLightUrl?: string;
-    logoDarkUrl?: string;
-    logoSize?: { width: number; height: number };
-    headerLogoSize?: { width: number; height: number };
-    showHeaderLogo?: boolean;
-  };
   // Controlled open state (headless support)
   open?: boolean; // when provided, component becomes controlled
   defaultOpen?: boolean; // initial state when uncontrolled
   onOpenChange?: (open: boolean) => void; // notify open state changes
-  // Forward props to PageChat
-  chatProps?: PageChatProps;
   // Floating button configuration
   showFloatingButton?: boolean;
-};
+} & PageChatProps;
 
 export function FloatingChat({
   className,
   buttonClassName,
   chatWindowClassName,
-  title = "Chat with KorinAI",
   triggerIcon,
   triggerIconSize = 30,
-  branding,
   open,
   defaultOpen,
   onOpenChange,
-  chatProps,
   showFloatingButton = true,
+  ...chatProps
 }: FloatingChatProps) {
   const { language = "en", config, translations } = useKorinAI();
   const t = translations?.[language] || translations.en!;
@@ -109,7 +97,7 @@ export function FloatingChat({
           chatWindowClassName,
         )}
       >
-        <PageChat {...chatProps} title={title} showCloseButton onClose={() => setIsOpen(false)} branding={branding} />
+        <PageChat {...chatProps} showCloseButton onClose={() => setIsOpen(false)} />
       </Card>
     </div>
   );
