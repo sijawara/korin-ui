@@ -4,6 +4,7 @@
   "version": "1.0.5",
   "author": "Muhamad Rizki",
   "type": "module",
+  "license": "MIT",
   "main": "dist/embed.js",
   "module": "dist/embed.js",
   "exports": {
