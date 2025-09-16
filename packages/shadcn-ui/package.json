@@ -1,7 +1,7 @@
 {
   "name": "@monorepo/shadcn-ui",
   "author": "Muhamad Rizki",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "",
   "main": "index.js",
   "keywords": [],
@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@korinai/libs": "workspace:*",
     "@monorepo/eslint-config": "workspace:*",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",

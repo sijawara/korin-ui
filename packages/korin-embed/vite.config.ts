@@ -3,7 +3,10 @@ import react from "@vitejs/plugin-react";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
+import { readFileSync } from "node:fs";
 import classnamePrefixPlugin from "./vite-plugin-classname-prefix";
+
+const pkg = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf-8"));
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -12,7 +15,7 @@ export default defineConfig({
   plugins: [
     // Prefix all TSX/JSX className/class string literals with `korinai:`
     react(),
-    classnamePrefixPlugin({ prefix: "korinai" }),
+    // classnamePrefixPlugin({ prefix: "korinai" }),
     tailwindcss(),
   ],
   resolve: {
@@ -45,21 +48,26 @@ export default defineConfig({
         //   katex: "katex",
         // },
         // Inject shims early so dependencies can reference them during module init
-        banner: `
-          (function(){
-            try {
-              var g = (typeof globalThis !== 'undefined') ? globalThis : (typeof window !== 'undefined' ? window : this);
-              if (g && typeof g.process === 'undefined') {
-                g.process = { env: { NODE_ENV: '${process.env.NODE_ENV || "production"}' } };
-              } else if (g && g.process && !g.process.env) {
-                g.process.env = { NODE_ENV: '${process.env.NODE_ENV || "production"}' };
-              }
-              if (g && typeof g.global === 'undefined') {
-                g.global = g;
-              }
-            } catch (_) { /* noop */ }
-          })();
-        `,
+        banner: `/**
+ * @korinai/embed v${pkg.version}
+ * (c) ${new Date().getFullYear()} Korin AI
+ * @license ${pkg.license || "UNLICENSED"}
+ */
+
+(function(){
+  try {
+    var g = (typeof globalThis !== 'undefined') ? globalThis : (typeof window !== 'undefined' ? window : this);
+    if (g && typeof g.process === 'undefined') {
+      g.process = { env: { NODE_ENV: '${process.env.NODE_ENV || "production"}' } };
+    } else if (g && g.process && !g.process.env) {
+      g.process.env = { NODE_ENV: '${process.env.NODE_ENV || "production"}' };
+    }
+    if (g && typeof g.global === 'undefined') {
+      g.global = g;
+    }
+  } catch (_) { /* noop */ }
+})();
+`,
       },
     },
     outDir: "dist",

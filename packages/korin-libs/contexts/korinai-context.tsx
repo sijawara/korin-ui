@@ -19,6 +19,7 @@ export type KorinAIContextType = {
   language?: string;
   setLanguage: (language: string) => void;
   translations: ChatTranslations;
+  rootContainer?: Element;
 };
 
 export const KORIN_TRANSLATIONS: ChatTranslations = {
@@ -103,6 +104,7 @@ export const KorinAIContext = createContext<KorinAIContextType>({
   language: "en",
   setLanguage: () => {},
   translations: KORIN_TRANSLATIONS,
+  rootContainer: undefined,
 });
 
 export const KorinAIProvider = ({
@@ -112,6 +114,7 @@ export const KorinAIProvider = ({
   language: initialLanguage,
   getAuthToken,
   translations,
+  rootContainer,
 }: {
   children: ReactNode;
   config: KorinAIConfig;
@@ -119,6 +122,7 @@ export const KorinAIProvider = ({
   language?: string;
   getAuthToken?: () => Promise<AuthToken>;
   translations?: ChatTranslations;
+  rootContainer?: Element;
 }) => {
   const [config, setConfig] = useState<KorinAIConfig>(initialConfig);
   const [authToken, setAuthToken] = useState<AuthToken>(initialAuthToken);
@@ -174,6 +178,7 @@ export const KorinAIProvider = ({
         setLanguage,
         getAuthToken,
         translations: mergedTranslations,
+        rootContainer,
       }}
     >
       {children}

@@ -1,9 +1,10 @@
 {
   "name": "@korinai/embed",
   "private": false,
-  "version": "1.0.4",
+  "version": "1.0.6",
   "author": "Muhamad Rizki",
   "type": "module",
+  "license": "MIT",
   "main": "dist/embed.js",
   "module": "dist/embed.js",
   "exports": {
@@ -15,7 +16,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "vite build --config vite.config.codemod.ts -l error && vite build --config vite.config.ts",
+    "dev": "vite build --watch",
+    "build": "vite build",
     "lint": "eslint .",
     "prepublishOnly": "pnpm run build"
   },
@@ -25,6 +27,7 @@
     "@monorepo/ui": "workspace:*",
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.13",
+    "katex": "^0.16.22",
     "preact": "^10.27.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

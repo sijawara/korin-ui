@@ -4,7 +4,9 @@ import * as ReactDOMClient from "react-dom/client";
 // Vite will process this via postcss/tailwind and give us a CSS string in IIFE build
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - inline is a Vite loader query
-import "./embed.css";
+import embedCss from "./embed.css?inline";
+// @ts-ignore - katex css is does exists
+import katexCss from "katex/dist/katex.min.css?inline";
 import { version } from "../package.json";
 import type { Root } from "react-dom/client";
 import { FloatingChat } from "@monorepo/ui/floating-chat";
@@ -125,7 +127,7 @@ class ErrorBoundary extends React.Component<
 
 function DebugRoot(props: Record<string, unknown>) {
   // Read flattened provider options passed from init
-  const { __flat, ...restProps } = props;
+  const { __flat, rootContainer, ...restProps } = props;
   const flat = __flat as InitOptions | undefined;
   // Infer controlled and default open from forwarded props (FloatingChat only)
   const controlledOpen = (restProps as any)?.open as boolean | undefined;
@@ -172,6 +174,7 @@ function DebugRoot(props: Record<string, unknown>) {
       language={flat?.language}
       getAuthToken={flat?.getAuthToken}
       translations={flat?.translations}
+      rootContainer={rootContainer as Element}
     >
       {flat?.variant === "page"
         ? // Render PageChat full widget
@@ -300,6 +303,33 @@ export function init(options: InitOptions): {
   // remember which variant this element hosts
   rootVariants.set(el, requestedVariant);
 
+  // Create a shadow root if one doesn't exist
+  const shadowRoot = (el as HTMLElement).shadowRoot || (el as HTMLElement).attachShadow({ mode: "open" });
+
+  const embedStyle = document.createElement("style");
+  embedStyle.id = "korinai-embed-styles";
+  embedStyle.textContent = embedCss;
+  if (shadowRoot.querySelector("#korinai-embed-styles")) {
+    shadowRoot.removeChild(shadowRoot.querySelector("#korinai-embed-styles") as Node);
+  }
+  shadowRoot.appendChild(embedStyle);
+
+  const katexStyle = document.createElement("style");
+  katexStyle.id = "korinai-katex-styles";
+  katexStyle.textContent = katexCss;
+  if (shadowRoot.querySelector("#korinai-katex-styles")) {
+    shadowRoot.removeChild(shadowRoot.querySelector("#korinai-katex-styles") as Node);
+  }
+  shadowRoot.appendChild(katexStyle);
+
+  // Create a container div inside the shadow root
+  const container = document.createElement("div");
+  container.id = "korinai-container";
+  if (shadowRoot.querySelector("#korinai-container")) {
+    shadowRoot.removeChild(shadowRoot.querySelector("#korinai-container") as Node);
+  }
+  shadowRoot.appendChild(container);
+
   // Ensure minimal container styles for visibility if requested (default true)
   const ensureStyles = mergedOptions.ensureStyles !== false;
   if (ensureStyles) {
@@ -308,23 +338,27 @@ export function init(options: InitOptions): {
     if (!style.bottom && !style.top) style.bottom = "24px";
     if (!style.right && !style.left) style.right = "24px";
     if (!style.zIndex) style.zIndex = "2147483647"; // bring to front
+
+    // Add some basic styles to the shadow host
+    container.style.display = "contents"; // Allow the container to inherit styles from the host
   }
+
   // Ensure Tailwind scoping root class exists
-  (el as HTMLElement).classList.add("korinai__");
+  container.classList.add("korinai__");
 
   // If already mounted on this element, unmount first
-  const existing = roots.get(el);
+  const existing = roots.get(container);
   if (existing) {
     if (verbose) {
       // eslint-disable-next-line no-console
       console.debug("[KorinAI] Existing root found. Unmounting before remount.");
     }
     existing.unmount();
-    roots.delete(el);
+    roots.delete(container);
   }
 
-  const root = ReactDOMClient.createRoot(el);
-  roots.set(el, root);
+  const root = ReactDOMClient.createRoot(container);
+  roots.set(container, root);
 
   // Spread provided props to FloatingChat in case future customization is needed
   const baseProps = (mergedOptions.props ?? {}) as Record<string, unknown>;
@@ -351,6 +385,7 @@ export function init(options: InitOptions): {
           {/** Casting to any to allow future extensibility of FloatingChat props without TS friction */}
           {React.createElement(DebugRoot as unknown as React.ComponentType<any>, {
             ...baseProps,
+            rootContainer: shadowRoot,
             __flat: mergedOptions,
           })}
         </ErrorBoundary>
@@ -359,7 +394,7 @@ export function init(options: InitOptions): {
     if (mergedOptions.debugOverlay) {
       try {
         const badge = document.createElement("div");
-        badge.textContent = "KorinAI mounted";
+        badge.textContent = "KorinAI mounted (Shadow DOM)";
         Object.assign(badge.style, {
           fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
           fontSize: "12px",
@@ -372,7 +407,8 @@ export function init(options: InitOptions): {
           top: "-24px",
           right: "0",
         } as CSSStyleDeclaration);
-        (el as HTMLElement).appendChild(badge);
+        // Append to the shadow root
+        shadowRoot.appendChild(badge);
         // Remove after a few seconds
         setTimeout(() => badge.remove(), 3000);
       } catch {}
@@ -402,11 +438,15 @@ export function init(options: InitOptions): {
         // eslint-disable-next-line no-console
         console.debug("[KorinAI] Unmount requested for:", el);
       }
-      const r = roots.get(el);
+      const r = roots.get(container);
       if (r) {
         r.unmount();
-        roots.delete(el);
+        roots.delete(container);
         rootVariants.delete(el);
+        // Clean up shadow root
+        if ((el as HTMLElement).shadowRoot) {
+          (el as HTMLElement).shadowRoot!.innerHTML = "";
+        }
       }
     },
     el,
@@ -425,7 +465,15 @@ export function toggleFloatingChat(open?: boolean) {
 export function unmount(target: Element | string): void {
   const el = resolveTarget(target);
   if (!el) return;
-  const r = roots.get(el);
+
+  // Find the container in the shadow root
+  const shadowRoot = (el as HTMLElement).shadowRoot;
+  if (!shadowRoot) return;
+
+  const container = shadowRoot.firstElementChild;
+  if (!container) return;
+
+  const r = roots.get(container);
   if (r) {
     const w: any = (typeof window !== "undefined" ? window : undefined) as any;
     const variant = rootVariants.get(el) || "floating";
@@ -434,8 +482,10 @@ export function unmount(target: Element | string): void {
       console.debug("[KorinAI] Unmount requested for:", el);
     }
     r.unmount();
-    roots.delete(el);
+    roots.delete(container);
     rootVariants.delete(el);
+    // Clean up shadow root
+    shadowRoot.innerHTML = "";
   }
 }
 

@@ -15,6 +15,7 @@ export const KorinProvider = ({
   language = "en",
   getAuthToken,
   translations,
+  rootContainer,
 }: {
   children: React.ReactNode;
   config: KorinAIConfig;
@@ -22,6 +23,7 @@ export const KorinProvider = ({
   language?: string;
   getAuthToken?: () => Promise<AuthToken>;
   translations?: ChatTranslations;
+  rootContainer?: Element;
 }) => {
   return (
     <KorinAIProvider
@@ -30,6 +32,7 @@ export const KorinProvider = ({
       config={config}
       authToken={authToken}
       translations={translations}
+      rootContainer={rootContainer}
     >
       <AgentProvider>{children}</AgentProvider>
     </KorinAIProvider>

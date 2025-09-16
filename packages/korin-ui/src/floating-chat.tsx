@@ -105,7 +105,7 @@ export function FloatingChat({
         className={cn(
           "flex flex-col p-0 bg-background gap-0",
           "fixed inset-0 rounded-none h-[100dvh] w-screen",
-          "sm:static sm:w-[440px] sm:h-[600px] sm:rounded-xl",
+          "sm:static sm:w-[440px] sm:h-[600px] sm:rounded-xl overflow-hidden",
           chatWindowClassName,
         )}
       >
