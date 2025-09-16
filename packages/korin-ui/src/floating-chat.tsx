@@ -64,8 +64,8 @@ export function FloatingChat({
 
   useEffect(() => {
     setMounted(true);
-    // const timer = setTimeout(() => setShowTooltip(false), 7000);
-    // return () => clearTimeout(timer);
+    const timer = setTimeout(() => setShowTooltip(false), 7000);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!mounted || !config.chatApi) return null;
