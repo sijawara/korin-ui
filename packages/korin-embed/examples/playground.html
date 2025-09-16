@@ -1474,9 +1474,7 @@
         function generateEmbedString() {
           const payload = buildEmbedPayload();
           const payloadStr = JSON.stringify(payload, null, 2);
-          const code = `<!-- Include Korin Embed assets -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.css" />
-<div id="my-chat"></div>
+          const code = `<div id="my-chat"></div>
 <script src="https://cdn.jsdelivr.net/npm/@korinai/embed@latest/dist/embed.js"><\/script>
 <script>
   window.KorinAI.init(${payloadStr});
