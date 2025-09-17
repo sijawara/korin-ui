@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@monorepo/shadcn-ui/components/ui/button";
 import { Upload, Loader2 } from "lucide-react";
 import { Progress } from "@monorepo/shadcn-ui/components/ui/progress";
-import { getFileCategory } from "@korinai/libs";
+import { getFileCategory, useAgent } from "@korinai/libs";
 import { useGalleryUpload } from "@korinai/libs/hooks/useGalleryUpload";
 import {
   Drawer,
@@ -30,7 +30,9 @@ export function UploadButton({ onUploadComplete, isKnowledge = false, onError }:
   const [error, setError] = useState<string | null>(null);
   const { authToken } = useKorinAI();
   const { user } = useUser();
+  const { currentAgent } = useAgent();
   const drawerContentRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Use the gallery upload hook
   const { uploadFile, uploadProgress, isUploading } = useGalleryUpload();
@@ -105,6 +107,7 @@ export function UploadButton({ onUploadComplete, isKnowledge = false, onError }:
         false, // Always private
         user?.email ? [user.email] : [], // Current user email as default access if available
         isKnowledge,
+        currentAgent?.agent_id || user?.id || "",
       );
 
       if (result.success) {
@@ -135,13 +138,10 @@ export function UploadButton({ onUploadComplete, isKnowledge = false, onError }:
         id="file-upload"
         className="hidden"
         onChange={handleFileChange}
+        ref={fileInputRef}
         accept=".pdf,.txt,.csv,.md,.js,.html,.css,.xml,.rtf,.py,.png,.jpg,.jpeg,.webp,.heic,.heif,.mp4,.mpeg,.mov,.avi,.flv,.mpg,.webm,.wmv,.3gpp,.wav,.mp3,.aiff,.aac,.ogg,.flac,audio/*"
       />
-      <Button
-        onClick={() => document.getElementById("file-upload")?.click()}
-        className="w-full"
-        aria-label="Upload file"
-      >
+      <Button onClick={() => fileInputRef.current?.click()} className="w-full" aria-label="Upload file">
         <Upload className="h-4 w-4" />
         <span className="hidden md:inline-block md:ml-2">Upload</span>
       </Button>

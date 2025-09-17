@@ -27,7 +27,8 @@ export function useGalleryUpload() {
     file: File,
     isPublic: boolean,
     accessEmails: string[],
-    isKnowledge: boolean = true
+    isKnowledge: boolean = true,
+    profileId: string,
   ): Promise<UploadResult> => {
     if (!authToken) {
       return { success: false, error: "Auth Token not provided" };
@@ -43,16 +44,13 @@ export function useGalleryUpload() {
       formData.append("accessEmails", JSON.stringify(accessEmails));
       formData.append("isKnowledge", isKnowledge.toString());
 
-      const response = await fetch(
-        buildUrl(config.baseUrl, `/api/gallery/add`),
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-          body: formData,
-        }
-      );
+      const response = await fetch(buildUrl(config.baseUrl, `/api/gallery/add?profileId=${profileId}`), {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: formData,
+      });
 
       if (!response.ok) {
         throw new Error("Upload failed");
