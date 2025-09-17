@@ -154,7 +154,8 @@ export function ChatInput({
       return;
     }
 
-    if (!inputValue.trim()) return;
+    const hasUnuploadedFiles = selectedFiles?.length > 0 && selectedFiles?.some((file) => !file.url);
+    if (!inputValue.trim() || hasUnuploadedFiles) return;
 
     const messageContent = inputValue;
     setInputValue("");
@@ -195,45 +196,60 @@ export function ChatInput({
     setIsDragging(false);
   }, []);
 
-  const handleDrop = useCallback(
-    async (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setIsDragging(false);
-
-      const file = e.dataTransfer.files[0];
-      if (!file) return;
-
+  // Helper function to validate files
+  const validateFiles = (files: File[]): File[] => {
+    return files.filter((file) => {
       // Check file size (max 10MB)
       if (file.size > 10 * 1024 * 1024) {
         onError?.(t.fileSizeError);
-        return;
+        return false;
       }
 
-      // Get file extension and check if it's in our supported mimeTypes
+      // Check file extension or MIME type
       const fileExtension = file.name.split(".").pop()?.toLowerCase() || "";
-      if (!mimeTypes[fileExtension as keyof typeof mimeTypes]) {
+      const mimeType = file.type.toLowerCase();
+
+      if (!mimeTypes[fileExtension as keyof typeof mimeTypes] && !Object.values(mimeTypes).includes(mimeType)) {
         onError?.(t.fileTypeError);
-        return;
+        return false;
       }
 
-      // Set placeholder file immediately
-      const fileInfo: FileInfo = {
-        url: "",
-        name: file.name,
-        displayName: file.name,
-        gallery_id: "",
-      };
+      return true;
+    });
+  };
 
-      // Add to selectedFiles array
-      const newFiles = [...selectedFiles, fileInfo];
-      setSelectedFiles(newFiles);
+  // Upload files and handle state updates
+  const uploadFiles = async (files: File[]) => {
+    // Create placeholders for all valid files
+    const newFiles = files.map((file) => ({
+      url: "",
+      name: file.name,
+      displayName: file.name,
+      gallery_id: "",
+      status: "uploading" as const,
+    }));
+
+    // Add new files to the selected files list
+    setSelectedFiles((prev) => [...prev, ...newFiles]);
+
+    // Upload files sequentially to avoid overwhelming the server
+    const uploadedAttachments: FileAttachment[] = [];
+    let hasError = false;
+
+    for (const file of files) {
+      if (hasError) break;
 
       try {
-        const result = await uploadFile(file, false, [user?.email || ""], false);
+        const result = await uploadFile(
+          file,
+          false,
+          [user?.email || ""],
+          false,
+          currentAgent?.agent_id || user?.id || "",
+        );
+
         if (result.success && result.galleryId && result.fileUrl) {
-          console.log("Uploaded file with gallery_id:", result.galleryId);
-          const uploadedFileInfo: FileInfo = {
+          const uploadedFile = {
             url: result.fileUrl,
             name: file.name,
             displayName: file.name,
@@ -241,41 +257,116 @@ export function ChatInput({
             caption: result.caption || "",
           };
 
-          // Update the file in selectedFiles array
-          const updatedFiles = newFiles.map((f) =>
-            f.name === file.name && f.gallery_id === "" ? uploadedFileInfo : f,
-          );
-          setSelectedFiles(updatedFiles);
+          uploadedAttachments.push({
+            gallery_id: result.galleryId,
+            file_caption: result.caption || "",
+            file_url: result.fileUrl,
+          });
 
-          // Notify parent components about the attachments
-          const attachmentInfo: FileAttachment[] = updatedFiles
-            .filter((f) => f.gallery_id)
-            .map((f) => ({
-              gallery_id: f.gallery_id!,
-              file_caption: f.caption || "",
-              file_url: f.url || "",
-            }));
-
-          if (handleAttachmentChange) {
-            handleAttachmentChange(attachmentInfo);
-          }
-          if (onFileAttach) {
-            onFileAttach(attachmentInfo);
-          }
+          // Update the UI with the uploaded file
+          setSelectedFiles((prev) => {
+            const updated = [...prev];
+            const fileIndex = updated.findIndex((f) => f.name === file.name && !f.url);
+            if (fileIndex !== -1) {
+              updated[fileIndex] = uploadedFile;
+            }
+            return updated;
+          });
         } else {
-          // Remove failed upload from array
-          setSelectedFiles((prev) => prev.filter((f) => !(f.name === file.name && f.gallery_id === "")));
-          onError?.(result.error || t.uploadFailed);
+          throw new Error(result.error || "Upload failed");
         }
       } catch (error) {
-        console.error("Error uploading file:", error);
-        // Remove failed upload from array
-        setSelectedFiles((prev) => prev.filter((f) => !(f.name === file.name && f.gallery_id === "")));
-        onError?.(t.uploadFailed);
+        console.error(`Error uploading file '${file.name}':`, error);
+        onError?.(`Failed to upload '${file.name}': ${error instanceof Error ? error.message : "Unknown error"}`);
+        hasError = true;
       }
-    },
-    [uploadFile, user?.email, onFileAttach, handleAttachmentChange, selectedFiles],
-  );
+    }
+
+    if (!hasError && uploadedAttachments.length > 0) {
+      if (onFileAttach) {
+        onFileAttach(uploadedAttachments);
+      }
+    } else if (hasError) {
+      // If there was an error, only keep successfully uploaded files
+      setSelectedFiles((prev) => prev.filter((f) => f.url));
+      if (onFileAttach) {
+        onFileAttach(uploadedAttachments.length > 0 ? uploadedAttachments : null);
+      }
+    }
+  };
+
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length === 0) return;
+
+    // Filter and validate files
+    const validFiles = validateFiles(files);
+    if (validFiles.length === 0) return;
+
+    // Upload the valid files
+    await uploadFiles(validFiles);
+  };
+
+  const handlePaste = async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    // Handle file/image pasting
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    const files: File[] = [];
+
+    // Check for pasted files/images
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (item.kind === "file") {
+        const file = item.getAsFile();
+        if (file) {
+          files.push(file);
+        }
+      }
+    }
+
+    if (files.length > 0) {
+      e.preventDefault(); // Prevent default paste behavior for files
+
+      // Filter and validate files
+      const validFiles: File[] = files.filter((file) => {
+        // Check file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+          onError?.(t.fileSizeError);
+          return false;
+        }
+
+        // Check file extension or MIME type
+        const fileExtension = file.name.split(".").pop()?.toLowerCase() || "";
+        const mimeType = file.type.toLowerCase();
+
+        if (!mimeTypes[fileExtension as keyof typeof mimeTypes] && !Object.values(mimeTypes).includes(mimeType)) {
+          onError?.(t.fileTypeError);
+          return false;
+        }
+
+        return true;
+      });
+
+      if (validFiles.length === 0) return;
+
+      // Create placeholders for all valid files
+      const newFiles = validFiles.map((file) => ({
+        url: "",
+        name: file.name,
+        displayName: file.name,
+        gallery_id: "",
+        status: "uploading" as const,
+      }));
+
+      // Upload files sequentially
+      await uploadFiles(validFiles);
+    }
+  };
 
   // Add template handling functions
   const applyTemplate = (template: PromptTemplate) => {
@@ -347,7 +438,7 @@ export function ChatInput({
 
   return (
     <div
-      className="w-full mx-auto z-10 flex flex-col space-y-1"
+      className="w-full mx-auto z-10 flex flex-col space-y-1 relative"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -428,13 +519,13 @@ export function ChatInput({
 
       {/* Selected Files Section */}
       {selectedFiles.length > 0 && (
-        <div className="mx-2 md:mx-4 lg:mx-24 xl:mx-32 space-y-2 mb-2">
+        <div className="space-y-2 mb-2 relative">
           {selectedFiles.map((file, idx) => (
             <div
               key={`${file.gallery_id || idx}`}
-              className="flex items-center gap-3 rounded-xl py-3 md:py-2.5 px-3 group cursor-pointer 
+              className="flex items-center gap-3 overflow-hidden rounded-xl py-3 md:py-2.5 px-3 group cursor-pointer 
                      hover:bg-accent/10 transition-all duration-200 border border-border/30 
-                     shadow-sm bg-muted/30 min-h-[60px] md:min-h-auto"
+                     shadow-sm bg-muted/30 min-h-[60px] md:min-h-auto relative"
               onClick={() => setOpenFilePreviewIndex(idx)}
             >
               {isUploading && !file.gallery_id && (
@@ -489,6 +580,7 @@ export function ChatInput({
               ref={textareaRef}
               placeholder="Type a message..."
               value={inputValue}
+              onPaste={handlePaste}
               onChange={(e) => {
                 setInputValue(e.target.value);
                 autoResize(e.target as HTMLTextAreaElement);
@@ -510,7 +602,13 @@ export function ChatInput({
                 type="submit"
                 size="icon"
                 onClick={onSubmit}
-                disabled={!inputValue.trim() || isLoading || creditLimited || isStreaming}
+                disabled={
+                  !inputValue.trim() ||
+                  isLoading ||
+                  creditLimited ||
+                  isStreaming ||
+                  (selectedFiles?.length > 0 && selectedFiles?.some((file) => !file.url))
+                }
                 className={cn(
                   "absolute right-2 bottom-2 h-9 w-9 rounded-xl shadow-md hover:shadow-lg transition-all",
                   inputValue.trim() && !isLoading && !creditLimited && status !== "submitted"

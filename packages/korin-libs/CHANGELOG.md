@@ -1,5 +1,11 @@
 # @korinai/libs
 
+## 1.0.8
+
+### Patch Changes
+
+- Fix chat input with file attachment
+
 ## 1.0.7
 
 ### Patch Changes

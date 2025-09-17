@@ -1,5 +1,15 @@
 # @korinai/embed
 
+## 1.0.8
+
+### Patch Changes
+
+- Fix chat input with file attachment
+- Updated dependencies
+  - @korinai/libs@1.0.8
+  - @monorepo/ui@1.0.8
+  - @monorepo/shadcn-ui@1.0.8
+
 ## 1.0.7
 
 ### Patch Changes
