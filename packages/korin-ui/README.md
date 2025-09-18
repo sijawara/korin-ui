@@ -94,6 +94,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 `PageChat` renders a complete chat surface with header, history, message list, input, file attachments, and agent selection.
 
 {% raw %}
+
 ```tsx
 "use client";
 import { PageChat } from "@/components/korin-ui/page-chat";
@@ -116,6 +117,7 @@ export default function ChatPage() {
   );
 }
 ```
+
 {% endraw %}
 
 ### FloatingChat (button + overlay window)
@@ -123,6 +125,7 @@ export default function ChatPage() {
 `FloatingChat` places a floating button at the bottom-right and opens a chat window overlay.
 
 {% raw %}
+
 ```tsx
 "use client";
 import { FloatingChat } from "@/components/korin-ui/floating-chat";
@@ -188,12 +191,16 @@ export default function CustomInput() {
 
 `ChatBubble` renders rich message parts (text, reasoning, tools, attachments). You can wire it with your own message objects or reuse what `PageChat` composes for you.
 
+{% raw %}
+
 ```tsx
 import { ChatBubble } from "@/components/korin-ui/chat-bubble";
 
 // ... inside a component
 <ChatBubble message={{ id: "1", role: "assistant", parts: [{ type: "text", text: "Hello!" }] }} isStreaming={false} />;
 ```
+
+{% endraw %}
 
 ## Component Inventory
 
@@ -260,12 +267,6 @@ export async function POST(req: NextRequest) {
 
   return result.toAIStreamResponse();
 }
-```
-
-Environment variable required:
-
-```bash
-OPENAI_API_KEY=sk-...
 ```
 
 Then set `config.chatApi` in `KorinProvider` to `/api/chat`. The `DefaultChatTransport` used by `PageChat` will POST messages to this endpoint and render the streamed response.
