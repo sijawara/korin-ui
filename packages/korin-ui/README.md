@@ -40,6 +40,8 @@ pnpm add ai lucide-react @korinai/libs
 
 Most higher-level components rely on app-wide providers for configuration, authentication and agent context. Wrap your app with `KorinProvider`.
 
+{% raw %}
+
 ```tsx
 // app/providers.tsx (Next.js) or your root layout
 "use client";
@@ -70,7 +72,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
+{% endraw %}
+
 Use the provider in your root layout:
+
+{% raw %}
 
 ```tsx
 // app/layout.tsx
@@ -86,6 +92,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   );
 }
 ```
+
+{% endraw %}
 
 ## Usage Examples
 
@@ -147,9 +155,13 @@ export default function FloatingExample() {
 }
 ```
 
+{% endraw %}
+
 ### ChatInput (compose your own UI)
 
 Use `ChatInput` if you want to build a custom chat surface. It manages textarea sizing, file attachments, agent selection, and submit/stop buttons.
+
+{% raw %}
 
 ```tsx
 "use client";
@@ -186,6 +198,8 @@ export default function CustomInput() {
   );
 }
 ```
+
+{% endraw %}
 
 ### ChatBubble (render messages)
 
@@ -246,6 +260,8 @@ pnpm add ai @ai-sdk/openai
 
 Create `app/api/chat/route.ts`:
 
+{% raw %}
+
 ```ts
 import { NextRequest } from "next/server";
 import { openai } from "@ai-sdk/openai";
@@ -269,6 +285,8 @@ export async function POST(req: NextRequest) {
 }
 ```
 
+{% endraw %}
+
 Then set `config.chatApi` in `KorinProvider` to `/api/chat`. The `DefaultChatTransport` used by `PageChat` will POST messages to this endpoint and render the streamed response.
 
 ## Recipes
@@ -276,6 +294,8 @@ Then set `config.chatApi` in `KorinProvider` to `/api/chat`. The `DefaultChatTra
 ### Branding
 
 Most chat surfaces accept a `branding` prop to override logos and sizes:
+
+{% raw %}
 
 ```tsx
 branding={{
@@ -286,6 +306,8 @@ branding={{
   showHeaderLogo: true,
 }}
 ```
+
+{% endraw %}
 
 ### Requests and Auth
 
