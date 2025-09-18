@@ -32,6 +32,7 @@ Prerequisites:
 
 Wrap your app with `KorinAIProvider` and then use the hooks you need.
 
+{% raw %}
 ```tsx
 import { KorinAIProvider, useKorinAI, useGallery, useMessages } from "@korinai/libs";
 
@@ -48,6 +49,8 @@ export default function AppRoot({ children }: { children: React.ReactNode }) {
     </KorinAIProvider>
   );
 }
+```
+{% endraw %}
 
 function GalleryExample() {
   const { config, authToken } = useKorinAI();
@@ -154,6 +157,7 @@ export function FileRow({ url }: { url: string }) {
 
 The minimum config you need is set on `KorinAIProvider`:
 
+{% raw %}
 ```tsx
 <KorinAIProvider
   config={{
@@ -167,6 +171,8 @@ The minimum config you need is set on `KorinAIProvider`:
 >
   {children}
 </KorinAIProvider>
+```
+{% endraw %}
 ```
 
 Tips:

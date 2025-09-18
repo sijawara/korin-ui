@@ -93,6 +93,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 `PageChat` renders a complete chat surface with header, history, message list, input, file attachments, and agent selection.
 
+{% raw %}
 ```tsx
 "use client";
 import { PageChat } from "@/components/korin-ui/page-chat";
@@ -115,11 +116,13 @@ export default function ChatPage() {
   );
 }
 ```
+{% endraw %}
 
 ### FloatingChat (button + overlay window)
 
 `FloatingChat` places a floating button at the bottom-right and opens a chat window overlay.
 
+{% raw %}
 ```tsx
 "use client";
 import { FloatingChat } from "@/components/korin-ui/floating-chat";

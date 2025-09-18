@@ -1,94 +1,171 @@
-# Full Stack Monorepo with Turbopack, Eslint, Next.js, Express.js, Tailwind CSS, and shadcn
+# Korin UI Monorepo
 
-This repository is a full-stack monorepo starter template that integrates several modern web development tools and libraries, including **Turbopack**, **Eslint**, **Next.js**, **Express.js**, **Tailwind CSS**, and **shadcn**.
+Korin UI is a collection of reusable UI components and libraries built with modern web technologies. This monorepo contains all the packages and applications that make up the Korin UI ecosystem.
 
 ## Features
 
-- **Monorepo Architecture**: Organizes both frontend (Next.js) and backend (Express.js) in a single repository using Turbopack to manage and optimize builds.
-- **Next.js**: A powerful React framework for building server-rendered web applications with API routes.
-- **Express.js**: A minimalist Node.js framework for building backend services and REST APIs.
-- **Turbopack**: A fast incremental bundler and build system, ideal for monorepo setups.
-- **Tailwind CSS**: A utility-first CSS framework for building responsive, modern UI components.
-- **shadcn**: A component library that integrates seamlessly with Tailwind CSS, providing elegant UI components.
-- **ESLint**: A fast and versatile tool for linting, formatting, and ensuring code quality across the entire monorepo.
+- **Monorepo Architecture**: Organized using pnpm workspaces and Turborepo for efficient code sharing and dependency management.
+- **Component Library**: A comprehensive collection of reusable UI components built with React and styled with Tailwind CSS.
+- **TypeScript First**: Fully typed components and utilities for better developer experience.
+- **Modern Tooling**: Built with the latest web technologies including Next.js, Vite, and more.
+- **Developer Experience**: Pre-configured with ESLint, Prettier, and other tools for consistent code quality.
 
-## Project Structure
-
-The monorepo is organized as follows:
+## Monorepo Structure
 
 ```
-/apps
-  /web (Next.js)
-  /server (Express.js)
-
-/packages
-  /ui (shadcn component library with Tailwind CSS)
-  /tsconfig (Shared configuration files such as Eslint, Tailwind, and Turbopack)
-  /types (Shared types)
-  /ui (Shared UI components and styles)
-  /utils (Shared util methods)
+apps/
+  web/                # Next.js 15 app (documentation and demo)
+packages/
+  eslint-config/      # Shared ESLint config (@monorepo/eslint-config)
+  korin-embed/        # Embeddable widget package (@korinai/embed) built with Vite
+  korin-libs/         # Reusable hooks, contexts, and utilities (@korinai/libs)
+  korin-ui/           # UI components & Tailwind config (@monorepo/ui)
 ```
 
-- **/apps/web**: Contains the Next.js application responsible for the frontend.
-- **/apps/server**: Contains the Express.js application responsible for the backend.
-- **/packages/tsconfig**: Contains shared configurations (e.g., Eslint, Tailwind, Turbopack) to enforce consistency across the monorepo.
-- **/packages/eslint-config**: Contains shared Eslint configurations for the monorepo.
-- **/packages/types**: Contains shared types (e.g. responses, api clients, etc).
-- **/packages/ui**: Houses the shared UI components built with shadcn and Tailwind CSS.
-- **/packages/utils**: Contains shared utils methods that will be used in multiple apps or packages.
+### Key Workspace Files
+
+- `pnpm-workspace.yaml` – Defines workspace packages in `apps/*` and `packages/*`
+- `turbo.json` – Task graph, caching, and outputs configuration
+- Root `package.json` – Top-level scripts (dev/build/lint/format, changesets)
+
+## Packages
+
+### `@monorepo/ui` (`packages/korin-ui`)
+
+Core UI components and Tailwind configuration.
+
+- **Exports**:
+  - `./globals.css` – Base styles
+  - `./tailwind.config` – Tailwind configuration
+  - Component entrypoints in `src/*.tsx`
+- **Dependencies**: shadcn, Radix UI, Tailwind CSS, clsx, tailwind-merge
+
+### `@korinai/libs` (`packages/korin-libs`)
+
+Shared hooks, contexts, and utilities.
+
+### `@korinai/embed` (`packages/korin-embed`)
+
+Embeddable chat widget for easy integration into any website.
+
+## Apps
+
+### `apps/web`
+
+Documentation and demo site built with Next.js 15.
+
+- **Scripts**:
+  - `pnpm dev` – Start development server
+  - `pnpm build` – Create production build
+  - `pnpm start` – Start production server
+  - `pnpm lint` – Run ESLint
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+ (LTS recommended)
-- pnpm installed globally (`npm i -g pnpm`)
+- pnpm 8+ (`npm install -g pnpm`)
 - Git
+
+### Installation
 
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/ivesfurtado/next-express-turborepo.git
-   cd next-express-turborepo
+   git clone https://github.com/sijawara/korin-ui.git
+   cd korin-ui
    ```
 
-2. **Install Dependencies**
-
-   Use `pnpm` package manager:
+2. **Install dependencies**
 
    ```bash
    pnpm install
    ```
 
-3. **Run the Development Server**
-
-   You can start both the web and server services with Turbopack's parallelism:
+3. **Start the development server**
 
    ```bash
+   # Start the documentation site
    pnpm dev
    ```
 
-   - Frontend is served at `http://localhost:3000` (Next.js)
-   - Backend is served at `http://localhost:3001` (Express.js)
+   The documentation will be available at `http://localhost:3000`
 
-4. **Build for Production**
+### Using Korin UI in your project
 
-   To build the frontend and backend for production, run:
+To use the Korin UI components in your project:
+
+1. Install the required packages:
 
    ```bash
-   pnpm build
+   pnpm add @monorepo/ui @korinai/libs
    ```
 
-   This will create optimized builds for both the frontend and backend services.
+2. Set up your Tailwind config to include Korin UI:
 
-## Tools and Technologies
+   ```js
+   // tailwind.config.js
+   const { createGlobPatternsForDependencies } = require("@monorepo/ui/tailwind");
 
-- **Next.js**: Provides the frontend framework with server-side rendering, API routes, and static generation.
-- **Express.js**: Handles the backend, including API endpoints and server logic.
-- **Turbopack**: Ensures fast builds and optimal performance for monorepos.
-- **Tailwind CSS**: Simplifies styling with a utility-first approach.
-- **shadcn**: Offers pre-designed components for building clean and modern UIs.
-- **ESLint**: Enforces code standards by handling linting and formatting across the project.
+   module.exports = {
+     content: ["./src/**/*.{js,ts,jsx,tsx,mdx}", ...createGlobPatternsForDependencies(__dirname)],
+     presets: [require("@monorepo/ui/tailwind.config")],
+   };
+   ```
+
+3. Import and use components:
+
+   ```tsx
+   import { Button } from "@monorepo/ui/button";
+
+   function MyComponent() {
+     return <Button>Click me</Button>;
+   }
+   ```
+
+## Development
+
+### Available Scripts
+
+- `pnpm dev` - Start development server for the web app
+- `pnpm build` - Build all packages and apps for production
+- `pnpm lint` - Lint all files
+- `pnpm format` - Format all files with Prettier
+- `pnpm changeset` - Create a new changeset
+- `pnpm version-packages` - Version packages and update changelogs
+
+### Adding a New Component
+
+1. Use the shadcn CLI to add a new component:
+
+   ```bash
+   cd packages/korin-ui
+   pnpm shadcn add button
+   ```
+
+2. The component will be added to `packages/korin-ui/src/components/ui/`
+
+### Publishing
+
+This monorepo uses Changesets for versioning and publishing. To publish a new version:
+
+1. Create a changeset:
+
+   ```bash
+   pnpm changeset
+   ```
+
+2. Bump versions and update changelogs:
+
+   ```bash
+   pnpm changeset version
+   ```
+
+3. Publish packages:
+   ```bash
+   pnpm -r publish --access public
+   ```
 
 ## Deployment
 
@@ -103,16 +180,6 @@ Contributions are welcome! Please open an issue or submit a pull request if you 
 This project is licensed under the MIT License. Feel free to use and modify it according to your needs.
 
 ---
-
-## Example Applications
-
-This monorepo structure has been successfully used to build:
-
-- **[SnipLLM](https://www.snipllm.com/)** - An AI-powered writing tool that transforms your writing with advanced AI. No expertise needed: just paste any text, choose your goal, and get perfect results instantly.
-
-## Further Reading
-
-For further details on building and setting up this monorepo, check out the original tutorial on [The Halftime Code](https://www.thehalftimecode.com/building-a-full-stack-monorepo-with-turbopack-biome-next-js-express-js-tailwind-css-and-shadcn/).
 
 # Korin UI Monorepo Guide
 
@@ -137,6 +204,8 @@ This section documents the actual packages and apps in this repository and how t
 
 ## Directory Structure
 
+{% raw %}
+
 ```
 apps/
   web/                # Next.js 15 app
@@ -147,6 +216,8 @@ packages/
   korin-ui/           # UI components & Tailwind config (@monorepo/ui)
 tools/                # (if present) repo tooling
 ```
+
+{% endraw %}
 
 Key workspace files:
 
@@ -182,11 +253,15 @@ pnpm dev -F web
 
 Usage in other workspaces:
 
+{% raw %}
+
 ```ts
 // Example import
 import { Button } from "@monorepo/ui/button";
 import "@monorepo/ui/globals.css";
 ```
+
+{% endraw %}
 
 Add a new shadcn component into this package:
 

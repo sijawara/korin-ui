@@ -38,6 +38,7 @@ See `packages/korin-libs/README.md` for provider setup and available hooks.
 
 Example Provider usage:
 
+{% raw %}
 ```tsx
 // apps/web/src/app/providers.tsx (example)
 import { KorinAIProvider } from "@korinai/libs/contexts/korinai-context";
@@ -53,6 +54,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
     </KorinAIProvider>
   );
 }
+```
+{% endraw %}
 ```
 
 ### Useful links
