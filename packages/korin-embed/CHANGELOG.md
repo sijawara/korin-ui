@@ -1,5 +1,15 @@
 # @korinai/embed
 
+## 1.0.11
+
+### Patch Changes
+
+- fix: adjust UI chat window
+- Updated dependencies
+  - @korinai/libs@1.0.11
+  - @monorepo/ui@1.0.11
+  - @monorepo/shadcn-ui@1.0.11
+
 ## 1.0.10
 
 ### Patch Changes

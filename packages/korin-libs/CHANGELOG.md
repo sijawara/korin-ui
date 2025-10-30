@@ -1,5 +1,11 @@
 # @korinai/libs
 
+## 1.0.11
+
+### Patch Changes
+
+- fix: adjust UI chat window
+
 ## 1.0.10
 
 ### Patch Changes

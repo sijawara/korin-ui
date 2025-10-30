@@ -1,5 +1,12 @@
 # @monorepo/shadcn-ui
 
+## 1.0.11
+
+### Patch Changes
+
+- Updated dependencies
+  - @korinai/libs@1.0.11
+
 ## 1.0.10
 
 ### Patch Changes
