@@ -1,5 +1,11 @@
 # @korinai/libs
 
+## 1.0.10
+
+### Patch Changes
+
+- fix: hide default attach button
+
 ## 1.0.9
 
 ### Patch Changes
