@@ -94,7 +94,7 @@ export function ChatInput({
   ownerEmail,
   onError,
   variant = "default",
-  showAttachButton = true,
+  showAttachButton = false,
   showStopButton = true,
   showAgentSelector = true,
 }: ChatInputProps) {
@@ -321,7 +321,7 @@ export function ChatInput({
     // Check for pasted files/images
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
-      if (item.kind === "file") {
+      if (item?.kind === "file") {
         const file = item.getAsFile();
         if (file) {
           files.push(file);

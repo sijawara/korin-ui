@@ -92,7 +92,7 @@ export function PageChat({
   showRoomName = true,
   showCloseButton = false,
   onClose,
-  hideHistory = false,
+  hideHistory = true,
   pageSize = 10,
   defaultRoomId,
   onRoomChange,
