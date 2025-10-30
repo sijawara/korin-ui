@@ -615,7 +615,7 @@ function ChatBubbleComponent({
           })}
         >
           {/* Username */}
-          {isAI && <div className="text-xs text-muted-foreground w-full text-right">{username}</div>}
+          {isAI && <div className="text-xs text-muted-foreground w-full">{username}</div>}
 
           {/* Render message parts in their natural order */}
           <div className="w-full space-y-3">

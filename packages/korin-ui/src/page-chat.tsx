@@ -36,6 +36,7 @@ import {
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { AgentSelector } from "./agent-selector";
 
 export interface PageChatProps {
   className?: string;
@@ -89,7 +90,7 @@ export interface PageChatProps {
 export function PageChat({
   className,
   title = "Chat with KorinAI",
-  showRoomName = true,
+  showRoomName = false,
   showCloseButton = false,
   onClose,
   hideHistory = true,
@@ -104,7 +105,7 @@ export function PageChat({
   requestBody,
   ui,
   branding,
-  chatInputVariant,
+  chatInputVariant = "compact",
 }: PageChatProps) {
   const { language = "en", config, translations } = useKorinAI();
   const t = translations?.[language] || translations.en!;
@@ -536,9 +537,9 @@ export function PageChat({
     <Wrapper className={cn("flex flex-col flex-1 min-h-0 bg-background rounded-xl", className)}>
       {/* Header */}
       <div className="border-b bg-gradient-to-r">
-        <div className="flex h-16 items-center justify-between px-6">
+        <div className="flex h-16 items-center justify-between px-2">
           <div className="flex items-center gap-3">
-            {!showHistory && branding?.showHeaderLogo !== false && (
+            {!showHistory && branding?.showHeaderLogo === true && (
               <div
                 className="relative flex items-center justify-center overflow-hidden rounded-md"
                 style={{
@@ -576,10 +577,20 @@ export function PageChat({
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
                 <h3 className="text-base font-semibold text-foreground">
-                  {showHistory ? t.chatHistory : showRoomName ? room?.name || title : title}
+                  {showHistory ? (
+                    t.chatHistory
+                  ) : showRoomName ? (
+                    room?.name || title
+                  ) : chatInputVariant === "compact" ? (
+                    <AgentSelector />
+                  ) : (
+                    title
+                  )}
                 </h3>
               </div>
-              {!showHistory && isStreaming && <p className="text-xs text-muted-foreground">{t.thinking}</p>}
+              {!showHistory && isStreaming && chatInputVariant !== "compact" && (
+                <p className="text-xs text-muted-foreground">{t.thinking}</p>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-1">
