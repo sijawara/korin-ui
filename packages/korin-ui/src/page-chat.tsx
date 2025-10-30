@@ -934,7 +934,7 @@ export function PageChat({
                 onStop={stop}
                 showAgentSelector={ui?.showAgentSelector !== false}
                 showStopButton={ui?.showStop !== false}
-                showAttachButton={ui?.showAttach !== false}
+                showAttachButton={ui?.showAttach === true}
                 showCreditWarning={showWarning}
                 status={customStatus}
                 error={error || currentError}
