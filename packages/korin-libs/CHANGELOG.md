@@ -1,5 +1,11 @@
 # @korinai/libs
 
+## 1.0.9
+
+### Patch Changes
+
+- Adjust some default options
+
 ## 1.0.8
 
 ### Patch Changes
