@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "changeset": "changeset",
-    "publish:packages": "changeset publish",
+    "publish:packages": "changeset publish --filter=@korinai/*",
     "version:packages": "turbo build && changeset version",
     "add-shadcn-component": "turbo run add-shadcn-component -- --",
     "build": "turbo build",
